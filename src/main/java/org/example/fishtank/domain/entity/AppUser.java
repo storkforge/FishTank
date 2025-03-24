@@ -54,12 +54,12 @@ public class AppUser {
         this.email = email;
     }
 
-    public Integer getAccessid() {
+    public Integer getAccessId() {
         return accessId;
     }
 
-    public void setAccessid(Integer accessid) {
-        this.accessId = accessid;
+    public void setAccessId(Integer accessId) {
+        this.accessId = accessId;
     }
 
 }
