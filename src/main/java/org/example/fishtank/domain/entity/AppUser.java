@@ -4,23 +4,23 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-public class appUser {
+public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "name", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "password", nullable = false, length = Integer.MAX_VALUE)
-    private String password;
+    @Column(name = "password_hash", nullable = false, length = 60)
+    private String passwordHash;
 
-    @Column(name = "email", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @Column(name = "accessid", nullable = false)
-    private Integer accessid;
+    @Column(name = "accessId", nullable = false)
+    private Integer accessId;
 
     public Integer getId() {
         return id;
@@ -39,11 +39,11 @@ public class appUser {
     }
 
     public String getPassword() {
-        return password;
+        return passwordHash;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.passwordHash = password;
     }
 
     public String getEmail() {
@@ -55,11 +55,11 @@ public class appUser {
     }
 
     public Integer getAccessid() {
-        return accessid;
+        return accessId;
     }
 
     public void setAccessid(Integer accessid) {
-        this.accessid = accessid;
+        this.accessId = accessid;
     }
 
 }
