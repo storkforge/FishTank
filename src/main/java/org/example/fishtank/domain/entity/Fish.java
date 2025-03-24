@@ -8,7 +8,6 @@ import org.hibernate.annotations.ColumnDefault;
 public class Fish {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ColumnDefault("nextval('fish_id_seq')")
     @Column(name = "id", nullable = false)
     private Integer id;
 
