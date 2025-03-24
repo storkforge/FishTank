@@ -5,6 +5,4 @@ import org.example.fishtank.domain.entity.Fish;
 import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository <AppUser, Integer> {
-
-
 }
