@@ -20,11 +20,30 @@ public class FishService {
     }
 
     public Fish findById(Integer id) {
-        return fishRepository.findById(id).orElse(null);
+        return fishRepository.findById(id).orElseThrow(() -> new RuntimeException("Fish not found"));
     }
 
     public List<Fish> getAllFish(){
         return fishRepository.findAll();
+    }
+
+    public void save(Fish fish) {
+        fishRepository.save(fish);
+    }
+
+    public void update(int id, Fish newFish) {
+        Fish oldFish = fishRepository.findById(id).orElseThrow(() -> new RuntimeException("Fish not found"));
+        oldFish.setName(newFish.getName());
+        oldFish.setSpecies(newFish.getSpecies());
+        oldFish.setUserid(newFish.getUserid());
+        oldFish.setDescription(newFish.getDescription());
+        oldFish.setWatertypeid(newFish.getWatertypeid());
+        oldFish.setSexid(newFish.getSexid());
+        fishRepository.save(oldFish);
+    }
+
+    public void delete(Fish fish) {
+        fishRepository.delete(fish);
     }
 
 }
