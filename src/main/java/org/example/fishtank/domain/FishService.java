@@ -35,10 +35,10 @@ public class FishService {
         Fish oldFish = fishRepository.findById(id).orElseThrow(() -> new RuntimeException("Fish not found"));
         oldFish.setName(newFish.getName());
         oldFish.setSpecies(newFish.getSpecies());
-        oldFish.setUserid(newFish.getUserid());
+        oldFish.setAppUser(newFish.getAppUser());
         oldFish.setDescription(newFish.getDescription());
-        oldFish.setWatertypeid(newFish.getWatertypeid());
-        oldFish.setSexid(newFish.getSexid());
+        oldFish.setWaterType(newFish.getWaterType());
+        oldFish.setSex(newFish.getSex());
         fishRepository.save(oldFish);
     }
 
