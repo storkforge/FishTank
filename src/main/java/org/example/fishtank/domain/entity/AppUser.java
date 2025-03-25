@@ -3,6 +3,8 @@ package org.example.fishtank.domain.entity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.List;
+
 @Entity
 public class AppUser {
     @Id
@@ -19,8 +21,9 @@ public class AppUser {
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @Column(name = "accessId", nullable = false)
-    private Integer accessId;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn (name = "appuser_access_id_fk" , nullable = false)
+    private Access access;
 
     public Integer getId() {
         return id;
@@ -54,12 +57,11 @@ public class AppUser {
         this.email = email;
     }
 
-    public Integer getAccessId() {
-        return accessId;
+    public Access getAccess() {
+        return access;
     }
 
-    public void setAccessId(Integer accessId) {
-        this.accessId = accessId;
+    public void setAccess(Access access) {
+        this.access = access;
     }
-
 }
