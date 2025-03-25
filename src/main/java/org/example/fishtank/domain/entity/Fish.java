@@ -1,11 +1,11 @@
 package org.example.fishtank.domain.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "fish")
 public class Fish {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -17,17 +17,20 @@ public class Fish {
     @Column(name = "species", nullable = false, length = Integer.MAX_VALUE)
     private String species;
 
-    @Column(name = "userid", nullable = false)
-    private Integer userid;
-
     @Column(name = "description", nullable = false, length = Integer.MAX_VALUE)
     private String description;
 
-    @Column(name = "watertypeid", nullable = false)
-    private Integer watertypeid;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn (name = "fish_watertype_id_fk" , nullable = false)
+    private WaterType waterType;
 
-    @Column(name = "sexid", nullable = false)
-    private Integer sexid;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn (name = "fish_sex_id_fk" , nullable = false)
+    private Sex sex;
+
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn (name = "fish_appuser_id_fk" , nullable = false)
+    private AppUser appUser;
 
     public Integer getId() {
         return id;
@@ -53,14 +56,6 @@ public class Fish {
         this.species = species;
     }
 
-    public Integer getUserid() {
-        return userid;
-    }
-
-    public void setUserid(Integer userid) {
-        this.userid = userid;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -69,20 +64,27 @@ public class Fish {
         this.description = description;
     }
 
-    public Integer getWatertypeid() {
-        return watertypeid;
+    public WaterType getWaterType() {
+        return waterType;
     }
 
-    public void setWatertypeid(Integer watertypeid) {
-        this.watertypeid = watertypeid;
+    public void setWaterType(WaterType waterType) {
+        this.waterType = waterType;
     }
 
-    public Integer getSexid() {
-        return sexid;
+    public Sex getSex() {
+        return sex;
     }
 
-    public void setSexid(Integer sexid) {
-        this.sexid = sexid;
+    public void setSex(Sex sex) {
+        this.sex = sex;
     }
 
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
+    }
 }

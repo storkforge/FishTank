@@ -1,12 +1,14 @@
 package org.example.fishtank.domain.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "appuser")
 public class AppUser {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -25,6 +27,9 @@ public class AppUser {
     @JoinColumn (name = "appuser_access_id_fk" , nullable = false)
     private Access access;
 
+    @OneToMany(mappedBy = "appUser", fetch = FetchType.LAZY)
+    private List<Fish> fishes = new ArrayList<>();
+
     public Integer getId() {
         return id;
     }
@@ -41,12 +46,12 @@ public class AppUser {
         this.name = name;
     }
 
-    public String getPassword() {
+    public String getPasswordHash() {
         return passwordHash;
     }
 
-    public void setPassword(String password) {
-        this.passwordHash = password;
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public String getEmail() {
@@ -63,5 +68,13 @@ public class AppUser {
 
     public void setAccess(Access access) {
         this.access = access;
+    }
+
+    public List<Fish> getFishes() {
+        return fishes;
+    }
+
+    public void setFishes(List<Fish> fishes) {
+        this.fishes = fishes;
     }
 }
