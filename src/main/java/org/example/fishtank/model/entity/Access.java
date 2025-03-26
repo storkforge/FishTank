@@ -1,14 +1,12 @@
-package org.example.fishtank.domain.entity;
+package org.example.fishtank.model.entity;
 
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "sex")
-public class Sex {
-
+@Table(name = "access")
+public class Access {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -17,8 +15,8 @@ public class Sex {
     @Column(name = "name", nullable = false, length = Integer.MAX_VALUE)
     private String name;
 
-    @OneToMany(mappedBy = "sex", fetch = FetchType.LAZY)
-    private List<Fish> fishes = new ArrayList<>();
+    @OneToMany(mappedBy = "access", fetch = FetchType.LAZY)
+    private List<AppUser> appUsers = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -36,11 +34,11 @@ public class Sex {
         this.name = name;
     }
 
-    public List<Fish> getFishes() {
-        return fishes;
+    public List<AppUser> getAppUsers() {
+        return appUsers;
     }
 
-    public void setFishes(List<Fish> fishes) {
-        this.fishes = fishes;
+    public void setAppUsers(List<AppUser> appUsers) {
+        this.appUsers = appUsers;
     }
 }
