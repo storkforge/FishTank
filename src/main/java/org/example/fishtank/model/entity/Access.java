@@ -1,4 +1,4 @@
-package org.example.fishtank.domain.entity;
+package org.example.fishtank.model.entity;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;

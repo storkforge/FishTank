@@ -1,4 +1,4 @@
-package org.example.fishtank.domain.entity;
+package org.example.fishtank.model.entity;
 
 import jakarta.persistence.*;
 
@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "sex")
-public class Sex {
+@Table(name = "watertype")
+public class WaterType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "name", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "sex", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "waterType", fetch = FetchType.LAZY)
     private List<Fish> fishes = new ArrayList<>();
 
     public Integer getId() {

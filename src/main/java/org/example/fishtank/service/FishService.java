@@ -1,8 +1,8 @@
-package org.example.fishtank.domain;
+package org.example.fishtank.service;
 
 import jakarta.transaction.Transactional;
-import org.example.fishtank.domain.entity.Fish;
-import org.example.fishtank.infrastructure.persistence.FishRepository;
+import org.example.fishtank.model.entity.Fish;
+import org.example.fishtank.repository.FishRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,5 +45,4 @@ public class FishService {
     public void delete(Fish fish) {
         fishRepository.delete(fish);
     }
-
 }
