@@ -1,4 +1,4 @@
 package org.example.fishtank.model.dto;
 
-public record ResponsAppUser (String name, String access){
+public record ResponsAppUser (Integer id ,String name, String access){
 }
