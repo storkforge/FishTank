@@ -1,0 +1,48 @@
+
+-- Insert sex
+INSERT INTO sex (name)
+VALUES
+    ('Male'),
+    ('Female'),
+    ('Hermaphrodite');
+
+-- Insert Access
+
+INSERT INTO access (name)
+VALUES
+    ('Standard'),
+    ('Premium');
+
+--Insert WaterType
+
+INSERT INTO watertype (name)
+VALUES
+    ('Salt Water'),
+    ('Fresh Water');
+
+--Insert AppUsers
+
+INSERT INTO appuser (name, password_hash, email, appuser_access_id_fk)
+VALUES
+    ('John Doe', 'hashedpassword1', 'johndoe@example.com', 1),  -- Standard
+    ('Jane Smith', 'hashedpassword2', 'janesmith@example.com', 2),  -- Premium
+    ('Alice Johnson', 'hashedpassword3', 'alicejohnson@example.com', 1),  -- Standard
+    ('Bob Brown', 'hashedpassword4', 'bobbrown@example.com', 2),  -- Premium
+    ('Charlie White', 'hashedpassword5', 'charliewhite@example.com', 1);  -- Standard
+
+--Insert Fishes
+
+INSERT INTO fish (name, species, description, fish_watertype_id_fk, fish_sex_id_fk, fish_appuser_id_fk)
+VALUES
+    ('Clownfish', 'Amphiprioninae', 'Bright orange fish with white bands, popular in aquariums.', 1, 1, 1),  -- Salt Water, Male, John Doe
+    ('Goldfish', 'Carassius auratus', 'Small freshwater fish, often kept as a pet.', 2, 2, 2),  -- Fresh Water, Female, Jane Smith
+    ('Betta Fish', 'Betta splendens', 'Colorful fish, often known for aggressive behavior.', 2, 1, 3),  -- Fresh Water, Male, Alice Johnson
+    ('Shark', 'Carcharhinidae', 'Large predatory fish found in saltwater.', 1, 1, 4),  -- Salt Water, Male, Bob Brown
+    ('Angelfish', 'Pterophyllum', 'Small, freshwater fish known for its distinct triangular shape.', 2, 2, 5);  -- Fresh Water, Female, Charlie White
+
+INSERT INTO post (name, post_fish_id_fk)
+VALUES
+    ('Clownfish Habitat Update', 1),  -- Linked to the Clownfish (ID 1)
+    ('Betta Fish Care Tips', 3),      -- Linked to the Betta Fish (ID 3)
+    ('Shark Feeding Habits', 4);      -- Linked to the Shark (ID 4)
+
