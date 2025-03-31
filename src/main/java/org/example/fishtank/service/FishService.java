@@ -1,7 +1,6 @@
 package org.example.fishtank.service;
 
 import jakarta.transaction.Transactional;
-import org.apache.coyote.Response;
 import org.example.fishtank.model.dto.fishDto.CreateFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.fishDto.UpdateFish;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static org.example.fishtank.model.mapper.FishMapper.map;
 
