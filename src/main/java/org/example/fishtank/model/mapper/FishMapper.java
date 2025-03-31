@@ -26,12 +26,13 @@ public class FishMapper {
         if (null == createFish)
             return null;
         Fish fish = new Fish();
+
         WaterType waterType = new WaterType();
-        waterType.setName(createFish.name());
+        waterType.setName(createFish.waterType());
         Sex sex = new Sex();
         sex.setName(createFish.sex());
         AppUser appUser = new AppUser();
-        appUser.setName(createFish.name());
+        appUser.setName(createFish.appUser());
 
         fish.setName(createFish.name());
         fish.setSpecies(createFish.species());
