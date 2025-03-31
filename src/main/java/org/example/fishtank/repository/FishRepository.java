@@ -8,4 +8,5 @@ import org.springframework.data.repository.ListCrudRepository;
 public interface FishRepository extends ListCrudRepository<Fish, Integer> {
 
 
+    void update(Fish oldFish);
 }
