@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
+import static org.example.fishtank.model.mapper.AppUserMapper.map;
+
 @Service
 @Transactional
 public class AppUserService {
@@ -51,7 +53,7 @@ public class AppUserService {
     public void update(int id, UpdateAppUser user) {
         AppUser existingUser = userRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("User not found"));
-        AppUserMapper.map(user, existingUser);
+        map(user, existingUser);
         userRepository.update(existingUser);
     }
 }
