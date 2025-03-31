@@ -1,14 +1,18 @@
-package org.example.fishtank.model.entity.fishDTO;
+package org.example.fishtank.model.dto.fishDto;
 
 import org.springframework.lang.NonNull;
 
-public record ResponseFish (
+public record CreateFish(
         @NonNull
-        Integer id,
         String name,
+        @NonNull
         String species,
         String description,
+        @NonNull
         String waterType,
+        @NonNull
         String sex,
-        String appUser){
+        @NonNull
+        String appUser
+) {
 }
