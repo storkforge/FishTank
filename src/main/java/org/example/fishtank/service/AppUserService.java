@@ -54,7 +54,7 @@ public class AppUserService {
         AppUser existingUser = userRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("User not found"));
         map(user, existingUser);
-        userRepository.update(existingUser);
+        userRepository.update(existingUser.getName(),existingUser.getPasswordHash(), existingUser.getEmail(), existingUser.getAccess().toString());
     }
 }
 
