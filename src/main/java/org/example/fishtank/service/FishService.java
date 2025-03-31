@@ -50,7 +50,7 @@ public class FishService {
         Fish oldFish = fishRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Fish not found"));
         FishMapper.map(fish, oldFish);
-        fishRepository.update(oldFish);
+        fishRepository.update(oldFish.getName(), oldFish.getDescription(), id);
     }
 
     public void delete(int id) {
