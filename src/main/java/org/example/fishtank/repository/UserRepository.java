@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface UserRepository extends ListCrudRepository<AppUser, Integer> {
 
+    void update(AppUser existingUser);
 }
