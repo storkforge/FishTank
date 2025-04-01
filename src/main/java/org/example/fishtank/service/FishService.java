@@ -1,12 +1,19 @@
 package org.example.fishtank.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.example.fishtank.model.dto.fishDto.CreateFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.fishDto.UpdateFish;
+import org.example.fishtank.model.entity.AppUser;
 import org.example.fishtank.model.entity.Fish;
+import org.example.fishtank.model.entity.Sex;
+import org.example.fishtank.model.entity.WaterType;
 import org.example.fishtank.model.mapper.FishMapper;
 import org.example.fishtank.repository.FishRepository;
+import org.example.fishtank.repository.SexRepository;
+import org.example.fishtank.repository.UserRepository;
+import org.example.fishtank.repository.WaterTypeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,9 +28,15 @@ public class FishService {
 
 
     FishRepository fishRepository;
+    WaterTypeRepository waterTypeRepository;
+    SexRepository sexRepository;
+    UserRepository userRepository;
 
-    public FishService(FishRepository fishRepository) {
+    public FishService(FishRepository fishRepository, WaterTypeRepository waterTypeRepository, SexRepository sexRepository, UserRepository userRepository) {
         this.fishRepository = fishRepository;
+        this.waterTypeRepository = waterTypeRepository;
+        this.sexRepository = sexRepository;
+        this.userRepository = userRepository;
     }
 
     public ResponseFish findById(Integer id) {
@@ -40,10 +53,21 @@ public class FishService {
                 .toList();
     }
 
-    public void save(CreateFish fish) {
-        var newFish = map(fish);
-        fishRepository.save(newFish);
+//    public void save(CreateFish fish) {
+//        var newFish = map(fish);
+//        fishRepository.save(newFish);
+//    }
 
+    public void save(CreateFish createFish) {
+        AppUser appUser = userRepository.findByName(createFish.appUser());
+
+//        String appUser = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        WaterType waterType = waterTypeRepository.findByName(createFish.waterType());
+        Sex sex = sexRepository.findByName(createFish.sex());
+
+        Fish fish = FishMapper.map(createFish, waterType, sex, appUser);
+        fishRepository.save(fish);
     }
 
     public void update(int id, UpdateFish fish) {
