@@ -1,5 +1,6 @@
 package org.example.fishtank.repository;
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.example.fishtank.model.entity.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,8 +27,11 @@ class FishRepositoryTest {
     @ServiceConnection
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest");
 
-    @Autowired
-    FishRepository fishRepository;
+    @Autowired FishRepository fishRepository;
+    @Autowired UserRepository userRepository;
+    @Autowired SexRepository sexRepository;
+    @Autowired WaterTypeRepository waterTypeRepository;
+    @Autowired AccessRepository accessRepository;
 
     @Transactional
     @BeforeEach
@@ -35,18 +39,23 @@ class FishRepositoryTest {
         try{
         var access = new Access();
         access.setName("Standard");
+        accessRepository.save(access);
+
 
         var user = new AppUser();
         user.setName("username");
         user.setPasswordHash("password");
         user.setEmail("username@email.com");
         user.setAccess(access);
+        userRepository.save(user);
 
         var sex = new Sex();
         sex.setName("Male");
+        sexRepository.save(sex);
 
         var waterType = new WaterType();
         waterType.setName("Salt water");
+        waterTypeRepository.save(waterType);
 
         var fish = new Fish();
         fish.setName("Fish");
@@ -55,8 +64,8 @@ class FishRepositoryTest {
         fish.setSex(sex);
         fish.setAppUser(user);
         fish.setWaterType(waterType);
-
         fishRepository.save(fish);
+
     } catch (Exception e) {
             e.printStackTrace();
         }
