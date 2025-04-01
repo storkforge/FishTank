@@ -36,7 +36,6 @@ class FishRepositoryTest {
     @Autowired
     private EntityManager entityManager;
 
-    @Transactional
     @BeforeEach
     void beforeEach() {
             var access = new Access();
