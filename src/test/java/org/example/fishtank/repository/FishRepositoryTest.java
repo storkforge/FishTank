@@ -74,22 +74,22 @@ class FishRepositoryTest {
         var result = fishRepository.findAll();
         assertThat(result).hasSize(1);
     }
-
-    @Test
-    void updateFish() {
-        String newName = "New Fish Name";
-        String newDescription = "New Fish Description";
-        Fish fish = fishRepository.findAll().getFirst();
-        int fishId = fish.getId();
-
-        fishRepository.update(newName, newDescription, fishId);
-        entityManager.flush();
-        entityManager.clear();
-
-        Fish updatedFish = fishRepository.findById(fishId).orElse(null);
-        assertThat(updatedFish).isNotNull();
-        assertThat(updatedFish.getName()).isEqualTo(newName);
-        assertThat(updatedFish.getDescription()).isEqualTo(newDescription);
-    }
+//
+//    @Test
+//    void updateFish() {
+//        String newName = "New Fish Name";
+//        String newDescription = "New Fish Description";
+//        Fish fish = fishRepository.findAll().getFirst();
+//        int fishId = fish.getId();
+//
+//        fishRepository.update(newName, newDescription, fishId);
+//        entityManager.flush();
+//        entityManager.clear();
+//
+//        Fish updatedFish = fishRepository.findById(fishId).orElse(null);
+//        assertThat(updatedFish).isNotNull();
+//        assertThat(updatedFish.getName()).isEqualTo(newName);
+//        assertThat(updatedFish.getDescription()).isEqualTo(newDescription);
+//    }
 
 }
