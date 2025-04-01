@@ -88,6 +88,7 @@ class FishRepositoryTest {
         assertThat(updatedFish).isNotNull();
         assertThat(updatedFish.getName()).isEqualTo(newName);
         assertThat(updatedFish.getDescription()).isEqualTo(newDescription);
+        //
     }
 
 }
