@@ -22,18 +22,10 @@ public class FishMapper {
                 fish.getAppUser().getName());
     }
 
-    public static Fish map(CreateFish createFish) {
+    public static Fish map(CreateFish createFish, WaterType waterType, Sex sex, AppUser appUser) {
         if (null == createFish)
             return null;
         Fish fish = new Fish();
-
-        WaterType waterType = new WaterType();
-        waterType.setName(createFish.waterType());
-        Sex sex = new Sex();
-        sex.setName(createFish.sex());
-        AppUser appUser = new AppUser();
-        appUser.setName(createFish.appUser());
-
         fish.setName(createFish.name());
         fish.setSpecies(createFish.species());
         fish.setDescription(createFish.description());
