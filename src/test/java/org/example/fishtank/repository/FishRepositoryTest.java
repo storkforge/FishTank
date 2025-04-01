@@ -39,7 +39,6 @@ class FishRepositoryTest {
     @Transactional
     @BeforeEach
     void beforeEach() {
-        try {
             var access = new Access();
             access.setName("Standard");
             accessRepository.save(access);
@@ -68,10 +67,6 @@ class FishRepositoryTest {
             fish.setAppUser(user);
             fish.setWaterType(waterType);
             fishRepository.save(fish);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 
