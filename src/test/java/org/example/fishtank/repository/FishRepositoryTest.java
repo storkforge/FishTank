@@ -1,7 +1,6 @@
 package org.example.fishtank.repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import org.example.fishtank.model.entity.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
+
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -44,7 +42,6 @@ class FishRepositoryTest {
         access.setName("Standard");
         accessRepository.save(access);
 
-
         var user = new AppUser();
         user.setName("username");
         user.setPasswordHash("password");
@@ -69,7 +66,6 @@ class FishRepositoryTest {
         fish.setWaterType(waterType);
         fishRepository.save(fish);
     }
-
 
     @Test
     void findAll() {
