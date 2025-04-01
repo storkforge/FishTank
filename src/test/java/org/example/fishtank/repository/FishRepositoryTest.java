@@ -17,7 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Testcontainers
-@Transactional
 class FishRepositoryTest {
 
     @Container
@@ -37,6 +36,7 @@ class FishRepositoryTest {
     @Autowired
     private EntityManager entityManager;
 
+    @Transactional
     @BeforeEach
     void beforeEach() {
         try {
