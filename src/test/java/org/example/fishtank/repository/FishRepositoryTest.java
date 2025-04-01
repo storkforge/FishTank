@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -22,6 +24,14 @@ class FishRepositoryTest {
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest");
+
+    @DynamicPropertySource
+    static void registerProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
+        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
+        registry.add("spring.datasource.driver-class-name", postgreSQLContainer::getDriverClassName);
+    }
 
     @Autowired
     FishRepository fishRepository;
@@ -38,34 +48,34 @@ class FishRepositoryTest {
 
     @BeforeEach
     void beforeEach() {
-            var access = new Access();
-            access.setName("Standard");
-            accessRepository.save(access);
+        var access = new Access();
+        access.setName("Standard");
+        accessRepository.save(access);
 
 
-            var user = new AppUser();
-            user.setName("username");
-            user.setPasswordHash("password");
-            user.setEmail("username@email.com");
-            user.setAccess(access);
-            userRepository.save(user);
+        var user = new AppUser();
+        user.setName("username");
+        user.setPasswordHash("password");
+        user.setEmail("username@email.com");
+        user.setAccess(access);
+        userRepository.save(user);
 
-            var sex = new Sex();
-            sex.setName("Male");
-            sexRepository.save(sex);
+        var sex = new Sex();
+        sex.setName("Male");
+        sexRepository.save(sex);
 
-            var waterType = new WaterType();
-            waterType.setName("Salt water");
-            waterTypeRepository.save(waterType);
+        var waterType = new WaterType();
+        waterType.setName("Salt water");
+        waterTypeRepository.save(waterType);
 
-            var fish = new Fish();
-            fish.setName("Fish");
-            fish.setSpecies("Eel");
-            fish.setDescription("a fish");
-            fish.setSex(sex);
-            fish.setAppUser(user);
-            fish.setWaterType(waterType);
-            fishRepository.save(fish);
+        var fish = new Fish();
+        fish.setName("Fish");
+        fish.setSpecies("Eel");
+        fish.setDescription("a fish");
+        fish.setSex(sex);
+        fish.setAppUser(user);
+        fish.setWaterType(waterType);
+        fishRepository.save(fish);
     }
 
 
@@ -74,22 +84,22 @@ class FishRepositoryTest {
         var result = fishRepository.findAll();
         assertThat(result).hasSize(1);
     }
-//
-//    @Test
-//    void updateFish() {
-//        String newName = "New Fish Name";
-//        String newDescription = "New Fish Description";
-//        Fish fish = fishRepository.findAll().getFirst();
-//        int fishId = fish.getId();
-//
-//        fishRepository.update(newName, newDescription, fishId);
-//        entityManager.flush();
-//        entityManager.clear();
-//
-//        Fish updatedFish = fishRepository.findById(fishId).orElse(null);
-//        assertThat(updatedFish).isNotNull();
-//        assertThat(updatedFish.getName()).isEqualTo(newName);
-//        assertThat(updatedFish.getDescription()).isEqualTo(newDescription);
-//    }
+
+    @Test
+    void updateFish() {
+        String newName = "New Fish Name";
+        String newDescription = "New Fish Description";
+        Fish fish = fishRepository.findAll().getFirst();
+        int fishId = fish.getId();
+
+        fishRepository.update(newName, newDescription, fishId);
+        entityManager.flush();
+        entityManager.clear();
+
+        Fish updatedFish = fishRepository.findById(fishId).orElse(null);
+        assertThat(updatedFish).isNotNull();
+        assertThat(updatedFish.getName()).isEqualTo(newName);
+        assertThat(updatedFish.getDescription()).isEqualTo(newDescription);
+    }
 
 }
