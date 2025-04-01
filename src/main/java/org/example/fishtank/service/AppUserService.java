@@ -25,10 +25,13 @@ public class AppUserService {
         this.userRepository = userRepository;
     }
 
+
     public void save(CreateAppUser user) {
         var newUser = map(user);
         userRepository.save(newUser);
     }
+
+
 
     public ResponsAppUser findById(Integer id) {
         return userRepository.findById(id)

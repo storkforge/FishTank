@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends ListCrudRepository<AppUser, Integer> {
 
+    public AppUser findByNameAndPasswordHash(String name, String passwordHash);
+
     @Modifying
     @Transactional
     @Query("UPDATE AppUser u SET u.name = :name, u.passwordHash =:passwordHash, u.email = :email, u.access = :access WHERE u.id = :id")
