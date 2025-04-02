@@ -68,11 +68,11 @@
       </select>
     </div>
     <div class="mb-3">
-      <label for="sex" class="form-label">Sex:</label>
+      <label for="sex" class="form-label" th:text="#{addfish.sex}">Sex:</label>
       <select id="sex" name="sex" class="form-control" required>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-        <option value="Hermaphrodite">Hermaphrodite</option>
+        <option value="Male" th:text="#{addfish.male}">Male</option>
+        <option value="Female" th:text="#{addfish.female}">Female</option>
+        <option value="Hermaphrodite" th:text="#{addfish.hermaphrodite}">Hermaphrodite</option>
       </select>
     </div>
     <div class="mb-3">
