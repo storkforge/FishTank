@@ -1,9 +1,9 @@
 package org.example.fishtank.service;
 
 import jakarta.transaction.Transactional;
-import org.example.fishtank.model.dto.CreateAppUser;
-import org.example.fishtank.model.dto.ResponsAppUser;
-import org.example.fishtank.model.dto.UpdateAppUser;
+import org.example.fishtank.model.dto.appUserDto.CreateAppUser;
+import org.example.fishtank.model.dto.appUserDto.ResponseAppUser;
+import org.example.fishtank.model.dto.appUserDto.UpdateAppUser;
 import org.example.fishtank.model.entity.Access;
 import org.example.fishtank.model.entity.AppUser;
 import org.example.fishtank.repository.UserRepository;
@@ -30,13 +30,13 @@ public class AppUserService {
         userRepository.save(newUser);
     }
 
-    public ResponsAppUser findById(Integer id) {
+    public ResponseAppUser findById(Integer id) {
         return userRepository.findById(id)
                 .map(AppUserMapper::map)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public List<ResponsAppUser> findAllAppUsers() {
+    public List<ResponseAppUser> findAllAppUsers() {
         return userRepository.findAll()
                 .stream()
                 .map(AppUserMapper::map)
@@ -57,5 +57,3 @@ public class AppUserService {
         userRepository.update(existingUser.getName(),existingUser.getPasswordHash(), existingUser.getEmail(), existingUser.getAccess().toString());
     }
 }
-
-
