@@ -43,7 +43,7 @@ public class FishController {
             @RequestParam("appuser") String appuser) {
         CreateFish createFish = new CreateFish(name, species, description, watertype, sex, appuser);
         fishService.save(createFish);
-        return "my_fishes";
+        return "redirect:/my_fishes";
     }
 
     @GetMapping("/my_fishes/{id}")
