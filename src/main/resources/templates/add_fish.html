@@ -45,26 +45,26 @@
   </style>
 </head>
 <body>
-<h1 class="mb-4">Add a New Fish</h1>
+<h1 class="mb-4" th:text="#{addfish.addnewfish}">Add a New Fish</h1>
 <div class="card p-4 shadow-lg">
   <form action="/add_fish" method="post">
     <div class="mb-3">
-      <label for="name" class="form-label">Fish Name:</label>
+      <label for="name" class="form-label"th:text="#{addfish.fishname}">Fish Name:</label>
       <input type="text" id="name" name="name" class="form-control" required>
     </div>
     <div class="mb-3">
-      <label for="species" class="form-label">Species:</label>
+      <label for="species" class="form-label" th:text="#{addfish.species}">Species:</label>
       <input type="text" id="species" name="species" class="form-control" required>
     </div>
     <div class="mb-3">
-      <label for="description" class="form-label">Description:</label>
+      <label for="description" class="form-label" th:text="#{addfish.description}">Description:</label>
       <textarea id="description" name="description" class="form-control" required></textarea>
     </div>
     <div class="mb-3">
-      <label for="watertype" class="form-label">Water Type:</label>
+      <label for="watertype" class="form-label" th:text="#{addfish.watertype}">Water Type:</label>
       <select id="watertype" name="watertype" class="form-control" required>
-        <option value="Fresh Water">Fresh Water</option>
-        <option value="Salt Water">Salt Water</option>
+        <option value="Fresh Water" th:text="#{addfish.freshwater}">Fresh Water</option>
+        <option value="Salt Water" th:text="#{addfish.saltwater}">Salt Water</option>
       </select>
     </div>
     <div class="mb-3">
@@ -76,12 +76,12 @@
       </select>
     </div>
     <div class="mb-3">
-      <label for="appuser" class="form-label">User:</label>
+      <label for="appuser" class="form-label" th:text="#{addfish.user}">User:</label>
       <input type="text" id="appuser" name="appuser" class="form-control" required>
     </div>
     <button type="submit" class="btn-custom" th:text="#{button.add_fish}">Add Fish</button>
   </form>
 </div>
-<a href="/home" class="btn-custom mt-3">Back to Home</a>
+<a href="/home" class="btn-custom mt-3" th:text="#{addfish.backhome}">Back to Home</a>
 </body>
 </html>
