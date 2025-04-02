@@ -1,6 +1,5 @@
 package org.example.fishtank.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.example.fishtank.model.dto.fishDto.CreateFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
@@ -74,7 +73,7 @@ public class FishService {
         Fish oldFish = fishRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Fish not found"));
         FishMapper.map(fish, oldFish);
-        fishRepository.update(oldFish.getName(), oldFish.getDescription(), id);
+        fishRepository.update(oldFish.getName(), oldFish.getDescription(), oldFish.getId());
     }
 
     public void delete(int id) {

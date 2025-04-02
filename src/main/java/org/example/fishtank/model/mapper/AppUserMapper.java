@@ -1,8 +1,8 @@
 package org.example.fishtank.model.mapper;
 
-import org.example.fishtank.model.dto.CreateAppUser;
-import org.example.fishtank.model.dto.UpdateAppUser;
-import org.example.fishtank.model.dto.ResponsAppUser;
+import org.example.fishtank.model.dto.appUserDto.CreateAppUser;
+import org.example.fishtank.model.dto.appUserDto.UpdateAppUser;
+import org.example.fishtank.model.dto.appUserDto.ResponseAppUser;
 import org.example.fishtank.model.entity.*;
 import org.example.fishtank.repository.AccessRepository;
 
@@ -12,10 +12,10 @@ public class AppUserMapper {
 
     static AccessRepository accessRepository;
 
-    public static ResponsAppUser map(AppUser appUser) {
+    public static ResponseAppUser map(AppUser appUser) {
         if (null == appUser)
             return null;
-        return new ResponsAppUser(
+        return new ResponseAppUser(
                 appUser.getId(),
                 appUser.getName(),
                 appUser.getAccess().toString());
