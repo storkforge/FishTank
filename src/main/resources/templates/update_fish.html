@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>My Fishes</title>
+    <title>Update Fish</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         body {
@@ -20,13 +20,13 @@
             max-width: 500px;
             margin: auto;
         }
-        .list-group-item {
-            font-size: 1.2rem;
-            text-align: center;
+        .form-control {
+            border-radius: 10px;
+            font-size: 1rem;
         }
         .btn-custom {
             display: inline-block;
-            width: 20%;
+            width: 100%;
             margin: 8px 0;
             padding: 12px;
             font-size: 16px;
@@ -45,21 +45,19 @@
     </style>
 </head>
 <body>
-<h1 class="mb-4">My Fishes</h1>
+<h1 th:text="'Update ' + ${fish.name}"></h1>
 <div class="card p-4 shadow-lg">
-    <div style="max-height: 230px; overflow-y: auto;">
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item" th:each="fish : ${fishList}">
-                <a th:href="@{/my_fishes/{id}(id=${fish.id})}" th:text="${fish.name}" class="fw-bold text-decoration-none text-primary"></a>
-                <br>
-                <span th:text="'Species: ' + ${fish.species}"></span>
-            </li>
-        </ul>
-    </div>
-</div>
-<div class="d-flex flex-column align-items-center">
-    <a href="/add_fish" class="btn-custom mt-3">Add New Fish</a>
-    <a href="/home" class="btn-custom mt-3">Back to Home</a>
+    <form th:action="@{/update_fish/{id}(id=${fish?.id})}" method="post">
+        <div class="mb-3">
+            <label for="name" class="form-label">Fish Name:</label>
+            <input type="text" id="name" name="name" class="form-control" th:value="${fish.name}">
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description:</label>
+            <textarea id="description" name="description" class="form-control" required>[[${fish.description}]]</textarea>
+        </div>
+        <button type="submit" class="btn-custom">Update Fish</button>
+    </form>
 </div>
 </body>
 </html>
