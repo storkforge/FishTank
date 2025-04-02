@@ -1,13 +1,12 @@
-package org.example.fishtank;
+package org.example.fishtank.controller;
 
 import org.example.fishtank.model.dto.fishDto.CreateFish;
-import org.example.fishtank.model.entity.Fish;
-import org.example.fishtank.model.mapper.FishMapper;
 import org.example.fishtank.repository.FishRepository;
 import org.example.fishtank.service.FishService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -45,6 +44,13 @@ public class FishController {
         CreateFish createFish = new CreateFish(name, species, description, watertype, sex, appuser);
         fishService.save(createFish);
         return "my_fishes";
+    }
+
+    @GetMapping("/my_fishes/{id}")
+    String fishById (Model model, @PathVariable Integer id) {
+        var fish = fishService.findById(id);
+        model.addAttribute("fish", fish);
+        return "fish";
     }
 
 }
