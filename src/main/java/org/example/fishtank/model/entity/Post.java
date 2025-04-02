@@ -1,6 +1,9 @@
 package org.example.fishtank.model.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "post")
@@ -10,11 +13,12 @@ public class Post {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "text", nullable = false, length = 100)
-    private String text;
+    @Column(name = "posttext", nullable = false, length = 100)
+    private String posttext;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fishid", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "post_fish_id_fk", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Fish fishid;
 
     public Integer getId() {
@@ -26,11 +30,11 @@ public class Post {
     }
 
     public String getText() {
-        return text;
+        return posttext;
     }
 
     public void setText(String text) {
-        this.text = text;
+        this.posttext = text;
     }
 
     public Fish getFishid() {

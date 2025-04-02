@@ -2,6 +2,9 @@ package org.example.fishtank.model.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "fish")
 public class Fish {
@@ -31,6 +34,9 @@ public class Fish {
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn (name = "fish_appuser_id_fk" , nullable = false)
     private AppUser appUser;
+
+    @OneToMany (mappedBy = "fishid", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Post> posts = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -86,5 +92,13 @@ public class Fish {
 
     public void setAppUser(AppUser appUser) {
         this.appUser = appUser;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 }

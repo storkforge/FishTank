@@ -9,6 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface PostRepository extends ListCrudRepository<Post, Integer> {
     @Modifying
     @Transactional
-    @Query("UPDATE Post p SET p.text = :text  WHERE p.id = :id")
+    @Query("UPDATE Post p SET p.posttext = :text  WHERE p.id = :id")
     void update(String text, int id);
 }

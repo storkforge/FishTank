@@ -40,7 +40,7 @@ VALUES
     ('Shark', 'Carcharhinidae', 'Large predatory fish found in saltwater.', 1, 1, 4),  -- Salt Water, Male, Bob Brown
     ('Angelfish', 'Pterophyllum', 'Small, freshwater fish known for its distinct triangular shape.', 2, 2, 5);  -- Fresh Water, Female, Charlie White
 
-INSERT INTO post (name, post_fish_id_fk)
+INSERT INTO post (posttext, post_fish_id_fk)
 VALUES
     ('Clownfish Habitat Update', 1),  -- Linked to the Clownfish (ID 1)
     ('Betta Fish Care Tips', 3),      -- Linked to the Betta Fish (ID 3)
