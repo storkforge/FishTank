@@ -8,9 +8,6 @@ import org.example.fishtank.repository.AccessRepository;
 
 
 public class AppUserMapper {
-    private AppUserMapper() {}
-
-    static AccessRepository accessRepository;
 
     public static ResponseAppUser map(AppUser appUser) {
         if (null == appUser)
@@ -21,22 +18,24 @@ public class AppUserMapper {
                 appUser.getAccess().toString());
     }
 
-    public static AppUser map(CreateAppUser createAppUser) {
-        if (null == createAppUser)
+    public static AppUser map(CreateAppUser createAppUser, Access access) {
+        if (null == createAppUser || null == access)
             return null;
         AppUser appUser = new AppUser();
         appUser.setName(createAppUser.name());
-        appUser.setAccess(accessRepository.findByName(createAppUser.access()));
+        appUser.setEmail(createAppUser.email());
+        appUser.setPasswordHash(createAppUser.passwordHash());
+        appUser.setAccess(access);
         return appUser;
     }
 
 
-    public static void map(UpdateAppUser updateAppUser, AppUser appUser) {
-        if (updateAppUser.name() != null) {
-            appUser.setName(updateAppUser.name());
-        }
-        if (updateAppUser.access() != null) {
-            appUser.setAccess(accessRepository.findByName(updateAppUser.access()));
-        }
-    }
+//    public static void map(UpdateAppUser updateAppUser, AppUser appUser) {
+//        if (updateAppUser.name() != null) {
+//            appUser.setName(updateAppUser.name());
+//        }
+//        if (updateAppUser.access() != null) {
+//            appUser.setAccess(accessRepository.findByName(updateAppUser.access()));
+//        }
+//    }
 }
