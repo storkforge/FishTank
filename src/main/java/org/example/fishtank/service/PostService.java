@@ -40,7 +40,7 @@ public class PostService {
 
     public void save(CreatePost createPost) {
         Fish fish = fishRepository.findById(createPost.fishId()).orElseThrow(() ->
-                new RuntimeException("Post not found"));
+                new RuntimeException("Fish not found"));
 
         Post post = PostMapper.map(createPost, fish);
         postRepository.save(post);
@@ -55,7 +55,7 @@ public class PostService {
 
     public void delete(int id) {
         var post = postRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Fish not found"));
+                new RuntimeException("Post not found"));
         postRepository.delete(post);
     }
 
