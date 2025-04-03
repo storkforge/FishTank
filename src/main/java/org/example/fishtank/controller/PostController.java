@@ -29,9 +29,6 @@ public class PostController {
                 .map(post -> fishService.findById(post.fishId()))
                 .filter(Objects::nonNull)
                 .toList();
-        if (postList.size() != fishList.size())
-            throw new RuntimeException("post list size does not match fish list size");
-
         model.addAttribute("postList", postList);
         model.addAttribute("fishList", fishList);
         return "forum";
