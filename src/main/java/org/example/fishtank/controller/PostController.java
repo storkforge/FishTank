@@ -8,22 +8,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Objects;
+
 
 @Controller
 public class PostController {
 
     private final PostService postService;
-    private final PostRepository postRepository;
     private final FishService fishService;
-    private final FishRepository fishRepository;
 
-    public PostController(PostService postService, PostRepository postRepository, FishService fishService, FishRepository fishRepository) {
+    public PostController(PostService postService, FishService fishService) {
         this.postService = postService;
-        this.postRepository = postRepository;
         this.fishService = fishService;
-        this.fishRepository = fishRepository;
     }
 
     @GetMapping("/forum")
@@ -31,7 +27,11 @@ public class PostController {
         var postList = postService.getAllPost();
         var fishList = postList.stream()
                 .map(post -> fishService.findById(post.fishId()))
+                .filter(Objects::nonNull)
                 .toList();
+        if (postList.size() != fishList.size())
+            throw new RuntimeException("post list size does not match fish list size");
+
         model.addAttribute("postList", postList);
         model.addAttribute("fishList", fishList);
         return "forum";
