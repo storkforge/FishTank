@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Viewer</title>
+</head>
+<body>
+<h1>View Image</h1>
+<form method="get" th:action="@{/images/}" onsubmit="return showImage()">
+    <label for="filename">Enter Image Filename:</label>
+    <input type="text" id="filename" name="filename" required>
+    <button type="submit">View Image</button>
+</form>
+
+<h2>Image Preview:</h2>
+<img id="imagePreview" th:src="''" alt="Image will be displayed here" style="max-width: 500px; display: none;">
+
+<script>
+    function showImage() {
+        var filename = document.getElementById("filename").value;
+        if(filename) {
+            document.getElementById("imagePreview").src = "/uploads/" + filename;
+            document.getElementById("imagePreview").style.display = "block";
+        }
+        return false;
+    }
+</script>
+</body>
+</html>
