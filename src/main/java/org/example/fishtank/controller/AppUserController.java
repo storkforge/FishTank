@@ -15,14 +15,14 @@ public class AppUserController {
         this.appUserService = appUserService;
     }
 
-    @GetMapping()
+   /* @GetMapping()
     public String base(@AuthenticationPrincipal OAuth2User oAuth2User){
 
         String userNameAttribute = oAuth2User.getAttribute("login");
         appUserService.save(userNameAttribute);
 
         return "redirect:/home";
-    }
+    }*/
 
     @GetMapping("/home")
     public String home(){
