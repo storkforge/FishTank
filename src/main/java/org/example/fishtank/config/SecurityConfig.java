@@ -34,9 +34,9 @@ public class SecurityConfig  {
                         .loginPage("/login")
                         .permitAll())
 
-                .formLogin(formLogin -> formLogin
+               /* .formLogin(formLogin -> formLogin
                         .loginPage("/login")
-                        .permitAll())
+                        .permitAll())*/
 
                 .authorizeHttpRequests(authorizeRequests -> {
                     //authorizeRequests.requestMatchers("/").permitAll(); // permit all application users to get to url: localhost:8080/
