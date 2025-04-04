@@ -11,6 +11,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends ListCrudRepository<AppUser, Integer> {
 
+    AppUser findByEmail(String email);
+
     @Modifying
     @Transactional
     @Query("UPDATE AppUser u SET u.name = :name, u.passwordHash =:passwordHash, u.email = :email, u.access = :access WHERE u.id = :id")
