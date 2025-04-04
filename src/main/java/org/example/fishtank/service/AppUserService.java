@@ -9,6 +9,7 @@ import org.example.fishtank.model.entity.AppUser;
 import org.example.fishtank.repository.AccessRepository;
 import org.example.fishtank.repository.UserRepository;
 import org.example.fishtank.model.mapper.AppUserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class AppUserService {
     private UserRepository userRepository;
     private AccessRepository accessRepository;
 
+    @Autowired
     public AppUserService(UserRepository userRepository, AccessRepository accessRepository) {
         this.userRepository = userRepository;
         this.accessRepository = accessRepository;
