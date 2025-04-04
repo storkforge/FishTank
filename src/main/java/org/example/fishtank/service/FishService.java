@@ -52,13 +52,11 @@ public class FishService {
                 .toList();
     }
 
-//    public void save(CreateFish fish) {
-//        var newFish = map(fish);
-//        fishRepository.save(newFish);
-//    }
-
     public void save(CreateFish createFish) {
         AppUser appUser = userRepository.findByName(createFish.appUser());
+        if (appUser == null) {
+            throw new NullPointerException("User can´t be null");
+        }
 
 //        String appUser = SecurityContextHolder.getContext().getAuthentication().getName();
 

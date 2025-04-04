@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.logging.Logger;
 
 @Controller
 public class FishController {
@@ -74,9 +75,7 @@ public class FishController {
             @RequestParam("name") String name,
             @RequestParam("description") String description) {
         UpdateFish updateFish = new UpdateFish(name, description);
-        System.out.println(updateFish + "Before update");
         fishService.update(id, updateFish);
-        System.out.println(updateFish + "After update");
         return "redirect:/my_fishes/" + id;
     }
 
@@ -86,7 +85,6 @@ public class FishController {
         if (fish == null) {
             System.out.println("Fish not found for ID: " + id);
         }
-        System.out.println("Fish found with ID: " + id);
         model.addAttribute("fish", fish);
         return "update_fish";
     }
@@ -101,12 +99,23 @@ public class FishController {
     @ResponseBody
     public ResponseEntity<Resource> serveImage(@PathVariable String filename) {
         try {
+            if (filename.contains("..") || filename.contains("/") || filename.contains("\\")) {
+                throw new IllegalArgumentException("Invalid filename");
+            }
             Path filePath = imageService.getImagePath(filename);
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists()) {
+                MediaType mediaType;
+                if (filename.toLowerCase().endsWith(".png")) {
+                    mediaType = MediaType.IMAGE_PNG;
+                } else if (filename.toLowerCase().endsWith(".gif")) {
+                    mediaType = MediaType.IMAGE_GIF;
+                } else {
+                    mediaType = MediaType.IMAGE_JPEG;
+                }
                 return ResponseEntity.ok()
-                        .contentType(MediaType.IMAGE_JPEG)
+                        .contentType(mediaType)
                         .body(resource);
             } else {
                 return ResponseEntity.notFound().build();

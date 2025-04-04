@@ -22,14 +22,25 @@ public class ImageService {
             Files.createDirectories(uploadPath);
         }
 
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename().replaceAll("\\s+", "_");
-        Path filePath = uploadPath.resolve(fileName);
+        String originalFileName = file.getOriginalFilename().replaceAll("\\s+", "_");
+        if (originalFileName.contains("..") || originalFileName.contains("/") || originalFileName.contains("\\")) {
+            throw new IllegalArgumentException("Invalid filename");
+        }
+        String fileName = System.currentTimeMillis() + "_" + originalFileName;
+        Path filePath = uploadPath.resolve(fileName).normalize();
+        if (!filePath.startsWith(uploadPath)) {
+            throw new IllegalArgumentException("Invalid filename");
+        }
+
         Files.copy(file.getInputStream(), filePath);
 
         return fileName;
     }
 
     public Path getImagePath(String filename) {
+        if (filename.contains("..") || filename.contains("/") || filename.contains("\\")) {
+            throw new IllegalArgumentException("Invalid filename");
+        }
         return Paths.get(uploadDir).resolve(filename);
     }
 }
