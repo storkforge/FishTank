@@ -46,8 +46,13 @@
 </head>
 <body>
 <h1 th:text="${fish.name}"></h1>
-<div class="card p-4 shadow-lg">
-    <ul class="list-group list-group-flush">
+<div class="card p-4 shadow-lg d-flex flex-row align-items-start">
+    <img th:src="@{/my_fishes/images/{filename}(filename=${fish.image})}"
+         alt="Fish Image"
+         class="img-thumbnail me-4"
+         style="width: 200px; height: auto; object-fit: cover; border-radius: 10px;">
+
+    <ul class="list-group list-group-flush flex-fill">
         <li class="list-group-item" th:text="'Species: ' + ${fish.species}"></li>
         <li class="list-group-item" th:text="'Description: ' + ${fish.description}"></li>
         <li class="list-group-item" th:text="'Water Type: ' + ${fish.waterType}"></li>

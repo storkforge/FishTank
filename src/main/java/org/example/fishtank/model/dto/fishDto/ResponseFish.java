@@ -10,5 +10,6 @@ public record ResponseFish (
         String description,
         String waterType,
         String sex,
-        String appUser){
+        String appUser,
+        String image){
 }
