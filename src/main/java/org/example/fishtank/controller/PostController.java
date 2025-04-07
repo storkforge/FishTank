@@ -30,8 +30,6 @@ public class PostController {
         return postService.findById(id);
     }
 
-
-    //Json
     @ResponseBody
     @GetMapping("/forum_rough")
     public ResponsePostList getPostsRough() {

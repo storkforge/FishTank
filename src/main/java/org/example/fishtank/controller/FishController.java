@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
+
 
 @Controller
 public class FishController {
@@ -40,21 +40,18 @@ public class FishController {
         model.addAttribute("fishList", fishList);
         return "my_fishes";
     }
-    //Json
+
     @ResponseBody
     @GetMapping("/my_fishes_rough/{id}")
     public ResponseFish myFishesById(@PathVariable(name = "id") int id) {
         return fishService.findById(id);
     }
-    //Json
+
     @ResponseBody
     @GetMapping("/my_fishes_rough")
     public ResponseFishList myFishesRough() {
         return new ResponseFishList(fishService.getAllFish());
     }
-
-
-
 
     @GetMapping("/add_fish")
     public String showAddFishForm() {
