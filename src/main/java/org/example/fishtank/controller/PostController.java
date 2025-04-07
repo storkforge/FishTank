@@ -1,12 +1,14 @@
 package org.example.fishtank.controller;
 
-import org.example.fishtank.repository.FishRepository;
-import org.example.fishtank.repository.PostRepository;
+import org.example.fishtank.model.dto.postDto.ResponsePost;
+import org.example.fishtank.model.dto.postDto.ResponsePostList;
 import org.example.fishtank.service.FishService;
 import org.example.fishtank.service.PostService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Objects;
 
@@ -20,6 +22,18 @@ public class PostController {
     public PostController(PostService postService, FishService fishService) {
         this.postService = postService;
         this.fishService = fishService;
+    }
+
+    @ResponseBody
+    @GetMapping("/forum_rough/{id}")
+    public ResponsePost getPostById(@PathVariable(name = "id") int id) {
+        return postService.findById(id);
+    }
+
+    @ResponseBody
+    @GetMapping("/forum_rough")
+    public ResponsePostList getPostsRough() {
+        return new ResponsePostList(postService.getAllPost());
     }
 
     @GetMapping("/forum")
