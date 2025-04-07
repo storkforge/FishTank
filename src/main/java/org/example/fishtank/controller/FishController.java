@@ -2,8 +2,8 @@ package org.example.fishtank.controller;
 
 import org.example.fishtank.model.dto.fishDto.CreateFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
+import org.example.fishtank.model.dto.fishDto.ResponseFishList;
 import org.example.fishtank.model.dto.fishDto.UpdateFish;
-import org.example.fishtank.model.entity.Fish;
 import org.example.fishtank.repository.FishRepository;
 import org.example.fishtank.service.FishService;
 import org.example.fishtank.service.ImageService;
@@ -17,10 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.logging.Logger;
+import java.util.List;
 
 @Controller
 public class FishController {
@@ -41,6 +40,21 @@ public class FishController {
         model.addAttribute("fishList", fishList);
         return "my_fishes";
     }
+    //Json
+    @ResponseBody
+    @GetMapping("/my_fishes_rough/{id}")
+    public ResponseFish myFishesById(@PathVariable(name = "id") int id) {
+        return fishService.findById(id);
+    }
+    //Json
+    @ResponseBody
+    @GetMapping("/my_fishes_rough")
+    public ResponseFishList myFishesRough() {
+        return new ResponseFishList(fishService.getAllFish());
+    }
+
+
+
 
     @GetMapping("/add_fish")
     public String showAddFishForm() {
