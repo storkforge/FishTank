@@ -1,9 +1,12 @@
 package org.example.fishtank.controller;
 
 import org.example.fishtank.model.dto.fishDto.CreateFish;
+import org.example.fishtank.model.dto.fishDto.ResponseFish;
+import org.example.fishtank.model.dto.fishDto.UpdateFish;
 import org.example.fishtank.model.dto.postDto.CreatePost;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.dto.postDto.ResponsePostList;
+import org.example.fishtank.model.dto.postDto.UpdatePost;
 import org.example.fishtank.service.FishService;
 import org.example.fishtank.service.PostService;
 import org.springframework.stereotype.Controller;
@@ -53,6 +56,46 @@ public class PostController {
         return "redirect:/forum";
     }
 
+    @GetMapping("/update_post/{id}")
+    public String showUpdatePostForm(@PathVariable Integer id, Model model) {
+        ResponsePost post = postService.findById(id);
+        model.addAttribute("post", post);
+        return "update_post";
+    }
+
+    @PostMapping("/update_post/{id}")
+    public String updatePost(
+            @PathVariable Integer id,
+            @RequestParam("text") String text) {
+        UpdatePost updatePost = new UpdatePost(text);
+        postService.update(id, updatePost);
+        return "redirect:/my_posts";
+    }
+
+        @PostMapping("/delete_post/{id}")
+    public String deletePost(@PathVariable Integer id) {
+        postService.delete(id);
+        return "redirect:/my_posts";
+    }
+
+    @GetMapping("/my_posts/{id}")
+    String postByID(Model model, @PathVariable Integer id) {
+        var post = postService.findById(id);
+        model.addAttribute("post", post);
+        return "post";
+    }
+
+    @GetMapping("/my_posts")
+    String showMyPosts(Model model) {
+        var postList = postService.getAllPost();
+        var fishList = postList.stream()
+                .map(post -> fishService.findById(post.fishId()))
+                .filter(Objects::nonNull)
+                .toList();
+        model.addAttribute("postList", postList);
+        model.addAttribute("fishList", fishList);
+        return "my_posts";
+    }
 
     @GetMapping("/forum")
     String forum(Model model) {
