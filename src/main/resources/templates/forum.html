@@ -26,6 +26,11 @@
             font-size: 1.2rem;
             text-align: center;
         }
+        .fish-name {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
         .btn-custom {
             display: inline-block;
             width: 250px;
@@ -58,11 +63,12 @@
     <div style="max-height: 230px; overflow-y: auto;">
         <ul class="list-group list-group-flush">
             <li class="list-group-item" th:each="post, stat : ${postList}">
-                <span th:with="fish=${fishList[stat.index]}"
-                      th:text=" ${fish.name} + ' - ' + ${post.text}"></span>
+                <span th:with="fish=${fishList[stat.index]}">
+                    <span class="fish-name" th:text="${fish.name}"></span>
+                    <span th:text="${post.text}"></span>
+                </span>
             </li>
         </ul>
-
     </div>
     <div class="btn-container mt-3">
         <a href="/home" class="btn-custom">Home</a>
