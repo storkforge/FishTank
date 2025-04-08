@@ -58,7 +58,10 @@ public class  AppUserController {
     public String base(){
 
         var authenticationName = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println("SecurityContextHolder.getContext().getAuthentication().getName() = " + authenticationName);
+
+        if(authenticationName.equals("anonymousUser")){
+            return "redirect:/login";
+        }
 
         return "redirect:/home";
     }
