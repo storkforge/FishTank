@@ -1,4 +1,4 @@
-package org.example.fishtank.model.dto.appUserDto;
+package org.example.fishtank.model.dto.appUserDto.security;
 
 import org.example.fishtank.model.entity.AppUser;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,25 +29,5 @@ public class FormAppUserPrinciple implements UserDetails {
     @Override
     public String getUsername() {
         return appUser.getName();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 }

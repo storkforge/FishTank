@@ -1,6 +1,6 @@
 package org.example.fishtank.service.security;
 
-import org.example.fishtank.model.dto.appUserDto.FormAppUserPrinciple;
+import org.example.fishtank.model.dto.appUserDto.security.FormAppUserPrinciple;
 import org.example.fishtank.model.entity.AppUser;
 import org.example.fishtank.repository.AppUserRepository;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -34,24 +34,33 @@ public class  AppUserController {
 //        return "redirect:/home";
 //    }
 
+//    @GetMapping()
+//    public String base(){
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
+//
+//            Map<String, Object> attributes = oauth2User.getAttributes();
+//            //attributes.forEach((k, v) -> System.out.println(k + ": " + v));
+//
+//            if(attributes.containsKey("login")){
+//                String gitUsername = oauth2User.getAttribute("login");
+//                appUserService.save(gitUsername);
+//                return "redirect:/home";
+//            }
+//        }
+//
+//        return "redirect:/login";
+//    }
+
     @GetMapping()
     public String base(){
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var authenticationName = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("SecurityContextHolder.getContext().getAuthentication().getName() = " + authenticationName);
 
-        if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
-
-            Map<String, Object> attributes = oauth2User.getAttributes();
-            //attributes.forEach((k, v) -> System.out.println(k + ": " + v));
-
-            if(attributes.containsKey("login")){
-                String gitUsername = oauth2User.getAttribute("login");
-                appUserService.save(gitUsername);
-                return "redirect:/home";
-            }
-        }
-
-        return "redirect:/login";
+        return "redirect:/home";
     }
 
     @GetMapping("/login")
