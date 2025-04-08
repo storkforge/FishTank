@@ -48,7 +48,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void findByEmail() {
+    void TestFindByEmail() {
         AppUser foundUser = userRepository.findByEmail("john.doe@example.com");
 
         assertThat(foundUser).isNotNull();
@@ -56,7 +56,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void update() {
+    void TestUpdate() {
         AppUser user = new AppUser();
         user.setName("John Doe");
         user.setEmail("john.doe@example.com");
@@ -83,10 +83,30 @@ class UserRepositoryTest {
     }
 
     @Test
-    void findByName() {
+    void TestFindByName() {
         AppUser foundUser = userRepository.findByName("John Doe");
 
         assertThat(foundUser).isNotNull();
         assertThat(foundUser.getName()).isEqualTo("John Doe");
     }
+
+    @Test
+    void testCustomUpdateMethod() {
+        AppUser userToUpdate = userRepository.findByEmail("john.doe@example.com");
+        assertThat(userToUpdate).isNotNull();
+        int userId = userToUpdate.getId();
+
+        String newName = "Jane Doe";
+        String newPasswordHash = "newHashedPassword";
+        String newEmail = "jane.doe@example.com";
+        userRepository.update(newName, newPasswordHash, newEmail, adminAccess);
+
+        AppUser updatedUser = userRepository.findById(userId).orElse(null);
+        assertThat(updatedUser).isNotNull();
+        assertThat(updatedUser.getName()).isEqualTo(newName);
+        assertThat(updatedUser.getPasswordHash()).isEqualTo(newPasswordHash);
+        assertThat(updatedUser.getEmail()).isEqualTo(newEmail);
+        assertThat(updatedUser.getAccess().getName()).isEqualTo(adminAccess.getName());
+    }
+
 }
