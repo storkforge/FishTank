@@ -1,15 +1,17 @@
 package org.example.fishtank.controller;
 
+import org.example.fishtank.model.dto.fishDto.CreateFish;
+import org.example.fishtank.model.dto.postDto.CreatePost;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.dto.postDto.ResponsePostList;
 import org.example.fishtank.service.FishService;
 import org.example.fishtank.service.PostService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Objects;
 
 
@@ -35,6 +37,22 @@ public class PostController {
     public ResponsePostList getPostsRough() {
         return new ResponsePostList(postService.getAllPost());
     }
+
+    @GetMapping("/add_post")
+    public String showAddPostForm(Model model) {
+        model.addAttribute("fishList", fishService.getAllFish());
+        return "add_post";
+    }
+
+    @PostMapping("/add_post")
+    public String addPost(
+            @RequestParam("text") String text,
+            @RequestParam("fishId") Integer fishId) {
+        CreatePost createPost = new CreatePost(text, fishId);
+        postService.save(createPost);
+        return "redirect:/forum";
+    }
+
 
     @GetMapping("/forum")
     String forum(Model model) {
