@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Post</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #764582;
+            background-image: url("https://www.transparenttextures.com/patterns/silver-scales.png");
+            padding: 50px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        .list-group-item {
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .btn-custom {
+            display: inline-block;
+            width: 250px;
+            margin: 8px 0;
+            padding: 12px;
+            font-size: 16px;
+            color: white;
+            background: linear-gradient(45deg, #0288d1, #01579b);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s ease-in-out, transform 0.2s;
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(45deg, #0277bd, #004d73);
+            transform: scale(1.05);
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1 class="mb-4">Create a New Post</h1>
+<div class="card p-4 shadow-lg">
+    <form th:action="@{/add_post}" method="post">
+        <div class="mb-3">
+            <label for="fishId" class="form-label">Select Fish:</label>
+            <select id="fishId" name="fishId" class="form-control" required>
+                <!-- Dynamically populate this dropdown with user's fish -->
+                <option th:each="fish : ${fishList}" th:value="${fish.id}" th:text="${fish.name}"></option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="text" class="form-label">Post Text:</label>
+            <textarea id="text" name="text" class="form-control" required></textarea>
+        </div>
+        <button type="submit" class="btn-custom">Create Post</button>
+    </form>
+</div>
+<a href="/forum" class="btn-custom mt-3">Back to Forum</a>
+</body>
+</html>
