@@ -2,6 +2,8 @@ package org.example.fishtank.model.dto.fishDto;
 
 import org.springframework.lang.NonNull;
 
+import java.io.Serializable;
+
 public record ResponseFish (
         @NonNull
         Integer id,
@@ -11,5 +13,6 @@ public record ResponseFish (
         String waterType,
         String sex,
         String appUser,
-        String image){
+        String image)
+        implements Serializable {
 }

@@ -44,7 +44,7 @@ public class SecurityConfig  {
 //                    authorizeRequests.requestMatchers("/login").permitAll(); // permit all application users to get to url: localhost:8080/login
 //                    authorizeRequests.requestMatchers("/signup").permitAll();
 //                    authorizeRequests.requestMatchers("/home").permitAll();
-                    authorizeRequests.requestMatchers("/my_fishes/images/**").authenticated();
+                    authorizeRequests.requestMatchers("/my_fishes/images/**").permitAll();
                       authorizeRequests.requestMatchers("/").permitAll();
 
 

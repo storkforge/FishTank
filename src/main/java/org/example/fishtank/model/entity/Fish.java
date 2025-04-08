@@ -1,13 +1,13 @@
 package org.example.fishtank.model.entity;
 
 import jakarta.persistence.*;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "fish")
-public class Fish {
+public class Fish implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
