@@ -41,7 +41,7 @@ public class FishMapper {
     }
 
     public static void map(UpdateFish updateFish, Fish oldFish) {
-        if (Objects.isNull(updateFish.name())) {
+        if (Objects.nonNull(updateFish.name())) {
             oldFish.setName(updateFish.name());
         }
         if (Objects.nonNull(updateFish.description())) {
