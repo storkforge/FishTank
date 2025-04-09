@@ -8,10 +8,12 @@ import org.example.fishtank.model.entity.Fish;
 import org.example.fishtank.model.entity.Sex;
 import org.example.fishtank.model.entity.WaterType;
 
+import java.util.Objects;
+
 public class FishMapper {
 
     public static ResponseFish map(Fish fish) {
-        if (null == fish)
+        if (Objects.isNull(fish))
             return null;
         return new ResponseFish(
                 fish.getId(),
@@ -25,7 +27,7 @@ public class FishMapper {
     }
 
     public static Fish map(CreateFish createFish, WaterType waterType, Sex sex, AppUser appUser) {
-        if (null == createFish)
+        if (Objects.isNull(createFish))
             return null;
         Fish fish = new Fish();
         fish.setName(createFish.name());
@@ -39,10 +41,10 @@ public class FishMapper {
     }
 
     public static void map(UpdateFish updateFish, Fish oldFish) {
-        if (updateFish.name() != null) {
+        if (Objects.isNull(updateFish.name())) {
             oldFish.setName(updateFish.name());
         }
-        if (updateFish.description() != null) {
+        if (Objects.nonNull(updateFish.description())) {
             oldFish.setDescription(updateFish.description());
         }
     }

@@ -5,10 +5,12 @@ import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.dto.postDto.UpdatePost;
 import org.example.fishtank.model.entity.*;
 
+import java.util.Objects;
+
 public class PostMapper {
 
     public static ResponsePost map(Post post) {
-        if (null == post)
+        if (Objects.isNull(post))
             return null;
         return new ResponsePost(
                 post.getId(),
@@ -17,7 +19,7 @@ public class PostMapper {
     }
 
     public static Post map(CreatePost createPost, Fish fish) {
-        if (null == createPost)
+        if (Objects.isNull(createPost))
             return null;
         Post post = new Post();
         post.setText(createPost.text());
@@ -26,7 +28,7 @@ public class PostMapper {
     }
 
     public static void map(UpdatePost updatePost, Post oldPost) {
-        if (updatePost.text() != null) {
+        if (Objects.nonNull(updatePost.text())) {
             oldPost.setText(updatePost.text());
         }
     }
