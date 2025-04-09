@@ -1,4 +1,14 @@
 package org.example.fishtank.model.dto.appUserDto;
 
-public record CreateAppUser (String name,String email, String passwordHash, String access){
+import org.springframework.lang.NonNull;
+
+public record CreateAppUser (
+        @NonNull
+        String name,
+        @NonNull
+        String email,
+        @NonNull
+        String passwordHash,
+        @NonNull
+        String access){
 }
