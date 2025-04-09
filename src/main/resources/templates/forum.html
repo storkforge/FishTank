@@ -58,7 +58,7 @@
     </style>
 </head>
 <body>
-<h1 class="mb-4">Forum</h1>
+<h1 class="mb-4"th:text="#{forum.forum}">Forum</h1>
 <div class="card p-4 shadow-lg">
     <div style="max-height: 230px; overflow-y: auto;">
         <ul class="list-group list-group-flush">
@@ -71,11 +71,11 @@
         </ul>
     </div>
     <div class="btn-container mt-3">
-        <a href="/home" class="btn-custom">Home</a>
-        <a href="/add_post" class="btn-custom">Add post</a>
+        <a href="/home" class="btn-custom"th:text="#{forum.home}">Home</a>
+        <a href="/add_post" class="btn-custom" th:text="#{forum.add}">Add post</a>
     </div>
     <div class="btn-container mt-3">
-        <a href="/my_posts" class="btn-custom">My Posts</a>
+        <a href="/my_posts" class="btn-custom" th:text="#{forum.myposts}">My Posts</a>
     </div>
 </div>
 </body>

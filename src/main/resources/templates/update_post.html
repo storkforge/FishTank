@@ -44,14 +44,14 @@
     </style>
 </head>
 <body>
-<h1 th:text="'Update Post'"></h1>
+<h1 th:text="#{updatePost.updatePost}">Update post</h1>
 <div class="card p-4 shadow-lg">
     <form th:action="@{/update_post/{id}(id=${post.id})}" method="post">
         <div class="mb-3">
-            <label for="text" class="form-label">Post:</label>
+            <label for="text" class="form-label"th:text="#{updatePost.post}">Post:</label>
             <textarea id="text" name="text" class="form-control" required th:text="${post.text}"></textarea>
         </div>
-        <button type="submit" class="btn-custom">Update Post</button>
+        <button type="submit" class="btn-custom"th:text="#{updatePost.updatePost}">Update Post</button>
     </form>
 </div>
 </body>

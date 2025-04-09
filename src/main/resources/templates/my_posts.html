@@ -62,7 +62,7 @@
     </style>
 </head>
 <body>
-<h1 class="mb-4">My Posts</h1>
+<h1 class="mb-4"th:text="#{myPosts.myPosts}">My Posts</h1>
 <div class="card p-4 shadow-lg">
     <div style="max-height: 230px; overflow-y: auto;">
         <ul class="list-group list-group-flush">
@@ -78,7 +78,7 @@
         </ul>
     </div>
     <div class="btn-container mt-3">
-        <a href="/forum" class="btn-custom">Back to forum</a>
+        <a href="/forum" class="btn-custom" th:text="#{myPosts.backToForum}">Back to forum</a>
     </div>
 </div>
 </body>
