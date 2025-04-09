@@ -72,7 +72,7 @@ public class PostController {
         return "redirect:/my_posts";
     }
 
-        @PostMapping("/delete_post/{id}")
+        @DeleteMapping("/delete_post/{id}")
     public String deletePost(@PathVariable Integer id) {
         postService.delete(id);
         return "redirect:/my_posts";
@@ -81,6 +81,8 @@ public class PostController {
     @GetMapping("/my_posts/{id}")
     String postByID(Model model, @PathVariable Integer id) {
         var post = postService.findById(id);
+        var fish = fishService.findById(post.fishId());
+        model.addAttribute("fish", fish);
         model.addAttribute("post", post);
         return "post";
     }
