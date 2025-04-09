@@ -2,16 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Fish Details</title>
+    <title>Add Post</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f8f9fa;
+            background-color: #764582;
             background-image: url("https://www.transparenttextures.com/patterns/silver-scales.png");
             padding: 50px;
         }
+
         .card {
             background: white;
             border-radius: 15px;
@@ -20,10 +21,12 @@
             max-width: 500px;
             margin: auto;
         }
+
         .list-group-item {
             font-size: 1.2rem;
             text-align: center;
         }
+
         .btn-custom {
             display: inline-block;
             width: 250px;
@@ -38,35 +41,37 @@
             text-decoration: none;
             transition: background 0.3s ease-in-out, transform 0.2s;
         }
+
         .btn-custom:hover {
             background: linear-gradient(45deg, #0277bd, #004d73);
             transform: scale(1.05);
         }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
-<h1 th:text="${fish.name}"></h1>
-<div class="card p-4 shadow-lg d-flex flex-row align-items-start">
-    <img th:src="@{/my_fishes/images/{filename}(filename=${fish.image})}"
-         alt="Fish Image"
-         class="img-thumbnail me-4"
-         style="width: 200px; height: auto; object-fit: cover; border-radius: 10px;">
-
-    <ul class="list-group list-group-flush flex-fill">
-        <li class="list-group-item" th:text="'Species: ' + ${fish.species}"></li>
-        <li class="list-group-item" th:text="'Description: ' + ${fish.description}"></li>
-        <li class="list-group-item" th:text="'Water Type: ' + ${fish.waterType}"></li>
-        <li class="list-group-item" th:text="'Sex: ' + ${fish.sex}"></li>
-    </ul>
-</div>
-<div class="d-flex flex-column align-items-center">
-    <a th:href="@{/update_fish/{id}(id=${fish.id})}" class="btn-custom mt-3">Update</a>
-    <form th:action="@{/delete_fish/{id}(id=${fish.id})}" method="post">
-        <input type="hidden" name="_method" value="delete">
-        <button type="submit" class="btn-custom mt-3">Delete</button>
+<h1 class="mb-4">Create a New Post</h1>
+<div class="card p-4 shadow-lg">
+    <form th:action="@{/add_post}" method="post">
+        <div class="mb-3">
+            <label for="fishId" class="form-label">Select Fish:</label>
+            <select id="fishId" name="fishId" class="form-control" required>
+                <!-- Dynamically populate this dropdown with user's fish -->
+                <option th:each="fish : ${fishList}" th:value="${fish.id}" th:text="${fish.name}"></option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="text" class="form-label">Post Text:</label>
+            <textarea id="text" name="text" class="form-control" required></textarea>
+        </div>
+        <button type="submit" class="btn-custom">Create Post</button>
     </form>
-    <a href="/my_fishes" class="btn-custom mt-3">Back to My Fishes</a>
-    <a href="/home" class="btn-custom mt-3">Home</a>
 </div>
+<a href="/forum" class="btn-custom mt-3">Back to Forum</a>
 </body>
 </html>

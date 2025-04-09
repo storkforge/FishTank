@@ -1,13 +1,13 @@
 package org.example.fishtank.model.entity;
 
 import jakarta.persistence.*;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "fish")
-public class Fish {
+public class Fish implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +37,9 @@ public class Fish {
 
     @OneToMany (mappedBy = "fishid", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
+
+    @Column(name = "image")
+    private String image;
 
     public Integer getId() {
         return id;
@@ -100,5 +103,13 @@ public class Fish {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

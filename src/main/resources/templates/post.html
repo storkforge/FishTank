@@ -26,11 +26,13 @@
             font-size: 1.2rem;
             text-align: center;
         }
+
         .fish-name {
             font-weight: bold;
             display: block;
             margin-bottom: 5px;
         }
+
         .btn-custom {
             display: inline-block;
             width: 250px;
@@ -45,10 +47,12 @@
             text-decoration: none;
             transition: background 0.3s ease-in-out, transform 0.2s;
         }
+
         .btn-custom:hover {
             background: linear-gradient(45deg, #0277bd, #004d73);
             transform: scale(1.05);
         }
+
         .btn-container {
             display: flex;
             justify-content: center;
@@ -58,12 +62,13 @@
     </style>
 </head>
 <body>
-<h1 class="mb-4">Forum</h1>
+<h1 class="mb-4">Post</h1>
 <div class="card p-4 shadow-lg">
     <div style="max-height: 230px; overflow-y: auto;">
         <ul class="list-group list-group-flush">
             <li class="list-group-item" th:each="post, stat : ${postList}">
                 <span th:with="fish=${fishList[stat.index]}">
+                    <a th:href="@{/my_posts/{id}(id=${post.id})}"></a>
                     <span class="fish-name" th:text="${fish.name}"></span>
                     <span th:text="${post.text}"></span>
                 </span>
@@ -71,11 +76,16 @@
         </ul>
     </div>
     <div class="btn-container mt-3">
-        <a href="/home" class="btn-custom">Home</a>
-        <a href="/add_post" class="btn-custom">Add post</a>
+        <a th:href="@{/update_post/{id}(id=${post.id})}" class="btn-custom mt-3">Update</a>
+        <form th:action="@{/delete_post/{id}(id=${post.id})}" method="post">
+            <input type="hidden" name="_method" value="delete">
+            <button type="submit" class="btn-custom mt-3">Delete</button>
+        </form>
     </div>
     <div class="btn-container mt-3">
+        <a href="/forum" class="btn-custom">Back to forum</a>
         <a href="/my_posts" class="btn-custom">My Posts</a>
+
     </div>
 </div>
 </body>

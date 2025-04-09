@@ -1,6 +1,7 @@
 package org.example.fishtank.model.dto.fishDto;
 
 import org.springframework.lang.NonNull;
+import org.springframework.web.multipart.MultipartFile;
 
 public record CreateFish(
         @NonNull
@@ -13,6 +14,7 @@ public record CreateFish(
         @NonNull
         String sex,
         @NonNull
-        String appUser
-) {
+        String appUser,
+        @NonNull
+        String image) {
 }

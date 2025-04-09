@@ -15,11 +15,13 @@ public class FishMapper {
             return null;
         return new ResponseFish(
                 fish.getId(),
-                fish.getName(), fish.getSpecies(),
+                fish.getName(),
+                fish.getSpecies(),
                 fish.getDescription(),
                 fish.getWaterType().getName(),
                 fish.getSex().getName(),
-                fish.getAppUser().getName());
+                fish.getAppUser().getName(),
+                fish.getImage());
     }
 
     public static Fish map(CreateFish createFish, WaterType waterType, Sex sex, AppUser appUser) {
@@ -32,6 +34,7 @@ public class FishMapper {
         fish.setWaterType(waterType);
         fish.setSex(sex);
         fish.setAppUser(appUser);
+        fish.setImage(createFish.image());
         return fish;
     }
 

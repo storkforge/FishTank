@@ -13,18 +13,15 @@ import org.example.fishtank.repository.FishRepository;
 import org.example.fishtank.repository.SexRepository;
 import org.example.fishtank.repository.UserRepository;
 import org.example.fishtank.repository.WaterTypeRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Objects;
-
-import static org.example.fishtank.model.mapper.FishMapper.map;
-
 
 @Service
 @Transactional
 public class FishService {
-
 
     FishRepository fishRepository;
     WaterTypeRepository waterTypeRepository;
@@ -38,12 +35,14 @@ public class FishService {
         this.userRepository = userRepository;
     }
 
+    @Cacheable(value = "fish", key = "#id")
     public ResponseFish findById(Integer id) {
         return fishRepository.findById(id)
                 .map(FishMapper::map)
                 .orElseThrow(() -> new RuntimeException("Fish not found"));
     }
 
+    @Cacheable("allFish")
     public List<ResponseFish> getAllFish(){
         return fishRepository.findAll()
                 .stream()
@@ -52,13 +51,12 @@ public class FishService {
                 .toList();
     }
 
-//    public void save(CreateFish fish) {
-//        var newFish = map(fish);
-//        fishRepository.save(newFish);
-//    }
-
+    @CacheEvict(value = {"allFish"}, allEntries = true)
     public void save(CreateFish createFish) {
         AppUser appUser = userRepository.findByName(createFish.appUser());
+        if (appUser == null) {
+            throw new NullPointerException("User can´t be null");
+        }
 
 //        String appUser = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -69,6 +67,7 @@ public class FishService {
         fishRepository.save(fish);
     }
 
+    @CacheEvict(value = {"fish", "allFish"}, key = "#id", allEntries = true)
     public void update(int id, UpdateFish fish) {
         Fish oldFish = fishRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Fish not found"));
@@ -76,6 +75,7 @@ public class FishService {
         fishRepository.update(oldFish.getName(), oldFish.getDescription(), oldFish.getId());
     }
 
+    @CacheEvict(value = {"fish", "allFish"}, key = "#id", allEntries = true)
     public void delete(int id) {
         var fish = fishRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Fish not found"));
