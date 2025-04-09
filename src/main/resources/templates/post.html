@@ -76,15 +76,15 @@
         </ul>
     </div>
     <div class="btn-container mt-3">
-        <a th:href="@{/update_post/{id}(id=${post.id})}" class="btn-custom mt-3">Update</a>
+        <a th:href="@{/update_post/{id}(id=${post.id})}" class="btn-custom mt-3"th:text="#{post.update}">Update</a>
         <form th:action="@{/delete_post/{id}(id=${post.id})}" method="post">
             <input type="hidden" name="_method" value="delete">
-            <button type="submit" class="btn-custom mt-3">Delete</button>
+            <button type="submit" class="btn-custom mt-3"th:text="#{post.delete}">Delete</button>
         </form>
     </div>
     <div class="btn-container mt-3">
-        <a href="/forum" class="btn-custom">Back to forum</a>
-        <a href="/my_posts" class="btn-custom">My Posts</a>
+        <a href="/forum" class="btn-custom"th:text="#{post.backToForum}">Back to forum</a>
+        <a href="/my_posts" class="btn-custom"th:text="#{post.myPosts}">My Posts</a>
 
     </div>
 </div>

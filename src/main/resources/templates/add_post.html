@@ -55,23 +55,23 @@
     </style>
 </head>
 <body>
-<h1 class="mb-4">Create a New Post</h1>
+<h1 class="mb-4"th:text="#{addPost.createNewPost}">Create a New Post</h1>
 <div class="card p-4 shadow-lg">
     <form th:action="@{/add_post}" method="post">
         <div class="mb-3">
-            <label for="fishId" class="form-label">Select Fish:</label>
+            <label for="fishId" class="form-label"th:text="#{addPost.selectFish}">Select Fish:</label>
             <select id="fishId" name="fishId" class="form-control" required>
                 <!-- Dynamically populate this dropdown with user's fish -->
                 <option th:each="fish : ${fishList}" th:value="${fish.id}" th:text="${fish.name}"></option>
             </select>
         </div>
         <div class="mb-3">
-            <label for="text" class="form-label">Post Text:</label>
+            <label for="text" class="form-label"th:text="#{addPost.postText}">Post Text:</label>
             <textarea id="text" name="text" class="form-control" required></textarea>
         </div>
-        <button type="submit" class="btn-custom">Create Post</button>
+        <button type="submit" class="btn-custom" th:text="#{addPost.createPost}">Create Post</button>
     </form>
 </div>
-<a href="/forum" class="btn-custom mt-3">Back to Forum</a>
+<a href="/forum" class="btn-custom mt-3" th:text="#{addPost.backToForum}">Back to Forum</a>
 </body>
 </html>
