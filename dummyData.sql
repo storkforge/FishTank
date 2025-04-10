@@ -22,13 +22,13 @@ VALUES
 
 --Insert AppUsers
 
-INSERT INTO appuser (name, password_hash, email, appuser_access_id_fk)
+INSERT INTO appuser (name, password_hash, email, authentication_code, appuser_access_id_fk)
 VALUES
-    ('John Doe', 'hashedpassword1', 'johndoe@example.com', 1),  -- Standard
-    ('Jane Smith', 'hashedpassword2', 'janesmith@example.com', 2),  -- Premium
-    ('Alice Johnson', 'hashedpassword3', 'alicejohnson@example.com', 1),  -- Standard
-    ('Bob Brown', 'hashedpassword4', 'bobbrown@example.com', 2),  -- Premium
-    ('Charlie White', 'hashedpassword5', 'charliewhite@example.com', 1);  -- Standard
+    ('John Doe', 'hashedpassword1', 'johndoe@example.com', 'testUser1', 1),  -- Standard
+    ('Jane Smith', 'hashedpassword2', 'janesmith@example.com', 'testUser2',2),  -- Premium
+    ('Alice Johnson', 'hashedpassword3', 'alicejohnson@example.com', 'testUser3',1),  -- Standard
+    ('Bob Brown', 'hashedpassword4', 'bobbrown@example.com', 'testUser4',2),  -- Premium
+    ('Charlie White', 'hashedpassword5', 'charliewhite@example.com', 'testUser5',1);  -- Standard
 
 --Insert Fishes
 
