@@ -59,12 +59,14 @@ public class LoginController {
             return "signup";
         }
 
-        if(appUserService.isNameInDB(username)){
+        if(appUserService.isNamePresentInDB(username)){
             model.addAttribute("error", "Username already exists!");
             return "signup";
         }
 
-        CreateAppUser createAppUser = new CreateAppUser(username, email, password, "Standard");
+        String authenticationCode = "form_" + username;
+
+        CreateAppUser createAppUser = new CreateAppUser(username, email, password, authenticationCode,"Standard");
 
         appUserService.saveToDB(createAppUser);
 
