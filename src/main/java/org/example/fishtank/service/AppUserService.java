@@ -33,7 +33,7 @@ public class AppUserService {
 
     public void saveToDB(CreateAppUser createAppUser) {
 
-        if(!isNameInDB(createAppUser.name())) {
+        if(!isAuthenticationCodePresentInDB(createAppUser.authenticationCode())) {
 
             Access access = accessRepository.findByName(createAppUser.access())
                     .orElseThrow(() -> new RuntimeException("Access not found"));
@@ -42,12 +42,19 @@ public class AppUserService {
 
             AppUser appUser = new AppUser();
             appUser.setName(createAppUser.name());
-            appUser.setEmail(createAppUser.email());
             appUser.setPasswordHash(passwordHash);
+            appUser.setEmail(createAppUser.email());
+            appUser.setAuthenticationCode(createAppUser.authenticationCode());
             appUser.setAccess(access);
 
             appUserRepository.save(appUser);
         }
+    }
+
+    public LoginAppUser findByAuthenticationCode(String authenticationCode) {
+        return appUserRepository.findByAuthenticationCode(authenticationCode)
+                .map(AppUserMapper::mapToLoginAppUser)
+                .orElseThrow(() -> new UsernameNotFoundException("findByAuthenticationCode: User with authentication code: " + authenticationCode + " not found"));
     }
 
     public LoginAppUser findByNameForLogin(String name) {
@@ -83,10 +90,6 @@ public class AppUserService {
                 .orElse(null);
     }
 
-    public boolean isNameInDB(String name) {
-        return appUserRepository.findByName(name).isPresent();
-    }
-
     public void update(int id, UpdateAppUser updateAppUser) {
 
         AppUser appUser = appUserRepository.findById(id)
@@ -111,6 +114,14 @@ public class AppUserService {
         if(updateAppUser.email() != null) {
             appUser.setEmail(updateAppUser.email());
         }
+    }
+
+    public boolean isNamePresentInDB(String name) {
+        return appUserRepository.findByName(name).isPresent();
+    }
+
+    public boolean isAuthenticationCodePresentInDB(String authenticationCode) {
+        return appUserRepository.findByAuthenticationCode(authenticationCode).isPresent();
     }
 }
 
