@@ -1,6 +1,7 @@
 package org.example.fishtank.service.security;
 
 import org.example.fishtank.model.dto.appUserDto.CreateAppUser;
+import org.example.fishtank.model.dto.appUserDto.security.LoginAppUser;
 import org.example.fishtank.model.dto.appUserDto.security.OAuth2AppUserPrinciple;
 import org.example.fishtank.service.AppUserService;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    AppUserService appUserService;
+    private AppUserService appUserService;
 
     public CustomOAuth2UserService(AppUserService appUserService){
         this.appUserService = appUserService;
@@ -25,22 +26,23 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
-        var authorizationSite = userRequest.getClientRegistration().getClientName();
-        System.out.println("Authorization site: " + authorizationSite);
-        var oauth2User = super.loadUser(userRequest);
+        OAuth2User oauth2User = super.loadUser(userRequest);
+        String authorizationSite = userRequest.getClientRegistration().getClientName();
 
         if(authorizationSite.equals("GitHub")) {
 
-            var githubUserAttributes = oauth2User.getAttributes();
-            var githubId = githubUserAttributes.get("id").toString();
-            var githubUsername = githubUserAttributes.get("login").toString();
+            String githubId = oauth2User.getAttributes().get("id").toString();
+            String authenticationCode = "git_" + githubId;
 
-            if(!appUserService.isNameInDB(githubUsername)) {
-                CreateAppUser createAppUser = new CreateAppUser(githubUsername, "password", "No email available.", "Standard");
+            // add git user to DB if not already present.
+            if(!appUserService.isAuthenticationCodePresentInDB(authenticationCode)) {
+
+                String githubUsername = oauth2User.getAttributes().get("login").toString();
+                CreateAppUser createAppUser = new CreateAppUser(githubUsername, "password", "No email available", authenticationCode,"Standard");
                 appUserService.saveToDB(createAppUser);
             }
 
-            var loginAppUser = appUserService.findByNameForLogin(githubUsername);
+            LoginAppUser loginAppUser = appUserService.findByAuthenticationCode(authenticationCode);
 
             return new OAuth2AppUserPrinciple(loginAppUser);
         }
