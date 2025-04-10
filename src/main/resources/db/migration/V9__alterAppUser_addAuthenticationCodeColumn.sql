@@ -1,2 +1,2 @@
 ALTER TABLE appuser
-    ADD COLUMN authentication_code VARCHAR(255) NOT NULL UNIQUE;
+    ADD COLUMN IF NOT EXISTS authentication_code VARCHAR(255) NOT NULL UNIQUE;
