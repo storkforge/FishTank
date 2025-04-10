@@ -10,7 +10,6 @@ public class  AppUserController {
 
     @GetMapping("/home")
     public String home(){
-        System.out.println("SecurityContextHolder.getContext().getAuthentication().getName(): " + SecurityContextHolder.getContext().getAuthentication().getName());
         return "home";
     }
 

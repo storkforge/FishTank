@@ -27,7 +27,7 @@ public class FormAppUserPrinciple implements UserDetails {
 
     @Override
     public String getUsername() {
-        return formLoginAppUser.name();
+        return formLoginAppUser.id();
     }
 
     @Override

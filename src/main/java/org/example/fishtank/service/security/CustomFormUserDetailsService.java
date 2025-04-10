@@ -21,9 +21,7 @@ public class CustomFormUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         String authenticationCode = "form_" + username;
-        System.out.println("loadUserByUsername: authenticationCode: " + authenticationCode);
         LoginAppUser loginAppUser = appUserService.findByAuthenticationCode(authenticationCode);
-        System.out.println("loaded from database: \nloginAppUser: " + loginAppUser.name() + "\npassword: " + loginAppUser.password());
 
         return new FormAppUserPrinciple(loginAppUser);
     }
