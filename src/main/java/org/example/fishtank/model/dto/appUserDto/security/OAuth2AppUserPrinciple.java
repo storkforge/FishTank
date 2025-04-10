@@ -18,7 +18,7 @@ public class OAuth2AppUserPrinciple implements OAuth2User {
 
     @Override
     public Map<String, Object> getAttributes() {
-        return Map.of();
+        return Map.of("id", loginAppUser.id(),"name", loginAppUser.name(), "email", loginAppUser.email());
     }
 
     @Override
