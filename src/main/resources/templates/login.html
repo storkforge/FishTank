@@ -1,89 +1,37 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {font-family: Arial, Helvetica, sans-serif;}
-        form {border: 3px solid #f1f1f1;}
-
-        input[type=text], input[type=password] {
-            width: 100%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: #04AA6D;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        button:hover {
-            opacity: 0.8;
-        }
-
-        .signupbtn {
-            background-color: #3498db;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-
-        }
-
-        .cancelbtn {
-            width: auto;
-            padding: 10px 18px;
-            background-color: #f44336;
-        }
-
-        .container {
-            padding: 16px;
-        }
-
-        span.psw {
-            float: right;
-            padding-top: 16px;
-        }
-
-        /* Change styles for span and cancel button on extra small screens */
-        @media screen and (max-width: 300px) {
-            span.psw {
-                display: block;
-                float: none;
-            }
-            .cancelbtn {
-                width: 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
 </head>
-<body>
+<body class="d-flex align-items-center justify-content-center vh-100">
+<div class="card p-4 shadow-lg" style="width: 300px;">
 
-<h2>Login to fishtank</h2>
+    <h2 class="text-center">Log in</h2>
 
-<form th:action="@{/login}" method="post">
+    <div th:if="${param.error}">
+        Invalid username and/or password.</div>
 
-    <label for="username"><b>Username</b></label>
-    <input type="text" id="username" name="username" placeholder="Enter username" required>
+    <form th:action="@{/login}" method="post">
 
-    <label for="password"><b>Password</b></label>
-    <input type="password" id="password" name="password" placeholder="Enter password" required>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
 
-    <button type="submit">Login</button>
-    <button type="button" class="signupbtn">Signup</button>
-</form>
-<a th:href="@{/signup}">Signup to Fishtank!</a>
-<a th:href="@{/oauth2/authorization/github}">Login with GitHub</a>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+
+        <div th:if="${error}" class="alert alert-danger text-center">
+            <p th:text="${error}"></p>
+        </div>
+
+    </form>
+
+    <p class="text-center mt-3">Don't have an account? <a th:href="@{/signup}">Register</a></p>
+
+    <p class="text-center mt-3"> <a th:href="@{/oauth2/authorization/github}">Login with GitHub</a>
+
+</div>
 </body>
 </html>

@@ -2,10 +2,8 @@ package org.example.fishtank.model.mapper;
 
 import org.example.fishtank.model.dto.appUserDto.CreateAppUser;
 import org.example.fishtank.model.dto.appUserDto.ResponseAppUser;
-import org.example.fishtank.model.dto.appUserDto.UpdateAppUser;
 import org.example.fishtank.model.dto.appUserDto.security.LoginAppUser;
 import org.example.fishtank.model.entity.*;
-
 
 public class AppUserMapper {
 
@@ -25,8 +23,9 @@ public class AppUserMapper {
 
         AppUser appUser = new AppUser();
         appUser.setName(createAppUser.name());
-        appUser.setEmail(createAppUser.email());
         appUser.setPasswordHash(passwordHash);
+        appUser.setEmail(createAppUser.email());
+        appUser.setAuthenticationCode(createAppUser.authenticationCode());
         appUser.setAccess(access);
         return appUser;
     }
@@ -37,12 +36,13 @@ public class AppUserMapper {
             return null;
         }
 
-        return new LoginAppUser(
-                appUser.getId().toString(),
-                appUser.getName(),
-                appUser.getPasswordHash(),
-                appUser.getPasswordHash(),
-                appUser.getAccess().getName()
-        );
+        String id = appUser.getId().toString();
+        String name = appUser.getName();
+        String password = appUser.getPasswordHash();
+        String email = appUser.getEmail();
+        String authenticationCode = appUser.getAuthenticationCode();
+        String access = appUser.getAccess().getName();
+
+        return new LoginAppUser(id, name, password, email, authenticationCode, access);
     }
 }

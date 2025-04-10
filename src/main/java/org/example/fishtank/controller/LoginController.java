@@ -22,6 +22,7 @@ public class LoginController {
     public String base(){
 
         var authenticationName = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("AuthenticationName in base: " + authenticationName);
 
         if(authenticationName.equals("anonymousUser")){
             System.out.println("Authentication says anonymous user. Redirecting to login again.");
@@ -39,6 +40,8 @@ public class LoginController {
 
     @PostMapping("/login")
     public String loginPost(@RequestParam("username") String username, @RequestParam("password") String password){
+
+        System.out.println("PostMapping /login, username " + username + " password " + password);
         return "redirect:/";
     }
 
@@ -66,7 +69,7 @@ public class LoginController {
 
         String authenticationCode = "form_" + username;
 
-        CreateAppUser createAppUser = new CreateAppUser(username, email, password, authenticationCode,"Standard");
+        CreateAppUser createAppUser = new CreateAppUser(username, password, email, authenticationCode,"Standard");
 
         appUserService.saveToDB(createAppUser);
 

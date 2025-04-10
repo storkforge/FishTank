@@ -1,6 +1,7 @@
 package org.example.fishtank.service.security;
 
 import org.example.fishtank.model.dto.appUserDto.security.FormAppUserPrinciple;
+import org.example.fishtank.model.dto.appUserDto.security.LoginAppUser;
 import org.example.fishtank.service.AppUserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,7 +20,10 @@ public class CustomFormUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        var loginAppUser = appUserService.findByNameForLogin(username);
+        String authenticationCode = "form_" + username;
+        System.out.println("loadUserByUsername: authenticationCode: " + authenticationCode);
+        LoginAppUser loginAppUser = appUserService.findByAuthenticationCode(authenticationCode);
+        System.out.println("loaded from database: \nloginAppUser: " + loginAppUser.name() + "\npassword: " + loginAppUser.password());
 
         return new FormAppUserPrinciple(loginAppUser);
     }
