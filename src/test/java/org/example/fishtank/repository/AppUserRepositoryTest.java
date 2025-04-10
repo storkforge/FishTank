@@ -15,14 +15,14 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
 @Testcontainers
-class UserRepositoryTest {
+class AppUserRepositoryTest {
 
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest");
 
     @Autowired
-    UserRepository userRepository;
+    AppUserRepository appUserRepository;
     @Autowired
     AccessRepository accessRepository;
 
@@ -44,12 +44,13 @@ class UserRepositoryTest {
         user.setEmail("john.doe@example.com");
         user.setPasswordHash("hashedPassword");
         user.setAccess(standardAccess);
-        userRepository.save(user);
+        appUserRepository.save(user);
     }
 
     @Test
     void TestFindByEmail() {
-        AppUser foundUser = userRepository.findByEmail("john.doe@example.com");
+
+        AppUser foundUser = appUserRepository.findByEmail("john.doe@example.com").get();
 
         assertThat(foundUser).isNotNull();
         assertThat(foundUser.getEmail()).isEqualTo("john.doe@example.com");
@@ -62,7 +63,7 @@ class UserRepositoryTest {
         user.setEmail("john.doe@example.com");
         user.setPasswordHash("originalHash");
         user.setAccess(standardAccess);
-        AppUser savedUser = userRepository.save(user);
+        AppUser savedUser = appUserRepository.save(user);
 
         String newName = "Jane Doe";
         String newPasswordHash = "newHashedPassword";
@@ -72,9 +73,9 @@ class UserRepositoryTest {
         savedUser.setPasswordHash(newPasswordHash);
         savedUser.setEmail(newEmail);
         savedUser.setAccess(adminAccess);
-        userRepository.save(savedUser);
+        appUserRepository.save(savedUser);
 
-        AppUser updatedUser = userRepository.findByEmail(newEmail);
+        AppUser updatedUser = appUserRepository.findByEmail(newEmail).get();
         assertThat(updatedUser).isNotNull();
         assertThat(updatedUser.getName()).isEqualTo(newName);
         assertThat(updatedUser.getPasswordHash()).isEqualTo(newPasswordHash);
@@ -84,7 +85,7 @@ class UserRepositoryTest {
 
     @Test
     void TestFindByName() {
-        AppUser foundUser = userRepository.findByName("John Doe");
+        AppUser foundUser = appUserRepository.findByName("John Doe").get();
 
         assertThat(foundUser).isNotNull();
         assertThat(foundUser.getName()).isEqualTo("John Doe");

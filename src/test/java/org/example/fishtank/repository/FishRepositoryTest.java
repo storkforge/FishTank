@@ -26,7 +26,7 @@ class FishRepositoryTest {
     @Autowired
     FishRepository fishRepository;
     @Autowired
-    UserRepository userRepository;
+    AppUserRepository appUserRepository;
     @Autowired
     SexRepository sexRepository;
     @Autowired
@@ -47,7 +47,7 @@ class FishRepositoryTest {
         user.setPasswordHash("password");
         user.setEmail("username@email.com");
         user.setAccess(access);
-        userRepository.save(user);
+        appUserRepository.save(user);
 
         var sex = new Sex();
         sex.setName("Male");
@@ -90,5 +90,4 @@ class FishRepositoryTest {
         assertThat(updatedFish.getDescription()).isEqualTo(newDescription);
         //
     }
-
 }
