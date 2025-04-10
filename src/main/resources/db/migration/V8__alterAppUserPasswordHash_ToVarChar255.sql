@@ -1,0 +1,2 @@
+ALTER TABLE appuser
+ALTER COLUMN password_hash TYPE VARCHAR(255);

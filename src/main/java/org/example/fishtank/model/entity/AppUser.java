@@ -17,11 +17,14 @@ public class AppUser {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "password_hash", nullable = false, length = 60)
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
     @Column(name = "email", nullable = false, length = 100)
     private String email;
+
+    @Column(name= "authentication_code", nullable = false, unique = true)
+    private String authenticationCode;
 
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn (name = "appuser_access_id_fk" , nullable = false)
@@ -60,6 +63,14 @@ public class AppUser {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAuthenticationCode() {
+        return authenticationCode;
+    }
+
+    public void setAuthenticationCode(String authenticationCode) {
+        this.authenticationCode = authenticationCode;
     }
 
     public Access getAccess() {
