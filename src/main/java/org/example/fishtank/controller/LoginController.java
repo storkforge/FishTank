@@ -22,7 +22,6 @@ public class LoginController {
     public String base(){
 
         var authenticationName = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println("AuthenticationName in base: " + authenticationName);
 
         if(authenticationName.equals("anonymousUser")){
             System.out.println("Authentication says anonymous user. Redirecting to login again.");
@@ -32,19 +31,10 @@ public class LoginController {
         return "redirect:/home";
     }
 
-
     @GetMapping("/login")
     public String login(){
         return "login";
     }
-
-    @PostMapping("/login")
-    public String loginPost(@RequestParam("username") String username, @RequestParam("password") String password){
-
-        System.out.println("PostMapping /login, username " + username + " password " + password);
-        return "redirect:/";
-    }
-
 
     @GetMapping("/signup")
     public String showSignUpForm() {

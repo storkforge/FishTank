@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,7 +24,7 @@ public class SecurityConfig {
 
         return httpSecurity
                 //.csrf(csrf -> csrf.ignoringRequestMatchers("/my_fishes/images/upload"))
-                .csrf(AbstractHttpConfigurer::disable)
+                //.csrf(AbstractHttpConfigurer::disable)
 
                 //.oauth2Login(Customizer.withDefaults()) // sets up the login for oauth2 login with default login page and settings
                 //.formLogin(Customizer.withDefaults()) // sets up the login for form login with default login page and settings
