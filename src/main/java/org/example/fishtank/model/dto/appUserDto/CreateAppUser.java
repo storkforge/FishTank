@@ -8,7 +8,7 @@ public record CreateAppUser (
         @NonNull
         String email,
         @NonNull
-        String passwordHash,
+        String password,
         @NonNull
         String access){
 }

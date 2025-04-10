@@ -1,8 +1,7 @@
 package org.example.fishtank.service.security;
 
 import org.example.fishtank.model.dto.appUserDto.security.FormAppUserPrinciple;
-import org.example.fishtank.model.entity.AppUser;
-import org.example.fishtank.repository.AppUserRepository;
+import org.example.fishtank.service.AppUserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,16 +10,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomFormUserDetailsService implements UserDetailsService {
 
-    private AppUserRepository appUserRepository;
+    private AppUserService appUserService;
 
-    public CustomFormUserDetailsService(AppUserRepository appUserRepository) {
-        this.appUserRepository = appUserRepository;
+    public CustomFormUserDetailsService(AppUserService appUserService) {
+        this.appUserService = appUserService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        AppUser appUser = appUserRepository.findByName(username).orElseThrow(() -> new UsernameNotFoundException(username));
-        return new FormAppUserPrinciple(appUser);
+        var loginAppUser = appUserService.findByNameForLogin(username);
+
+        return new FormAppUserPrinciple(loginAppUser);
     }
 }

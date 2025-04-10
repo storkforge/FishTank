@@ -37,6 +37,8 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests.requestMatchers("/login").permitAll(); // permit all application users to get to url: localhost:8080/login
+                    authorizeRequests.requestMatchers("/signup").permitAll(); // permit all application users to get to url: localhost:8080/login
+                    //authorizeRequests.requestMatchers("/logout").permitAll();
                     authorizeRequests.requestMatchers("/my_fishes/images/**").permitAll();
                     authorizeRequests.anyRequest().authenticated(); // any other request can only be reached by an authenticated user.
                 })

@@ -1,7 +1,5 @@
 package org.example.fishtank.model.dto.appUserDto.security;
 
-import org.example.fishtank.model.dto.appUserDto.ResponseAppUser;
-import org.example.fishtank.model.entity.AppUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -12,10 +10,10 @@ import java.util.Map;
 
 public class OAuth2AppUserPrinciple implements OAuth2User {
 
-    private ResponseAppUser responseAppUser;
+    private final LoginAppUser loginAppUser;
 
-    public OAuth2AppUserPrinciple(ResponseAppUser responseAppUser) {
-        this.responseAppUser = responseAppUser;
+    public OAuth2AppUserPrinciple(LoginAppUser loginAppUser) {
+        this.loginAppUser = loginAppUser;
     }
 
     @Override
@@ -25,11 +23,11 @@ public class OAuth2AppUserPrinciple implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + responseAppUser.access()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + loginAppUser.access()));
     }
 
     @Override
     public String getName() {
-        return responseAppUser.id().toString();
+        return loginAppUser.id();
     }
 }
