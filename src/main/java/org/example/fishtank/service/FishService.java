@@ -1,6 +1,5 @@
 package org.example.fishtank.service;
 
-
 import jakarta.transaction.Transactional;
 import org.example.fishtank.model.dto.fishDto.CreateFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
@@ -10,10 +9,7 @@ import org.example.fishtank.model.entity.Fish;
 import org.example.fishtank.model.entity.Sex;
 import org.example.fishtank.model.entity.WaterType;
 import org.example.fishtank.model.mapper.FishMapper;
-import org.example.fishtank.repository.FishRepository;
-import org.example.fishtank.repository.SexRepository;
-import org.example.fishtank.repository.UserRepository;
-import org.example.fishtank.repository.WaterTypeRepository;
+import org.example.fishtank.repository.*;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -27,16 +23,16 @@ import java.util.Objects;
 @Transactional
 public class FishService {
 
-    FishRepository fishRepository;
-    WaterTypeRepository waterTypeRepository;
-    SexRepository sexRepository;
-    UserRepository userRepository;
+    private FishRepository fishRepository;
+    private WaterTypeRepository waterTypeRepository;
+    private SexRepository sexRepository;
+    private AppUserRepository appUserRepository;
 
-    public FishService(FishRepository fishRepository, WaterTypeRepository waterTypeRepository, SexRepository sexRepository, UserRepository userRepository) {
+    public FishService(FishRepository fishRepository, WaterTypeRepository waterTypeRepository, SexRepository sexRepository, AppUserRepository appUserRepository) {
         this.fishRepository = fishRepository;
         this.waterTypeRepository = waterTypeRepository;
         this.sexRepository = sexRepository;
-        this.userRepository = userRepository;
+        this.appUserRepository = appUserRepository;
     }
 
     @Cacheable(value = "fish", key = "#id")
@@ -57,8 +53,9 @@ public class FishService {
 
     @CacheEvict(value = {"allFish"}, allEntries = true)
     public void save(CreateFish createFish) {
-        AppUser appUser = userRepository.findByName(createFish.appUser());
-//        String appUser = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        AppUser appUser = appUserRepository.findByName(createFish.appUser())
+                .orElseThrow(() -> new RuntimeException("AppUser not found"));
 
         WaterType waterType = waterTypeRepository.findByName(createFish.waterType());
         Sex sex = sexRepository.findByName(createFish.sex());
