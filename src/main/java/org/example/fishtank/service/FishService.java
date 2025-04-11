@@ -47,7 +47,7 @@ public class FishService {
     }
 
     @Cacheable("allFish")
-    public List<ResponseFish> getAllFish(){
+    public List<ResponseFish> getAllFish() {
         return fishRepository.findAll()
                 .stream()
                 .map(FishMapper::map)
@@ -62,14 +62,14 @@ public class FishService {
 
         WaterType waterType = waterTypeRepository.findByName(createFish.waterType());
         Sex sex = sexRepository.findByName(createFish.sex());
-
-        if(appUser == null || waterType == null || sex == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity not found");
-        }
-        else {
-            Fish fish = FishMapper.map(createFish, waterType, sex, appUser);
-            fishRepository.save(fish);
-        }
+        if (appUser == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        if (waterType == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Water Type not found");
+        if (sex == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sex not found");
+        Fish fish = FishMapper.map(createFish, waterType, sex, appUser);
+        fishRepository.save(fish);
     }
 
     @CacheEvict(value = {"fish", "allFish"}, key = "#id", allEntries = true)
