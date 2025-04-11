@@ -42,6 +42,7 @@ public class PostController {
     @PostMapping("/add_post")
     public String addPost(
             @RequestParam("text") String text,
+            @RequestParam("cityName") String cityName,
             @RequestParam("fishId") Integer fishId) {
         CreatePost createPost = new CreatePost(text, fishId);
         postService.save(createPost);
