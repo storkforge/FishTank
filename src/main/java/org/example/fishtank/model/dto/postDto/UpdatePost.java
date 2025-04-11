@@ -1,4 +1,8 @@
 package org.example.fishtank.model.dto.postDto;
 
-public record UpdatePost(String text) {
+import org.springframework.lang.NonNull;
+
+public record UpdatePost(
+        @NonNull
+        String text) {
 }
