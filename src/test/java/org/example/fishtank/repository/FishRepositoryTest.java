@@ -1,4 +1,4 @@
-/*package org.example.fishtank.repository;
+package org.example.fishtank.repository;
 
 import jakarta.persistence.EntityManager;
 import org.example.fishtank.model.entity.*;
@@ -47,6 +47,7 @@ class FishRepositoryTest {
         user.setPasswordHash("password");
         user.setEmail("username@email.com");
         user.setAccess(access);
+        user.setAuthenticationCode("hej");
         appUserRepository.save(user);
 
         var sex = new Sex();
@@ -91,4 +92,3 @@ class FishRepositoryTest {
         //
     }
 }
- */
