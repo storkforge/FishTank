@@ -1,5 +1,6 @@
 package org.example.fishtank.service;
 
+
 import jakarta.transaction.Transactional;
 import org.example.fishtank.model.dto.fishDto.CreateFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
@@ -15,7 +16,10 @@ import org.example.fishtank.repository.UserRepository;
 import org.example.fishtank.repository.WaterTypeRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +43,7 @@ public class FishService {
     public ResponseFish findById(Integer id) {
         return fishRepository.findById(id)
                 .map(FishMapper::map)
-                .orElseThrow(() -> new RuntimeException("Fish not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
     }
 
     @Cacheable("allFish")
@@ -54,23 +58,24 @@ public class FishService {
     @CacheEvict(value = {"allFish"}, allEntries = true)
     public void save(CreateFish createFish) {
         AppUser appUser = userRepository.findByName(createFish.appUser());
-        if (appUser == null) {
-            throw new NullPointerException("User can´t be null");
-        }
-
 //        String appUser = SecurityContextHolder.getContext().getAuthentication().getName();
 
         WaterType waterType = waterTypeRepository.findByName(createFish.waterType());
         Sex sex = sexRepository.findByName(createFish.sex());
 
-        Fish fish = FishMapper.map(createFish, waterType, sex, appUser);
-        fishRepository.save(fish);
+        if(appUser == null || waterType == null || sex == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity not found");
+        }
+        else {
+            Fish fish = FishMapper.map(createFish, waterType, sex, appUser);
+            fishRepository.save(fish);
+        }
     }
 
     @CacheEvict(value = {"fish", "allFish"}, key = "#id", allEntries = true)
     public void update(int id, UpdateFish fish) {
         Fish oldFish = fishRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Fish not found"));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity not found"));
         FishMapper.map(fish, oldFish);
         fishRepository.update(oldFish.getName(), oldFish.getDescription(), oldFish.getId());
     }
@@ -78,7 +83,7 @@ public class FishService {
     @CacheEvict(value = {"fish", "allFish"}, key = "#id", allEntries = true)
     public void delete(int id) {
         var fish = fishRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Fish not found"));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
         fishRepository.delete(fish);
     }
 
