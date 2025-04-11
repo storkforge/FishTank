@@ -147,6 +147,7 @@ class PostServiceTest {
         verify(postRepository, times(1)).update(textCaptor.capture(), idCaptor.capture());
 
         assertEquals("updateTest", textCaptor.getValue());
+        assertEquals(1, idCaptor.getValue());
     }
 
     @Test
