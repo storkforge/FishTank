@@ -14,6 +14,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +45,6 @@ class PostServiceTest {
 
     @BeforeEach
     void setUp() {
-
         waterTypeTest.setId(1);
         waterTypeTest.setName("Salt Water");
 
@@ -65,6 +66,19 @@ class PostServiceTest {
 
         when(postRepository.findById(1)).thenReturn(Optional.of(postTest));
         assertEquals(responsePost, postService.findById(1));
+    }
+
+    @Test
+    @DisplayName("NotFound is thrown when findById can not find the post")
+    void notFoundIsThrownWhenFindByIdCanNotFindThePost() {
+        when(postRepository.findById(1)).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            postService.findById(1);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Post not found", exception.getReason());
     }
 
     @Test
@@ -104,6 +118,20 @@ class PostServiceTest {
         assertEquals(post.getFishid(), capturedPost.getFishid());
     }
 
+    @Test
+    @DisplayName("save throws NotFound when fishRep can not find fish")
+    void saveThrowsNotFoundWhenFishRepCanNotFindFish(){
+        CreatePost createPost = new CreatePost("saveTest", fishTest.getId());
+
+        when(fishRepository.findById(fishTest.getId())).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            postService.save(createPost);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Fish not found", exception.getReason());
+    }
 
     @Test
     @DisplayName("update Updates posts text with DTOs text and rep.update is only called once")
@@ -119,10 +147,21 @@ class PostServiceTest {
         verify(postRepository, times(1)).update(textCaptor.capture(), idCaptor.capture());
 
         assertEquals("updateTest", textCaptor.getValue());
-
-
     }
 
+    @Test
+    @DisplayName("update throws NotFound when fishRep can not find fish")
+    void updateThrowsNotFoundWhenFishRepCanNotFindFish(){
+        UpdatePost updatePost = new UpdatePost("updateTest");
+        when(postRepository.findById(1)).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            postService.update(1,updatePost);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Post not found", exception.getReason());
+    }
 
     @Test
     void delete() {
@@ -130,4 +169,17 @@ class PostServiceTest {
         postService.delete(postTest.getId());
         verify(postRepository, times(1)).delete(postTest);
     }
+    @Test
+    @DisplayName("delete throws NotFound when fishRep can not find fish")
+    void deleteThrowsNotFoundWhenFishRepCanNotFindFish(){
+        when(postRepository.findById(1)).thenReturn(Optional.empty());
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            postService.delete(1);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Post not found", exception.getReason());
+
+    }
+
 }
