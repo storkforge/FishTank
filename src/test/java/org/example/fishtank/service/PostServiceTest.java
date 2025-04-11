@@ -36,8 +36,6 @@ class PostServiceTest {
     @Mock
     PostRepository postRepository;
 
-    @Mock
-    PostMapper postMapper;
 
     Post postTest = new Post();
     Fish fishTest = new Fish();
@@ -82,7 +80,8 @@ class PostServiceTest {
     }
 
     @Test
-    void getAllPost() {
+    @DisplayName("Get all Posts returns list of response posts")
+    void getAllPostsReturnsListOfResponsePosts() {
         List<Post> posts = new ArrayList<>();
         Post postTest2 = new Post();
         postTest2.setId(2);
@@ -104,7 +103,8 @@ class PostServiceTest {
     }
 
     @Test
-    void save() {
+    @DisplayName("save creates a new post with correct values")
+    void saveCreatesANewPostWithCorrectValues() {
         CreatePost createPost = new CreatePost("saveTest", fishTest.getId());
         Post post = PostMapper.map(createPost, fishTest);
         when(fishRepository.findById(fishTest.getId())).thenReturn(Optional.of(fishTest));
@@ -120,7 +120,7 @@ class PostServiceTest {
 
     @Test
     @DisplayName("save throws NotFound when fishRep can not find fish")
-    void saveThrowsNotFoundWhenFishRepCanNotFindFish(){
+    void saveThrowsNotFoundWhenFishRepCanNotFindFish() {
         CreatePost createPost = new CreatePost("saveTest", fishTest.getId());
 
         when(fishRepository.findById(fishTest.getId())).thenReturn(Optional.empty());
@@ -150,13 +150,13 @@ class PostServiceTest {
     }
 
     @Test
-    @DisplayName("update throws NotFound when fishRep can not find fish")
-    void updateThrowsNotFoundWhenFishRepCanNotFindFish(){
+    @DisplayName("update throws NotFound when postRep can not find post")
+    void updateThrowsNotFoundWhenPostRepCanNotFindPost() {
         UpdatePost updatePost = new UpdatePost("updateTest");
         when(postRepository.findById(1)).thenReturn(Optional.empty());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            postService.update(1,updatePost);
+            postService.update(1, updatePost);
         });
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
@@ -164,14 +164,16 @@ class PostServiceTest {
     }
 
     @Test
-    void delete() {
+    @DisplayName("delete removes the post when it exists")
+    void deleteRemovesThePostWhenItExists() {
         when(postRepository.findById(1)).thenReturn(Optional.of(postTest));
         postService.delete(postTest.getId());
         verify(postRepository, times(1)).delete(postTest);
     }
+
     @Test
-    @DisplayName("delete throws NotFound when fishRep can not find fish")
-    void deleteThrowsNotFoundWhenFishRepCanNotFindFish(){
+    @DisplayName("delete throws NotFound when postRep can not find Post")
+    void deleteThrowsNotFoundWhenPostRepCanNotFindPost() {
         when(postRepository.findById(1)).thenReturn(Optional.empty());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
             postService.delete(1);
