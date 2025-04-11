@@ -1,4 +1,4 @@
-package org.example.fishtank.repository;
+package org.example.fishtank;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;

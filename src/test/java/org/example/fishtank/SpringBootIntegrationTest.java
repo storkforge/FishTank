@@ -1,6 +1,5 @@
 package org.example.fishtank;
 
-import jakarta.persistence.EntityManager;
 import org.example.fishtank.model.entity.*;
 import org.example.fishtank.repository.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,8 +11,6 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -28,26 +25,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // This class is used to test the Spring Boot application
 // It is annotated with @SpringBootTest to load the application context
 // It is also annotated with @AutoConfigureMockMvc to enable MockMvc for testing
-// The class is empty for now, but can be filled with test methods later
 
-@SpringBootTest(properties = {
-        "spring.main.allow-bean-definition-overriding=true",
-        "spring.sql.init.mode=never"})
+@SpringBootTest(properties = "spring.main.allow-bean-definition-overriding=true")
 //Configures mockmvc for testing the MVC controllers. MockMvc simulates http requests
 @AutoConfigureMockMvc
 //Enables containerized dependencies like postgreSQL to automaticly start and stop för each test
 @Testcontainers
-@ActiveProfiles("test")
 @Import(TestCacheConfig.class)
 public class SpringBootIntegrationTest {
 
     //Testcontainer for PostgreSQL database
     @Container
     @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest")
-            .withDatabaseName("test")
-            .withUsername("testuser")
-            .withPassword("testpass");
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
 
     @Autowired
     MockMvc mockMvc;
@@ -66,34 +56,22 @@ public class SpringBootIntegrationTest {
     @Autowired
     private Environment env;
 
-    AppUser appUser;
-    @Autowired
-    EntityManager entityManager;
-
     @BeforeEach
     void beforeEach() {
         System.out.println("Testing database connection: " + postgres.getJdbcUrl());
         System.out.println("Current profile: " + Arrays.toString(env.getActiveProfiles()));
 
-        fishRepository.deleteAll();
-        appUserRepository.deleteAll();
-        sexRepository.deleteAll();
-        accessRepository.deleteAll();
-        waterTypeRepository.deleteAll();
-
-        entityManager.clear();  // Clears the Hibernate cache/session
-
         var access = new Access();
         access.setName("Standard");
         accessRepository.save(access);
 
-        appUser = new AppUser();
-        appUser.setName("username");
-        appUser.setPasswordHash(new BCryptPasswordEncoder().encode("password")); // Encode the password
-        appUser.setEmail("username@email.com");
-        appUser.setAccess(access);
-        appUser.setAuthenticationCode("hej");
-        appUserRepository.save(appUser);
+        var user = new AppUser();
+        user.setName("username");
+        user.setPasswordHash(new BCryptPasswordEncoder().encode("password")); // Encode the password
+        user.setEmail("username@email.com");
+        user.setAccess(access);
+        user.setAuthenticationCode("hej");
+        appUserRepository.save(user);
 
         var sex = new Sex();
         sex.setName("Male");
@@ -108,7 +86,7 @@ public class SpringBootIntegrationTest {
         fish.setSpecies("Eel");
         fish.setDescription("a fish");
         fish.setSex(sex);
-        fish.setAppUser(appUser);
+        fish.setAppUser(user);
         fish.setWaterType(waterType);
         fishRepository.save(fish);
     }
@@ -116,14 +94,12 @@ public class SpringBootIntegrationTest {
     @Test
     void getAllFishes() throws Exception {
         mockMvc.perform(get("/my_fishes_rough")
-                .with(user(appUser.getName()).password("password").roles("USER")))
-                .andExpect(status().isOk())
+                        .with(user("username")))
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.fishList.length()").value(1))
                 .andExpect(jsonPath("$.fishList[0].name").value("Fish"))
                 .andExpect(jsonPath("$.fishList[0].species").value("Eel"))
                 .andReturn();
-
     }
 
 }
