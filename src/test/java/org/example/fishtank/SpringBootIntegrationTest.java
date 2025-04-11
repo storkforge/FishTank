@@ -17,6 +17,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -52,6 +53,8 @@ public class SpringBootIntegrationTest {
     AccessRepository accessRepository;
     @Autowired
     WaterTypeRepository waterTypeRepository;
+    @Autowired
+    PostRepository postRepository;
 
     @Autowired
     private Environment env;
@@ -70,7 +73,7 @@ public class SpringBootIntegrationTest {
         user.setPasswordHash(new BCryptPasswordEncoder().encode("password")); // Encode the password
         user.setEmail("username@email.com");
         user.setAccess(access);
-        user.setAuthenticationCode("hej");
+        user.setAuthenticationCode(UUID.randomUUID().toString());
         appUserRepository.save(user);
 
         var sex = new Sex();
@@ -89,17 +92,68 @@ public class SpringBootIntegrationTest {
         fish.setAppUser(user);
         fish.setWaterType(waterType);
         fishRepository.save(fish);
+
+        var post = new Post();
+        post.setText("Test post");
+        post.setFishid(fish);
+        postRepository.save(post);
+
     }
 
     @Test
-    void getAllFishes() throws Exception {
+    void unauthorizedUserShouldBeRedirectedToLogin() throws Exception {
+        mockMvc.perform(get("/my_fishes_rough"))
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    void myFishesRoughShouldReturnTheRightFish() throws Exception {
         mockMvc.perform(get("/my_fishes_rough")
                         .with(user("username")))
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.fishList.length()").value(1))
                 .andExpect(jsonPath("$.fishList[0].name").value("Fish"))
                 .andExpect(jsonPath("$.fishList[0].species").value("Eel"))
+                .andExpect(jsonPath("$.fishList[0].description").value("a fish"))
+                .andExpect(jsonPath("$.fishList[0].waterType").value("Salt water"))
+                .andExpect(jsonPath("$.fishList[0].sex").value("Male"))
+                .andExpect(jsonPath("$.fishList[0].appUser").value("username"))
+
                 .andReturn();
     }
+
+    @Test
+    void myFishesRoughWithIdShouldReturnTheRightFish() throws Exception {
+        mockMvc.perform(get("/my_fishes_rough/1")
+                        .with(user("username")))
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.name").value("Fish"))
+                .andExpect(jsonPath("$.species").value("Eel"))
+                .andExpect(jsonPath("$.fishList[0].description").value("a fish"))
+                .andExpect(jsonPath("$.fishList[0].waterType").value("Salt water"))
+                .andExpect(jsonPath("$.fishList[0].sex").value("Male"))
+                .andExpect(jsonPath("$.fishList[0].appUser").value("username"))
+                .andReturn();
+    }
+
+    @Test
+    void forumRoughShouldReturnReturnRightPost() throws Exception {
+        mockMvc.perform(get("/forum_rough")
+                        .with(user("username")))
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.postList.length()").value(1))
+                .andExpect(jsonPath("$.postList[0].text").value("Test post"))
+                .andReturn();
+    }
+
+    @Test
+    void forumRoughWithIdShouldReturnReturnRightPost() throws Exception {
+        mockMvc.perform(get("/forum_rough/1")
+                        .with(user("username")))
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.text").value("Test post"))
+                .andReturn();
+    }
+
 
 }
