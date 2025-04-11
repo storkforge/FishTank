@@ -8,7 +8,6 @@ import org.example.fishtank.service.PostService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.Objects;
 
 
 @Controller
@@ -83,22 +82,18 @@ public class PostController {
     @GetMapping("/my_posts")
     String showMyPosts(Model model) {
         var postList = postService.getAllPost();
-        var fishList = postList.stream()
-                .map(post -> fishService.findById(post.fishId()))
-                .filter(Objects::nonNull)
-                .toList();
+        var fishList = fishService.getFishByPost(postList);
         model.addAttribute("postList", postList);
         model.addAttribute("fishList", fishList);
         return "my_posts";
     }
 
+
+
     @GetMapping("/forum")
     String forum(Model model) {
         var postList = postService.getAllPost();
-        var fishList = postList.stream()
-                .map(post -> fishService.findById(post.fishId()))
-                .filter(Objects::nonNull)
-                .toList();
+        var fishList = fishService.getFishByPost(postList);
         model.addAttribute("postList", postList);
         model.addAttribute("fishList", fishList);
         return "forum";

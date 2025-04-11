@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.example.fishtank.model.dto.fishDto.CreateFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.fishDto.UpdateFish;
+import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.entity.AppUser;
 import org.example.fishtank.model.entity.Fish;
 import org.example.fishtank.model.entity.Sex;
@@ -40,6 +41,16 @@ public class FishService {
         return fishRepository.findById(id)
                 .map(FishMapper::map)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
+    }
+
+
+    public List<ResponseFish> getFishByPost(List<ResponsePost> postList) {
+        return postList.stream()
+                .map(post -> fishRepository.findById(post.fishId())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found")))
+                .map(FishMapper::map)
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @Cacheable("allFish")
