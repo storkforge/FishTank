@@ -1,8 +1,4 @@
 package org.example.fishtank.controller;
-
-import org.example.fishtank.model.dto.fishDto.CreateFish;
-import org.example.fishtank.model.dto.fishDto.ResponseFish;
-import org.example.fishtank.model.dto.fishDto.UpdateFish;
 import org.example.fishtank.model.dto.postDto.CreatePost;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.dto.postDto.ResponsePostList;
@@ -12,9 +8,6 @@ import org.example.fishtank.service.PostService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.util.Objects;
 
 
@@ -72,7 +65,7 @@ public class PostController {
         return "redirect:/my_posts";
     }
 
-        @DeleteMapping("/delete_post/{id}")
+    @PostMapping("/delete_post/{id}")
     public String deletePost(@PathVariable Integer id) {
         postService.delete(id);
         return "redirect:/my_posts";
