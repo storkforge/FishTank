@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>Signup</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
@@ -8,27 +8,16 @@
 <div class="card p-4 shadow-lg" style="width: 300px;">
     <h2 class="text-center">Sign up</h2>
 
-    <form th:action="@{/signup}" th:object="${appUser}" method="post">
+    <form th:action="@{/signup}" method="post">
 
-        <div class="mb-3">
-            <input type="text" th:field="*{name}" class="form-control" placeholder="Name" required />
-        </div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
 
-        <div class="mb-3">
-        <select th:field="*{access}" class="form-control" required>
-            <option value="">Select access</option>
-            <option value="Standard">Standard</option>
-            <option value="Premium">Premium</option>
-        </select>
-        </div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
 
-        <div class="mb-3">
-            <input type="email" th:field="*{email}" class="form-control" placeholder="Email" required />
-        </div>
-
-        <div class="mb-3">
-            <input type="password" th:field="*{passwordHash}" class="form-control" placeholder="Password" required />
-        </div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
 
         <button type="submit" class="btn btn-success w-100">Register</button>
     </form>
