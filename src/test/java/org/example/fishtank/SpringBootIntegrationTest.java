@@ -53,6 +53,8 @@ public class SpringBootIntegrationTest {
     AccessRepository accessRepository;
     @Autowired
     WaterTypeRepository waterTypeRepository;
+    @Autowired
+    PostRepository postRepository;
 
     @Autowired
     private Environment env;
@@ -90,6 +92,12 @@ public class SpringBootIntegrationTest {
         fish.setAppUser(user);
         fish.setWaterType(waterType);
         fishRepository.save(fish);
+
+        var post = new Post();
+        post.setText("Test post");
+        post.setFishid(fish);
+        postRepository.save(post);
+
     }
 
     @Test
@@ -115,7 +123,7 @@ public class SpringBootIntegrationTest {
     }
 
     @Test
-    void MyFishesRoughWithIdShouldReturnTheRightFish() throws Exception {
+    void myFishesRoughWithIdShouldReturnTheRightFish() throws Exception {
         mockMvc.perform(get("/my_fishes_rough/1")
                         .with(user("username")))
                 .andExpect(content().contentType("application/json"))
@@ -128,6 +136,24 @@ public class SpringBootIntegrationTest {
                 .andReturn();
     }
 
+    @Test
+    void forumRoughShouldReturnReturnRightPost() throws Exception {
+        mockMvc.perform(get("/forum_rough")
+                        .with(user("username")))
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.postList.length()").value(1))
+                .andExpect(jsonPath("$.postList[0].text").value("Test post"))
+                .andReturn();
+    }
+
+    @Test
+    void forumRoughWithIdShouldReturnReturnRightPost() throws Exception {
+        mockMvc.perform(get("/forum_rough/1")
+                        .with(user("username")))
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.text").value("Test post"))
+                .andReturn();
+    }
 
 
 }
