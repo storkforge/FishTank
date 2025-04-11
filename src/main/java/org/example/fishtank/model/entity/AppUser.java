@@ -28,6 +28,9 @@ public class AppUser {
     @Column(name= "authentication_code", nullable = false, unique = true)
     private String authenticationCode;
 
+//    @Column
+//    private Point<G2D> coordinate;
+
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn (name = "appuser_access_id_fk" , nullable = false)
     private Access access;

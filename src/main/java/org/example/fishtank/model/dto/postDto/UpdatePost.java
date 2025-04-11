@@ -4,5 +4,6 @@ import org.springframework.lang.NonNull;
 
 public record UpdatePost(
         @NonNull
-        String text) {
+        String text,
+        String cityName) {
 }
