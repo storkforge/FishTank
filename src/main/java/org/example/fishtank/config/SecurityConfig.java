@@ -26,8 +26,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         return httpSecurity
-                //.csrf(csrf -> csrf.ignoringRequestMatchers("/my_fishes/images/upload"))
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/my_fishes/images/upload", "/logout"))
+                //.csrf(AbstractHttpConfigurer::disable)
 
                 //.oauth2Login(Customizer.withDefaults()) // sets up the login for oauth2 login with default login page and settings
                 //.formLogin(Customizer.withDefaults()) // sets up the login for form login with default login page and settings

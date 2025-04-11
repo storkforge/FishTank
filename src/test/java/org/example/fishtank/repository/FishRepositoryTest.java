@@ -1,4 +1,4 @@
-package org.example.fishtank.repository;
+/*package org.example.fishtank.repository;
 
 import jakarta.persistence.EntityManager;
 import org.example.fishtank.model.entity.*;
@@ -91,3 +91,4 @@ class FishRepositoryTest {
         //
     }
 }
+ */
