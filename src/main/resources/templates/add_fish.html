@@ -80,7 +80,7 @@
       <input type="text" id="appuser" name="appuser" class="form-control" required>
     </div>
     <div class="mb-3">
-      <label for="fishImage" class="form-label">Upload Image:</label>
+      <label for="fishImage" class="form-label" th:text="#{addfish.image}">Upload Image:</label>
       <input type="file" id="fishImage" name="fishImage" class="form-control" accept="image/*" required>
     </div>
     <button type="submit" class="btn-custom" th:text="#{button.add_fish}">Add Fish</button>
