@@ -75,7 +75,7 @@ public class FishService {
     @CacheEvict(value = {"fish", "allFish"}, key = "#id", allEntries = true)
     public void update(int id, UpdateFish fish) {
         Fish oldFish = fishRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity not found"));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
         FishMapper.map(fish, oldFish);
         fishRepository.update(oldFish.getName(), oldFish.getDescription(), oldFish.getId());
     }
