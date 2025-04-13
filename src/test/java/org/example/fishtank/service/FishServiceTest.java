@@ -214,7 +214,7 @@ class FishServiceTest {
 
         when(appUserRepository.findByName(appUserTest.getName())).thenReturn(Optional.empty());
         when(sexRepository.findByName(sexTest.getName())).thenReturn(sexTest);
-        when(waterTypeRepository.findByName(createFish1.waterType())).thenReturn(null);
+        when(waterTypeRepository.findByName(createFish1.waterType())).thenReturn(waterTypeTest);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
             fishService.save(createFish1);
