@@ -43,7 +43,6 @@ public class FishService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
     }
 
-
     public List<ResponseFish> getFishByPost(List<ResponsePost> postList) {
         return postList.stream()
                 .map(post -> fishRepository.findById(post.fishId())
@@ -64,7 +63,6 @@ public class FishService {
 
     @CacheEvict(value = {"allFish"}, allEntries = true)
     public void save(CreateFish createFish) {
-
         AppUser appUser = appUserRepository.findByName(createFish.appUser())
                 .orElseThrow(() -> new RuntimeException("AppUser not found"));
 
@@ -94,5 +92,4 @@ public class FishService {
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
         fishRepository.delete(fish);
     }
-
 }
