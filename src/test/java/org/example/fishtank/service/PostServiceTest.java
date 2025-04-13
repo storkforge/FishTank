@@ -71,9 +71,7 @@ class PostServiceTest {
     void notFoundIsThrownWhenFindByIdCanNotFindThePost() {
         when(postRepository.findById(1)).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            postService.findById(1);
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> postService.findById(1));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Post not found", exception.getReason());
@@ -125,9 +123,8 @@ class PostServiceTest {
 
         when(fishRepository.findById(fishTest.getId())).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            postService.save(createPost);
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                postService.save(createPost));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Fish not found", exception.getReason());
@@ -156,9 +153,8 @@ class PostServiceTest {
         UpdatePost updatePost = new UpdatePost("updateTest");
         when(postRepository.findById(1)).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            postService.update(1, updatePost);
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                postService.update(1, updatePost));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Post not found", exception.getReason());
@@ -176,9 +172,8 @@ class PostServiceTest {
     @DisplayName("delete throws NotFound when postRep can not find Post")
     void deleteThrowsNotFoundWhenPostRepCanNotFindPost() {
         when(postRepository.findById(1)).thenReturn(Optional.empty());
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            postService.delete(1);
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                postService.delete(1));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Post not found", exception.getReason());
