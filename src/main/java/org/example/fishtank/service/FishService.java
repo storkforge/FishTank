@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -65,18 +66,16 @@ public class FishService {
     @CacheEvict(value = {"allFish"}, allEntries = true)
     public void save(CreateFish createFish) {
 
-        AppUser appUser = appUserRepository.findByName(createFish.appUser())
-                .orElseThrow(() -> new RuntimeException("AppUser not found"));
-
+        Optional<AppUser> appUser = appUserRepository.findByName(createFish.appUser());
         WaterType waterType = waterTypeRepository.findByName(createFish.waterType());
         Sex sex = sexRepository.findByName(createFish.sex());
-        if (appUser == null)
+        if (appUser.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         if (waterType == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Water Type not found");
         if (sex == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sex not found");
-        Fish fish = FishMapper.map(createFish, waterType, sex, appUser);
+        Fish fish = FishMapper.map(createFish, waterType, sex, appUser.orElse(null));
         fishRepository.save(fish);
     }
 
