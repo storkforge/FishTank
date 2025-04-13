@@ -11,6 +11,7 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -59,10 +60,22 @@ public class SpringBootIntegrationTest {
     @Autowired
     private Environment env;
 
+    Fish testFish;
+    Post testPost;
+
     @BeforeEach
     void beforeEach() {
         System.out.println("Testing database connection: " + postgres.getJdbcUrl());
         System.out.println("Current profile: " + Arrays.toString(env.getActiveProfiles()));
+
+        postRepository.deleteAll();
+        fishRepository.deleteAll();
+        appUserRepository.deleteAll();
+        sexRepository.deleteAll();
+        waterTypeRepository.deleteAll();
+        accessRepository.deleteAll();
+
+
 
         var access = new Access();
         access.setName("Standard");
@@ -91,12 +104,12 @@ public class SpringBootIntegrationTest {
         fish.setSex(sex);
         fish.setAppUser(user);
         fish.setWaterType(waterType);
-        fishRepository.save(fish);
+        testFish = fishRepository.save(fish);
 
         var post = new Post();
         post.setText("Test post");
         post.setFishid(fish);
-        postRepository.save(post);
+        testPost = postRepository.save(post);
 
     }
 
@@ -104,6 +117,20 @@ public class SpringBootIntegrationTest {
     void unauthorizedUserShouldBeRedirectedToLogin() throws Exception {
         mockMvc.perform(get("/my_fishes_rough"))
                 .andExpect(status().isFound());
+    }
+
+    @Test
+    void myFishesRoughWithIdShouldReturnTheRightFish() throws Exception {
+        mockMvc.perform(get("/my_fishes_rough/" + testFish.getId())
+                        .with(user("username")))
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.name").value("Fish"))
+                .andExpect(jsonPath("$.species").value("Eel"))
+                .andExpect(jsonPath("$.description").value("a fish"))
+                .andExpect(jsonPath("$.waterType").value("Salt water"))
+                .andExpect(jsonPath("$.sex").value("Male"))
+                .andExpect(jsonPath("$.appUser").value("username"))
+                .andReturn();
     }
 
     @Test
@@ -119,20 +146,6 @@ public class SpringBootIntegrationTest {
                 .andExpect(jsonPath("$.fishList[0].sex").value("Male"))
                 .andExpect(jsonPath("$.fishList[0].appUser").value("username"))
 
-                .andReturn();
-    }
-
-    @Test
-    void myFishesRoughWithIdShouldReturnTheRightFish() throws Exception {
-        mockMvc.perform(get("/my_fishes_rough/1")
-                        .with(user("username")))
-                .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.name").value("Fish"))
-                .andExpect(jsonPath("$.species").value("Eel"))
-                .andExpect(jsonPath("$.fishList[0].description").value("a fish"))
-                .andExpect(jsonPath("$.fishList[0].waterType").value("Salt water"))
-                .andExpect(jsonPath("$.fishList[0].sex").value("Male"))
-                .andExpect(jsonPath("$.fishList[0].appUser").value("username"))
                 .andReturn();
     }
 
