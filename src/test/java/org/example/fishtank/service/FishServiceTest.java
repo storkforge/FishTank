@@ -4,7 +4,6 @@ import org.example.fishtank.model.dto.fishDto.CreateFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.fishDto.UpdateFish;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
-import org.example.fishtank.model.dto.postDto.UpdatePost;
 import org.example.fishtank.model.entity.*;
 import org.example.fishtank.model.mapper.FishMapper;
 import org.example.fishtank.repository.*;
@@ -86,13 +85,12 @@ class FishServiceTest {
     }
 
     @Test
-    @DisplayName("NotFound is thrown when findById can not find the post")
-    void notFoundIsThrownWhenFindByIdCanNotFindThePost() {
+    @DisplayName("NotFound is thrown when findById can not find the fish")
+    void notFoundIsThrownWhenFindByIdCanNotFindTheFish() {
         when(fishRepository.findById(1)).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            fishService.findById(1);
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                fishService.findById(1));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Fish not found", exception.getReason());
@@ -100,6 +98,7 @@ class FishServiceTest {
 
 
     @Test
+    @DisplayName("Get Fish by post returns two list with matching index of fish and post")
     void getFishByPost() {
 
         ResponsePost post1 = new ResponsePost(1, "testText", 1);
@@ -216,16 +215,15 @@ class FishServiceTest {
         when(sexRepository.findByName(sexTest.getName())).thenReturn(sexTest);
         when(waterTypeRepository.findByName(createFish1.waterType())).thenReturn(waterTypeTest);
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            fishService.save(createFish1);
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                fishService.save(createFish1));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("User not found", exception.getReason());
     }
 
     @Test
-    @DisplayName("save throws NotFound when WaterTypRep can not find Water type")
+    @DisplayName("save throws NotFound when WaterTypeRep can not find Water type")
     void saveThrowsNotFoundWhenWaterTypeRepCanNotFindWaterTyp() {
         CreateFish createFish1 = new CreateFish(
                 "testFishName",
@@ -240,9 +238,8 @@ class FishServiceTest {
         when(sexRepository.findByName(sexTest.getName())).thenReturn(sexTest);
         when(waterTypeRepository.findByName(createFish1.waterType())).thenReturn(null);
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            fishService.save(createFish1);
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                fishService.save(createFish1));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Water Type not found", exception.getReason());
@@ -263,9 +260,8 @@ class FishServiceTest {
         when(sexRepository.findByName(sexTest.getName())).thenReturn(null);
         when(waterTypeRepository.findByName(createFish1.waterType())).thenReturn(waterTypeTest);
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            fishService.save(createFish1);
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                fishService.save(createFish1));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Sex not found", exception.getReason());
@@ -297,9 +293,8 @@ class FishServiceTest {
         UpdateFish updateFish = new UpdateFish("updateTest", "updateDescription");
         when(fishRepository.findById(1)).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            fishService.update(1, updateFish);
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                fishService.update(1, updateFish));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Fish not found", exception.getReason());
@@ -307,7 +302,7 @@ class FishServiceTest {
 
     @Test
     @DisplayName("delete removes the fish when it exists")
-    void deleteRemovesThePostWhenItExists() {
+    void deleteRemovesTheFishWhenItExists() {
         when(fishRepository.findById(1)).thenReturn(Optional.of(fishTest));
         fishService.delete(fishTest.getId());
         verify(fishRepository, times(1)).delete(fishTest);
@@ -318,9 +313,8 @@ class FishServiceTest {
     @DisplayName("delete throws NotFound when fishRep can not find Fish")
     void deleteThrowsNotFoundWhenFishRepCanNotFindFish() {
         when(fishRepository.findById(1)).thenReturn(Optional.empty());
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            fishService.delete(1);
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                fishService.delete(1));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Fish not found", exception.getReason());
