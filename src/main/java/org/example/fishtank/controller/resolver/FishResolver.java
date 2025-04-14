@@ -2,8 +2,8 @@ package org.example.fishtank.controller.resolver;
 
 import org.example.fishtank.model.dto.fishDto.CreateFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
+import org.example.fishtank.model.dto.fishDto.UpdateFish;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
-import org.example.fishtank.model.entity.Fish;
 import org.example.fishtank.service.FishService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -45,6 +45,17 @@ public class FishResolver {
         fishService.save(createFish);
         ResponseFish savedFish = fishService.findFishByName(name);
         return savedFish;
+    }
+
+    @MutationMapping
+    public ResponseFish updateFish(
+            @Argument String name,
+            @Argument String description,
+            @Argument Integer id) {
+        UpdateFish updateFish = new UpdateFish(name, description);
+        fishService.update(id, updateFish);
+        ResponseFish updatedFish = fishService.findFishByName(name);
+        return updatedFish;
     }
 
     @SchemaMapping(typeName = "ResponsePost", field = "fish")

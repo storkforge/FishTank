@@ -15,6 +15,7 @@ type Query {
 
 type Mutation {
     addFish(name: String, species: String, description: String, waterType: String, sex: String, appUser: String, image: String): ResponseFish
+    updateFish(name: String, description: String, id: Int): ResponseFish
 }
 
 type ResponseFish {
@@ -38,16 +39,6 @@ type ResponsePost {
 type Fish {
     id: Int
     name: String
-}
-
-input CreateFish {
-    name: String!
-    species: String!
-    description: String!
-    waterType: String!
-    sex: String!
-    appUser: String!
-    image: String!
 }
 
 type Sex {
@@ -76,5 +67,4 @@ type Post {
     id: Int
     posttext: String
     fish: Fish
-
 }
