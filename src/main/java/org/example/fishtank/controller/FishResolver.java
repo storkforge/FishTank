@@ -28,21 +28,14 @@ public class FishResolver {
     }
 
     @QueryMapping
-    public ResponseFish getFishById(Integer id) {
+    public ResponseFish getFishById(@Argument Integer id) {
         return fishService.findById(id);
     }
 
-
-//    @SchemaMapping(typeName = "ResponseFish", field = "posts")
-//    public List<ResponsePost> getPostsForFish(ResponseFish fish) {
-//        return postService.findByFishId(fish);
-//    }
-
-    @QueryMapping
-    public List<ResponsePost> getAllPostByFishId(@Argument Integer id) {
-        return postService.findByFishId(id);
+    @SchemaMapping(typeName = "ResponsePost", field = "fish")
+    public ResponseFish getPostsForFish(ResponsePost post) {
+        return fishService.findById(post.fishId());
     }
-
 
 
 }
