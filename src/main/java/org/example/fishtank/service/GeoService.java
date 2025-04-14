@@ -17,6 +17,11 @@ public class GeoService {
             return null;
         }
 
+        if (!cityName.matches("^[\\p{L}\\p{Z}\\p{P}]+$")) {
+            return null;
+        }
+
+
         String url = UriComponentsBuilder.fromUriString(NOMINATIM_URL)
                 .queryParam("q", cityName)
                 .queryParam("format", "json")
