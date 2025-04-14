@@ -1,9 +1,8 @@
-package org.example.fishtank.controller;
+package org.example.fishtank.controller.resolver;
 
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.service.FishService;
-import org.example.fishtank.service.PostService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
