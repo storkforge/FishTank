@@ -1,4 +1,5 @@
 package org.example.fishtank.controller;
+
 import org.example.fishtank.model.dto.postDto.CreatePost;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.dto.postDto.ResponsePostList;
@@ -35,7 +36,7 @@ public class PostController {
 
     @GetMapping("/add_post")
     public String showAddPostForm(Model model) {
-        model.addAttribute("fishList", fishService.getAllFish());
+        model.addAttribute("fishList", fishService.getMyFish());
         return "add_post";
     }
 
@@ -50,7 +51,7 @@ public class PostController {
 
     @GetMapping("/update_post/{id}")
     public String showUpdatePostForm(@PathVariable Integer id, Model model) {
-        ResponsePost post = postService.findById(id);
+        ResponsePost post = postService.findByMyId(id);
         model.addAttribute("post", post);
         return "update_post";
     }
@@ -72,7 +73,7 @@ public class PostController {
 
     @GetMapping("/my_posts/{id}")
     String postByID(Model model, @PathVariable Integer id) {
-        var post = postService.findById(id);
+        var post = postService.findByMyId(id);
         var fish = fishService.findById(post.fishId());
         model.addAttribute("fish", fish);
         model.addAttribute("post", post);
@@ -81,14 +82,12 @@ public class PostController {
 
     @GetMapping("/my_posts")
     String showMyPosts(Model model) {
-        var postList = postService.getAllPost();
+        var postList = postService.getAllMyPosts();
         var fishList = fishService.getFishByPost(postList);
         model.addAttribute("postList", postList);
         model.addAttribute("fishList", fishList);
         return "my_posts";
     }
-
-
 
     @GetMapping("/forum")
     String forum(Model model) {
