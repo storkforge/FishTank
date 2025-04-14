@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Fish Tank Wisdom</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Open+Sans&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        body {
+            background-image: url('/wisdom_background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        /* Optional shimmer overlay for extra magic */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(120deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.1) 100%);
+            animation: shimmer 20s infinite alternate;
+            z-index: 0;
+        }
+
+
+
+        .container {
+            z-index: 1;
+            max-width: 700px;
+            padding: 40px;
+            background-color: rgba(0, 20, 50, 0.6);
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.3);
+        }
+
+        h1 {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 3em;
+            margin-bottom: 30px;
+            color: #00e5ff;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff;
+            }
+            to {
+                text-shadow: 0 0 20px #00e5ff, 0 0 40px #00e5ff;
+            }
+        }
+
+        .wisdom-box {
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn-custom {
+            padding: 12px 30px;
+            font-size: 16px;
+            color: #ffffff;
+            background: linear-gradient(45deg, #0f1c4d, #001432);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(45deg, #122656, #001a3c);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+        }
+
+        .backToProfile {
+            font-size: 0.95em;
+            text-decoration: underline;
+            color: #b2eaff;
+            transition: font-size 0.3s ease;
+        }
+
+        .backToProfile:hover {
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Fish Tank Wisdom</h1>
+
+    <div class="wisdom-box">
+        <p th:text="${generation}">Your wisdom will appear here...</p>
+    </div>
+
+    <div class="btn-container">
+        <a href="/wisdom" class="btn-custom">Give me more wisdom</a>
+        <a href="/profile" class="backToProfile">← Back to Profile</a>
+    </div>
+</div>
+
+</body>
+</html>
