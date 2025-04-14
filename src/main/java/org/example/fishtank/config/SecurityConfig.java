@@ -26,7 +26,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         return httpSecurity
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/my_fishes/images/upload", "/logout"))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/my_fishes/images/upload", "/logout", "graphql"))
                 //.csrf(AbstractHttpConfigurer::disable)
 
                 //.oauth2Login(Customizer.withDefaults()) // sets up the login for oauth2 login with default login page and settings
@@ -44,6 +44,8 @@ public class SecurityConfig {
                     authorizeRequests.requestMatchers("/signup").permitAll(); // permit all application users to get to url: localhost:8080/login
                     //authorizeRequests.requestMatchers("/logout").permitAll();
                     authorizeRequests.requestMatchers("/my_fishes/images/**").permitAll();
+                    authorizeRequests.requestMatchers("/graphiql").permitAll();
+                    authorizeRequests.requestMatchers("/graphql").permitAll();
                     authorizeRequests.anyRequest().authenticated(); // any other request can only be reached by an authenticated user.
                 })
 

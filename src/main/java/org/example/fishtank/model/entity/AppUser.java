@@ -30,7 +30,7 @@ public class AppUser {
     @JoinColumn (name = "appuser_access_id_fk" , nullable = false)
     private Access access;
 
-    @OneToMany(mappedBy = "appUser", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "appUser", fetch = FetchType.EAGER)
     private List<Fish> fishes = new ArrayList<>();
 
     public Integer getId() {

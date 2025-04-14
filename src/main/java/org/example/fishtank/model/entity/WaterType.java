@@ -17,7 +17,7 @@ public class WaterType {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "waterType", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "waterType", fetch = FetchType.EAGER)
     private List<Fish> fishes = new ArrayList<>();
 
     public Integer getId() {

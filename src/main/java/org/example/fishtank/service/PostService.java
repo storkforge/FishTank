@@ -1,6 +1,7 @@
 package org.example.fishtank.service;
 
 import jakarta.transaction.Transactional;
+import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.postDto.CreatePost;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.dto.postDto.UpdatePost;
@@ -15,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -53,6 +55,13 @@ public class PostService {
                 .stream()
                 .map(PostMapper::map)
                 .filter(Objects::nonNull)
+                .toList();
+    }
+
+    public List<ResponsePost> findByFishId(Integer id) {
+        List<Post> posts = postRepository.findByFishId(id);
+        return posts.stream()
+                .map(PostMapper::map)
                 .toList();
     }
 
