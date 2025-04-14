@@ -7,6 +7,8 @@ type Query {
     getSexByName(name:String): Sex
     getAllWaterType: [WaterType]
     getWaterTypeByName(name:String): WaterType
+    getAllAccess: [Access]
+    getAccessByName(name:String): Access
 }
 
 type Mutation {
@@ -52,6 +54,11 @@ type Sex {
 }
 
 type WaterType {
+    id: Int
+    name: String
+}
+
+type Access {
     id: Int
     name: String
 }
