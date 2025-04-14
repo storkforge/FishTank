@@ -6,6 +6,9 @@ import org.example.fishtank.model.dto.postDto.UpdatePost;
 import org.example.fishtank.model.entity.*;
 import org.example.fishtank.model.mapper.PostMapper;
 import org.example.fishtank.repository.*;
+import org.geolatte.geom.G2D;
+import org.geolatte.geom.Point;
+import org.geolatte.geom.crs.CoordinateReferenceSystems;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,6 +34,9 @@ class PostServiceTest {
 
     @InjectMocks
     PostService postService;
+
+    @Mock
+    private GeoService geoService;
 
     @Mock
     FishRepository fishRepository;
@@ -73,7 +79,7 @@ class PostServiceTest {
     @Test
     @DisplayName("FindById returns correct responsePost with correct values")
     void findByIdReturnsCorrectResponsePostWithCorrectValues() {
-        ResponsePost responsePost = new ResponsePost(1, "test", 1);
+        ResponsePost responsePost = new ResponsePost(1, "test", null, null, null, 1);
 
         when(postRepository.findById(1)).thenReturn(Optional.of(postTest));
         assertEquals(responsePost, postService.findById(1));
@@ -124,8 +130,8 @@ class PostServiceTest {
         postTest2.setFishid(fishTest);
 
         List<ResponsePost> responsePosts = new ArrayList<>();
-        ResponsePost responsePost = new ResponsePost(1, "test", 1);
-        ResponsePost responsePost2 = new ResponsePost(2, "test2", 1);
+        ResponsePost responsePost = new ResponsePost(1, "test", null, null, null, 1);
+        ResponsePost responsePost2 = new ResponsePost(2, "test2", null, null, null, 1);
 
         responsePosts.add(responsePost);
         responsePosts.add(responsePost2);
@@ -177,9 +183,11 @@ class PostServiceTest {
     @Test
     @DisplayName("save creates a new post with correct values")
     void saveCreatesANewPostWithCorrectValues() {
-        CreatePost createPost = new CreatePost("saveTest", fishTest.getId());
+        CreatePost createPost = new CreatePost("saveTest", "Stockholm", fishTest.getId());
         Post post = PostMapper.map(createPost, fishTest);
         when(fishRepository.findById(fishTest.getId())).thenReturn(Optional.of(fishTest));
+        when(geoService.geocodeCity("Stockholm")).thenReturn(new Point<>(
+                new G2D(18.0686, 59.3293), CoordinateReferenceSystems.WGS84));
 
         postService.save(createPost);
         ArgumentCaptor<Post> postCaptor = ArgumentCaptor.forClass(Post.class);
@@ -193,7 +201,7 @@ class PostServiceTest {
     @Test
     @DisplayName("save throws NotFound when fishRep can not find fish")
     void saveThrowsNotFoundWhenFishRepCanNotFindFish() {
-        CreatePost createPost = new CreatePost("saveTest", fishTest.getId());
+        CreatePost createPost = new CreatePost("saveTest", "Stockholm", fishTest.getId());
 
         when(fishRepository.findById(fishTest.getId())).thenReturn(Optional.empty());
 
@@ -208,7 +216,7 @@ class PostServiceTest {
     @DisplayName("update Updates posts text with DTOs text and rep.update is only called once")
     void updateUpdatesPostsTextWithDtOsTextAndRepUpdateIsOnlyCalledOnce() {
 
-        UpdatePost updatePost = new UpdatePost("updateTest");
+        UpdatePost updatePost = new UpdatePost("updateTest", null);
         when(postRepository.findById(1)).thenReturn(Optional.of(postTest));
 
         postService.update(postTest.getId(), updatePost);
@@ -224,7 +232,7 @@ class PostServiceTest {
     @Test
     @DisplayName("update throws NotFound when postRep can not find post")
     void updateThrowsNotFoundWhenPostRepCanNotFindPost() {
-        UpdatePost updatePost = new UpdatePost("updateTest");
+        UpdatePost updatePost = new UpdatePost("updateTest", null);
         when(postRepository.findById(1)).thenReturn(Optional.empty());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->

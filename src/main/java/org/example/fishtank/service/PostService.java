@@ -5,9 +5,11 @@ import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.postDto.CreatePost;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.dto.postDto.UpdatePost;
-import org.example.fishtank.model.entity.*;
+import org.example.fishtank.model.entity.Fish;
+import org.example.fishtank.model.entity.Post;
 import org.example.fishtank.model.mapper.PostMapper;
-import org.example.fishtank.repository.*;
+import org.example.fishtank.repository.FishRepository;
+import org.example.fishtank.repository.PostRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -24,10 +26,12 @@ public class PostService {
 
     PostRepository postRepository;
     FishRepository fishRepository;
+    GeoService geoService;
 
-    public PostService(PostRepository postRepository, FishRepository fishRepository) {
+    public PostService(PostRepository postRepository, FishRepository fishRepository, GeoService geoService) {
         this.fishRepository = fishRepository;
         this.postRepository = postRepository;
+        this.geoService = geoService;
     }
 
     @Cacheable(value = "post", key = "#id")
@@ -83,6 +87,13 @@ public class PostService {
         Fish fish = fishRepository.findById(createPost.fishId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
         Post post = PostMapper.map(createPost, fish);
+
+        if (createPost.cityName() != null && !createPost.cityName().isBlank()) {
+            var point = geoService.geocodeCity(createPost.cityName());
+            if (point != null) {
+                post.setCoordinate(point);
+            }
+        }
         postRepository.save(post);
     }
 
