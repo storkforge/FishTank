@@ -8,7 +8,7 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #1a8054;
+            background-color: #25a1da;
             background-image: url("https://www.transparenttextures.com/patterns/silver-scales.png");
             padding: 50px;
         }
@@ -48,6 +48,10 @@
 <h1 class="mb-4">User Profile</h1>
 
 <div class="card p-4 shadow-lg">
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <img th:src="${authentication == 'Premium' ? '/dolphin_crown.jpg' : 'dolphin.jpg'}"
+             alt="User role image" width="300" height="300">
+    </div>
     <ul class="list-group list-group-flush">
         <li class="list-group-item">
             <strong>Username:</strong> <span th:text="${user}">Username</span>
