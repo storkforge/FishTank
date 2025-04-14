@@ -2,6 +2,7 @@ package org.example.fishtank;
 
 import org.example.fishtank.model.entity.*;
 import org.example.fishtank.repository.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(TestCacheConfig.class)
 public class SpringBootIntegrationTest {
 
-    //Testcontainer for PostgreSQL database
-    static PostgreSQLContainer<?> postgis = new PostgreSQLContainer<>(
-            DockerImageName.parse("postgis/postgis:15-3.3")
+    static PostgreSQLContainer<?> postgisContainer =
+            new PostgreSQLContainer<>(DockerImageName.parse("postgis/postgis:15-3.3")
                     .asCompatibleSubstituteFor("postgres"))
-            .withInitScript("init-postgis.sql");
+                    .withDatabaseName("fishtank")
+                    .withUsername("user")
+                    .withPassword("pass");
 
 
     @Autowired
@@ -66,9 +68,16 @@ public class SpringBootIntegrationTest {
     Fish testFish;
     Post testPost;
 
+    @BeforeAll
+    static void setUp() {
+        if (!postgisContainer.isRunning()) {
+            postgisContainer.start();
+        }
+    }
+
     @BeforeEach
     void beforeEach() {
-        System.out.println("Testing database connection: " + postgis.getJdbcUrl());
+        System.out.println("Testing database connection: " + postgisContainer.getJdbcUrl());
         System.out.println("Current profile: " + Arrays.toString(env.getActiveProfiles()));
 
         postRepository.deleteAll();
@@ -163,7 +172,7 @@ public class SpringBootIntegrationTest {
 
     @Test
     void forumRoughWithIdShouldReturnReturnRightPost() throws Exception {
-        mockMvc.perform(get("/forum_rough/1")
+        mockMvc.perform(get("/forum_rough/" + testPost.getId())
                         .with(user("username")))
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.text").value("Test post"))
