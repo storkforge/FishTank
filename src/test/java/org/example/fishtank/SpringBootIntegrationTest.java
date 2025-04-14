@@ -2,8 +2,13 @@ package org.example.fishtank;
 
 import org.example.fishtank.model.entity.*;
 import org.example.fishtank.repository.*;
+import org.example.fishtank.service.CurrentUser;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +25,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.Arrays;
 import java.util.UUID;
 
+import static org.mockito.Mockito.mockStatic;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,6 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //Enables containerized dependencies like postgreSQL to automaticly start and stop för each test
 @Testcontainers
 @Import(TestCacheConfig.class)
+@ExtendWith(MockitoExtension.class)
 public class SpringBootIntegrationTest {
 
     //Testcontainer for PostgreSQL database
@@ -60,8 +67,12 @@ public class SpringBootIntegrationTest {
     @Autowired
     private Environment env;
 
+    MockedStatic<CurrentUser> mockedStatic;
+
     Fish testFish;
     Post testPost;
+
+
 
     @BeforeEach
     void beforeEach() {
@@ -111,6 +122,15 @@ public class SpringBootIntegrationTest {
         post.setFishid(fish);
         testPost = postRepository.save(post);
 
+
+        mockedStatic = mockStatic(CurrentUser.class);
+        mockedStatic.when(CurrentUser::getId).thenReturn(user.getId());
+
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockedStatic.close();
     }
 
     @Test

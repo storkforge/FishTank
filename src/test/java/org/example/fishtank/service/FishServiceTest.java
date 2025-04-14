@@ -7,6 +7,7 @@ import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.entity.*;
 import org.example.fishtank.model.mapper.FishMapper;
 import org.example.fishtank.repository.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -46,6 +50,11 @@ class FishServiceTest {
     AppUser appUserTest = new AppUser();
     String imageTest = "testImage.png";
 
+    Integer userID = 1;
+
+    private MockedStatic<CurrentUser> mockedStatic;
+
+
     @BeforeEach
     void setUp() {
         fishTest.setId(1);
@@ -65,6 +74,17 @@ class FishServiceTest {
 
         sexTest.setId(1);
         sexTest.setName("testSex");
+
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        SecurityContextHolder.setContext(securityContext);
+
+        mockedStatic = mockStatic(CurrentUser.class);
+        mockedStatic.when(CurrentUser::getId).thenReturn(userID);
+    }
+    @AfterEach
+            void tearDown() {
+        mockedStatic.close();
     }
 
     @Test
@@ -96,6 +116,16 @@ class FishServiceTest {
         assertEquals("Fish not found", exception.getReason());
     }
 
+    @Test
+    @DisplayName("FindMyFishById finds my fish")
+    void findMyFishByIdFindsMyFish() {
+        Integer fishID = 1;
+        when(fishRepository.findById(fishID)).thenReturn(Optional.of(fishTest));
+        ResponseFish responseFish = fishService.findMyFishById(fishID);
+        assertNotNull(responseFish);
+        assertEquals(fishID, responseFish.id());
+    }
+
 
     @Test
     @DisplayName("Get Fish by post returns two list with matching index of fish and post")
@@ -124,6 +154,51 @@ class FishServiceTest {
         assertEquals(2, result.size());
         assertEquals(responseFish1, result.get(0));
         assertEquals(responseFish2, result.get(1));
+    }
+
+    @Test
+    @DisplayName("GetMyFish returns my fish")
+    void getMyFishReturnsMyFish(){
+
+        java.util.List<Fish> fishes = new ArrayList<>();
+        Fish fishTest2 = new Fish();
+        fishTest2.setId(2);
+        fishTest2.setName("testFishName");
+        fishTest2.setSpecies("testFishSpecies");
+        fishTest2.setDescription("testFishDescription");
+        fishTest2.setWaterType(waterTypeTest);
+        fishTest2.setAppUser(appUserTest);
+        fishTest2.setSex(sexTest);
+        fishTest2.setImage(imageTest);
+        fishes.add(fishTest);
+        fishes.add(fishTest2);
+
+        List<ResponseFish> responseFishes = new ArrayList<>();
+        ResponseFish responseFish = new ResponseFish(
+                1,
+                "testFishName",
+                "testFishSpecies",
+                "testFishDescription",
+                "Salt Water",
+                "testSex",
+                "testAppUser",
+                "testImage.png");
+        ResponseFish responseFish2 = new ResponseFish(2,
+                "testFishName",
+                "testFishSpecies",
+                "testFishDescription",
+                "Salt Water",
+                "testSex",
+                "testAppUser",
+                "testImage.png");
+
+        responseFishes.add(responseFish);
+        responseFishes.add(responseFish2);
+
+
+        when(fishRepository.findByAppUserId(appUserTest.getId())).thenReturn(fishes);
+
+        assertEquals(responseFishes, fishService.getMyFish());
     }
 
     @Test
@@ -244,6 +319,7 @@ class FishServiceTest {
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Water Type not found", exception.getReason());
     }
+
     @Test
     @DisplayName("save throws NotFound when sexRep can not find Sex")
     void saveThrowsNotFoundWhenSexRepCanNotFindSex() {
