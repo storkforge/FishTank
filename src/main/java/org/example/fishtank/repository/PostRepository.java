@@ -17,15 +17,15 @@ public interface PostRepository extends ListCrudRepository<Post, Integer> {
     @Query("UPDATE Post p SET p.posttext = :text  WHERE p.id = :id")
     void update(String text, int id);
 
-    @Query("SELECT p FROM Post p WHERE p.fishid.id = :fishId")
-    List<Post> findByFishId(Integer fishId);
-    List<Post> findByFishId(int fishId);
-
     @Query(value = """
     SELECT * FROM post 
     WHERE ST_DWithin(coordinate, :point, :distance) 
     ORDER BY ST_Distance(coordinate, :point)
     """, nativeQuery = true)
     List<Post> findNearbyPosts(@Param("point") Point point, @Param("distance") double distance);
+
+
+    @Query("SELECT p FROM Post p WHERE p.fishid.id = :fishId")
+    List<Post> findByFishId(Integer fishId);
 
 }
