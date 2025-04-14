@@ -45,10 +45,10 @@
 </head>
 <body>
 <div class="container">
-    <h1 th:text="#{home.home}">Welcome + </h1>
+    <h1 th:utext="#{home.welcome} + '<br>' + ${username}">Welcome, Username</h1>
     <a href="my_fishes" class="btn" th:text="#{home.myfishes}">My Fishes</a>
     <a href="forum" class="btn" th:text="#{home.forum}">Forum</a>
-    <a href="profile" class="btn" th:text="#{home.access}">Access</a>
+    <a href="profile" class="btn" th:text="#{home.user}">User</a>
 </div>
 </body>
 </html>

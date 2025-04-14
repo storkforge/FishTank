@@ -18,7 +18,9 @@ public class AppUserController {
     }
 
     @GetMapping("/home")
-    public String home() {
+    public String home(Model model) {
+        String username = currentUser.getUsername();
+        model.addAttribute("username", username);
         return "home";
     }
 
