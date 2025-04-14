@@ -93,9 +93,6 @@ public class FishController {
     @GetMapping("/update_fish/{id}")
     public String showUpdateFishForm(@PathVariable Integer id, Model model) {
         ResponseFish fish = fishService.findMyFishById(id);
-        if (fish == null) {
-            System.out.println("Fish not found for ID: " + id);
-        }
         model.addAttribute("fish", fish);
         return "update_fish";
     }

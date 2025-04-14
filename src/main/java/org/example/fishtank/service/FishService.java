@@ -50,7 +50,7 @@ public class FishService {
         return fishRepository.findById(id)
                 .filter(fish -> fish.getAppUser().getId().equals(currentUserId))
                 .map(FishMapper::map)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not Found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Not allowed to access this fish"));
     }
 
     @Cacheable("myFish")
