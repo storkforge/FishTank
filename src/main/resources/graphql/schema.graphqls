@@ -5,6 +5,8 @@ type Query {
     getAllPostByFishId(id:Int): [ResponsePost]
     getAllSex: [Sex]
     getSexByName(name:String): Sex
+    getAllWaterType: [WaterType]
+    getWaterTypeByName(name:String): WaterType
 }
 
 type Mutation {
@@ -45,6 +47,11 @@ input CreateFish {
 }
 
 type Sex {
+    id: Int
+    name: String
+}
+
+type WaterType {
     id: Int
     name: String
 }
