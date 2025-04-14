@@ -12,6 +12,7 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,7 +22,10 @@ class FishRepositoryTest {
 
     @Container
     @ServiceConnection
-    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest");
+    static PostgreSQLContainer<?> postgisContainer = new PostgreSQLContainer<>(
+            DockerImageName.parse("postgis/postgis:15-3.3")
+                    .asCompatibleSubstituteFor("postgres") // critical for compatibility
+    );
 
     @Autowired
     FishRepository fishRepository;
