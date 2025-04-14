@@ -9,6 +9,7 @@ import org.example.fishtank.service.PostService;
 import org.example.fishtank.util.Haversine;
 import org.geolatte.geom.G2D;
 import org.geolatte.geom.Point;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,17 +29,19 @@ public class PostController {
         this.fishService = fishService;
     }
 
+
     @ResponseBody
-    @GetMapping("/forum_rough/{id}")
-    public ResponsePost getPostById(@PathVariable(name = "id") int id) {
+    @GetMapping(value = "/forum_rough/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponsePost getPostRoughById(@PathVariable Integer id) {
         return postService.findById(id);
     }
 
     @ResponseBody
-    @GetMapping("/forum_rough")
+    @GetMapping(value = "/forum_rough", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponsePostList getPostsRough() {
         return new ResponsePostList(postService.getAllPost());
     }
+
 
     @GetMapping("/add_post")
     public String showAddPostForm(Model model) {
