@@ -1,1 +1,0 @@
-ALTER TABLE post ADD COLUMN cityname VARCHAR(100);
