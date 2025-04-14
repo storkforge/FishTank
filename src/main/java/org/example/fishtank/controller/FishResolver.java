@@ -15,11 +15,9 @@ import java.util.List;
 public class FishResolver {
 
     private FishService fishService;
-    private PostService postService;
 
-    public FishResolver(FishService fishService, PostService postService) {
+    public FishResolver(FishService fishService) {
         this.fishService = fishService;
-        this.postService = postService;
     }
 
     @QueryMapping

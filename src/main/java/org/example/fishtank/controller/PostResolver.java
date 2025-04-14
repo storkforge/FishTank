@@ -14,13 +14,9 @@ import java.util.List;
 @Controller
 public class PostResolver {
 
-    //Klar!
-
     private PostService postService;
-    private FishService fishService;
 
-    public PostResolver(FishService fishService, PostService postService) {
-        this.fishService = fishService;
+    public PostResolver(PostService postService) {
         this.postService = postService;
     }
 
