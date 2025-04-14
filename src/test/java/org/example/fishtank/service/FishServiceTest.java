@@ -101,8 +101,9 @@ class FishServiceTest {
     @DisplayName("Get Fish by post returns two list with matching index of fish and post")
     void getFishByPost() {
 
-        ResponsePost post1 = new ResponsePost(1, "testText", 1);
-        ResponsePost post2 = new ResponsePost(2, "testText2", 2);
+        ResponsePost post1 = new ResponsePost(1, "testText1", null, null, null, 1);
+        ResponsePost post2 = new ResponsePost(2, "testText2", null, null, null, 2);
+
 
         Fish fish2 = new Fish();
         fish2.setId(2);

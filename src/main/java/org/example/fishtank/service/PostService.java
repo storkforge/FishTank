@@ -4,9 +4,11 @@ import jakarta.transaction.Transactional;
 import org.example.fishtank.model.dto.postDto.CreatePost;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.dto.postDto.UpdatePost;
-import org.example.fishtank.model.entity.*;
+import org.example.fishtank.model.entity.Fish;
+import org.example.fishtank.model.entity.Post;
 import org.example.fishtank.model.mapper.PostMapper;
-import org.example.fishtank.repository.*;
+import org.example.fishtank.repository.FishRepository;
+import org.example.fishtank.repository.PostRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -20,12 +22,14 @@ import java.util.Objects;
 @Transactional
 public class PostService {
 
-    PostRepository postRepository;
-    FishRepository fishRepository;
+    private final PostRepository postRepository;
+    private final FishRepository fishRepository;
+    private final GeoService geoService;
 
-    public PostService(PostRepository postRepository, FishRepository fishRepository) {
+    public PostService(PostRepository postRepository, FishRepository fishRepository, GeoService geoService) {
         this.fishRepository = fishRepository;
         this.postRepository = postRepository;
+        this.geoService = geoService;
     }
 
     @Cacheable(value = "post", key = "#id")
@@ -44,16 +48,24 @@ public class PostService {
                 .toList();
     }
 
-
     @CacheEvict(value = {"allPost"}, allEntries = true)
     public void save(CreatePost createPost) {
         Fish fish = fishRepository.findById(createPost.fishId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
+
         Post post = PostMapper.map(createPost, fish);
+
+        if (createPost.cityName() != null && !createPost.cityName().isBlank()) {
+            var point = geoService.geocodeCity(createPost.cityName());
+            if (point != null) {
+                post.setCoordinate(point);
+            }
+        }
+
         postRepository.save(post);
     }
 
-    @CacheEvict(value = {"post", "allPost"},key = "#id", allEntries = true)
+    @CacheEvict(value = {"post", "allPost"}, key = "#id", allEntries = true)
     public void update(int id, UpdatePost post) {
         Post oldPost = postRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
@@ -67,5 +79,5 @@ public class PostService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
         postRepository.delete(post);
     }
-
 }
+
