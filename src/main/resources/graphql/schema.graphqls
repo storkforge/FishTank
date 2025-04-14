@@ -14,7 +14,7 @@ type Query {
 }
 
 type Mutation {
-    createFish(input: CreateFish!): ResponseFish
+    addFish(name: String, species: String, description: String, waterType: String, sex: String, appUser: String, image: String): ResponseFish
 }
 
 type ResponseFish {
@@ -47,7 +47,7 @@ input CreateFish {
     waterType: String!
     sex: String!
     appUser: String!
-    image: String
+    image: String!
 }
 
 type Sex {

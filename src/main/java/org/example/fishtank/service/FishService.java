@@ -113,4 +113,9 @@ public class FishService {
         fishRepository.delete(fish);
     }
 
+    public ResponseFish findFishByName(String name) {
+        return fishRepository.findByName(name)
+                .map(FishMapper::map)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
+    }
 }
