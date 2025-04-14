@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -37,9 +38,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SpringBootIntegrationTest {
 
     //Testcontainer for PostgreSQL database
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
+    static PostgreSQLContainer<?> postgis = new PostgreSQLContainer<>(
+            DockerImageName.parse("postgis/postgis:15-3.3")
+                    .asCompatibleSubstituteFor("postgres"))
+            .withInitScript("init-postgis.sql");
+
 
     @Autowired
     MockMvc mockMvc;
@@ -65,7 +68,7 @@ public class SpringBootIntegrationTest {
 
     @BeforeEach
     void beforeEach() {
-        System.out.println("Testing database connection: " + postgres.getJdbcUrl());
+        System.out.println("Testing database connection: " + postgis.getJdbcUrl());
         System.out.println("Current profile: " + Arrays.toString(env.getActiveProfiles()));
 
         postRepository.deleteAll();
@@ -74,7 +77,6 @@ public class SpringBootIntegrationTest {
         sexRepository.deleteAll();
         waterTypeRepository.deleteAll();
         accessRepository.deleteAll();
-
 
 
         var access = new Access();
