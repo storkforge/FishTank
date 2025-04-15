@@ -86,6 +86,14 @@ public class PostService {
         postRepository.save(post);
     }
 
+    //save with return
+    public Post saveAndReturn(CreatePost createPost) {
+        Fish fish = fishRepository.findById(createPost.fishId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
+        Post post = PostMapper.map(createPost, fish);
+        return postRepository.save(post);
+    }
+
     @CacheEvict(value = {"post", "allPost", "myPost"}, key = "#id", allEntries = true)
     public void update(int id, UpdatePost post) {
         Post oldPost = postRepository.findById(id)
