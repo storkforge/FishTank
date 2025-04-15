@@ -1,5 +1,6 @@
 package org.example.fishtank.service.security;
 
+import org.example.fishtank.exception.custom.ResourceNotFoundException;
 import org.example.fishtank.model.dto.appUserDto.security.FormAppUserPrinciple;
 import org.example.fishtank.model.dto.appUserDto.security.LoginAppUser;
 import org.example.fishtank.service.AppUserService;
@@ -21,8 +22,15 @@ public class CustomFormUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         String authenticationCode = "form_" + username;
-        LoginAppUser loginAppUser = appUserService.findByAuthenticationCode(authenticationCode);
 
-        return new FormAppUserPrinciple(loginAppUser);
+        try{
+
+            LoginAppUser loginAppUser = appUserService.getLoginAppUserByAuthenticationCode(authenticationCode);
+            return new FormAppUserPrinciple(loginAppUser);
+
+        } catch (ResourceNotFoundException e) {
+
+            throw new UsernameNotFoundException(e.getMessage());
+        }
     }
 }
