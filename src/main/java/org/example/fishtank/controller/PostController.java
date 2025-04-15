@@ -15,6 +15,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+import java.util.List;
+import java.util.Objects;
+
 
 @Controller
 public class PostController {
@@ -28,7 +31,6 @@ public class PostController {
         this.postService = postService;
         this.fishService = fishService;
     }
-
 
     @ResponseBody
     @GetMapping(value = "/forum_rough/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -98,6 +100,8 @@ public class PostController {
         model.addAttribute("fishList", fishList);
         return "my_posts";
     }
+
+
 
     @GetMapping("/forum")
     public String showForum(@RequestParam(required = false) String location,
