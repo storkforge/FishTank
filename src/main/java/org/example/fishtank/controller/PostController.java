@@ -42,7 +42,6 @@ public class PostController {
         return new ResponsePostList(postService.getAllPost());
     }
 
-
     @GetMapping("/add_post")
     public String showAddPostForm(Model model) {
         model.addAttribute("fishList", fishService.getMyFish());

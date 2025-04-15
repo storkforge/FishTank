@@ -1,15 +1,14 @@
 package org.example.fishtank.model.entity;
 
 import jakarta.persistence.*;
-import org.geolatte.geom.G2D;
-import org.geolatte.geom.Point;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "appuser")
-public class AppUser {
+public class AppUser  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
