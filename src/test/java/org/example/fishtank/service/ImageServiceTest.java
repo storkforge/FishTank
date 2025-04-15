@@ -1,6 +1,5 @@
 package org.example.fishtank.service;
 
-import org.example.fishtank.repository.FishRepository;
 import org.example.fishtank.util.FileStorage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +26,7 @@ class ImageServiceTest {
 
     @Mock
     private FileStorage fileStorage;
-    String imageTest = "testImage.png";
+    String testImageName = "test_Image.png";
     private final String testUploadDir = "test/uploads";
 
     @BeforeEach
@@ -67,7 +66,20 @@ class ImageServiceTest {
         assertTrue(Files.exists(actualPath), "Directory should exist after preparation");
     }
 
+    @Test
+    @DisplayName("Sanitized should throw exception when fileName contain unwanted symbols")
+    void sanitizedShouldThrowExceptionWhenFileNameContainUnwantedSymbols() {
+        String fileNameWithUnwantedSymbols = "/test..Image\\.png";
 
+        assertThrows(IllegalArgumentException.class, () -> imageService.sanitizeFileName(fileNameWithUnwantedSymbols));
+    }
 
+    @Test
+    @DisplayName("Sanitized should replace spaces with underscore in fileName")
+    void sanitizedShouldReplaceSpacesWithUnderscoreInFileName() {
+        String fileNameSpaces = "test Image.png";
+
+        assertThat(imageService.sanitizeFileName(fileNameSpaces)).isEqualTo(testImageName);
+    }
 
 }
