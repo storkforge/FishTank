@@ -5,6 +5,8 @@ import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFishList;
 import org.example.fishtank.model.dto.fishDto.UpdateFish;
 import org.example.fishtank.repository.FishRepository;
+import org.example.fishtank.service.AppUserService;
+import org.example.fishtank.service.CurrentUser;
 import org.example.fishtank.service.FishService;
 import org.example.fishtank.service.ImageService;
 import org.springframework.core.io.Resource;
@@ -27,10 +29,12 @@ public class FishController {
     private final FishService fishService;
     private final FishRepository fishRepository;
     private final ImageService imageService;
+    private final AppUserService appUserService;
 
-    public FishController(FishService fishService, FishRepository fishRepository, ImageService imageService) {
+    public FishController(FishService fishService, FishRepository fishRepository,AppUserService appUserService , ImageService imageService) {
         this.fishService = fishService;
         this.fishRepository = fishRepository;
+        this.appUserService = appUserService;
         this.imageService = imageService;
     }
 
@@ -54,7 +58,9 @@ public class FishController {
     }
 
     @GetMapping("/add_fish")
-    public String showAddFishForm() {
+    public String showAddFishForm(Model model) {
+        var user = appUserService.findById(CurrentUser.getId());
+        model.addAttribute("user", user);
         return "add_fish";
     }
 
@@ -65,7 +71,7 @@ public class FishController {
             @RequestParam("description") String description,
             @RequestParam("watertype") String watertype,
             @RequestParam("sex") String sex,
-            @RequestParam("appuser") String appuser,
+            @RequestParam("name") String appuser,
             @RequestParam("fishImage") MultipartFile fishImage) throws IOException {
         String imageName = imageService.saveImage(fishImage);
         CreateFish createFish = new CreateFish(name, species, description, watertype, sex, appuser, imageName);
