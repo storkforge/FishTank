@@ -42,6 +42,43 @@
             background: linear-gradient(45deg, #0277bd, #004d73);
             transform: scale(1.05);
         }
+
+        .btn-custom-premium {
+                     display: inline-block;
+                     width: 20%;
+                     margin: 8px 0;
+                     padding: 12px;
+                     font-size: 16px;
+                     color: white;
+                     background: linear-gradient(45deg, #ffcc00, #af6c07);
+                     border: none;
+                     border-radius: 25px;
+                     cursor: pointer;
+                     text-decoration: none;
+                     transition: background 0.3s ease-in-out, transform 0.2s;
+                 }
+        .btn-custom-premium:hover {
+                     background: linear-gradient(45deg, #ffb300, #7a4f00);
+                     transform: scale(1.05);
+                 }
+        .btn-custom-standard {
+            display: inline-block;
+            width: 20%;
+            margin: 8px 0;
+            padding: 12px;
+            font-size: 16px;
+            color: white;
+            background: linear-gradient(45deg, #a8a8a8, #636363);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s ease-in-out, transform 0.2s;
+        }
+        .btn-custom-standard:hover {
+            background: linear-gradient(45deg, #999999, #4d4d4d);
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -59,7 +96,19 @@
         <li class="list-group-item">
             <strong>Role:</strong> <span th:text="${authentication}">Role</span>
         </li>
+
     </ul>
+</div>
+<div class="d-flex flex-column align-items-center" th:if="${authentication == 'Premium'}">
+    <a href="wisdom" class="btn-custom-premium mt-3">Get a fish wisdom</a>
+</div>
+
+<div class="d-flex flex-column align-items-center" th:if="${authentication == 'Standard'}">
+    <a class="btn-custom-standard mt-3">Get a fish wisdom</a>
+</div>
+
+<div class="d-flex flex-column align-items-center">
+    <a href="my_fishes" class="btn-custom mt-3">My Fishes</a>
 </div>
 
 <div class="d-flex flex-column align-items-center">
