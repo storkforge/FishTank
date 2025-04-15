@@ -15,6 +15,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class GeoService {
@@ -23,7 +25,8 @@ public class GeoService {
     // Added HttpClient initialization
     private final HttpClient client = HttpClient.newHttpClient();
     private static final String NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
-    private static final List<String> ALLOWED_HOSTS = List.of("nominatim.openstreetmap.org");
+    // Rate limiter: only 1 request per second
+    private final Semaphore rateLimiter = new Semaphore(1);
 
     public Point<G2D> geocodeCity(String cityName) {
         if (cityName == null || cityName.isBlank()) {
@@ -40,9 +43,26 @@ public class GeoService {
         URI uri = URI.create(NOMINATIM_URL + "?q=" + cityName.trim() + "&format=json&limit=1");
 
         try {
+            boolean acquired = rateLimiter.tryAcquire(2, TimeUnit.SECONDS);
+            if (!acquired) {
+                logger.warn("Rate limit exceeded for geocoding request: {}", cityName);
+                return null;
+            }
             // Added HttpRequest and HttpResponse handling
-            HttpRequest request = HttpRequest.newBuilder(uri).GET().build();
+            HttpRequest request = HttpRequest.newBuilder(uri)
+                    .header("User-Agent", "FishTank-Application/1.0 (vilhelm.kennedal@iths.se)")
+                    .GET()
+                    .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000);
+                    rateLimiter.release();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }).start();
 
             if (response.body() == null || response.body().isEmpty()) {
                 logger.warn("No response from Nominatim for city: {}", cityName);
