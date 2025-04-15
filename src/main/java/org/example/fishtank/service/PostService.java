@@ -1,6 +1,7 @@
 package org.example.fishtank.service;
 
 import jakarta.transaction.Transactional;
+import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.postDto.CreatePost;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.dto.postDto.UpdatePost;
@@ -15,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -56,6 +58,13 @@ public class PostService {
                 .toList();
     }
 
+    public List<ResponsePost> findByFishId(Integer id) {
+        List<Post> posts = postRepository.findByFishId(id);
+        return posts.stream()
+                .map(PostMapper::map)
+                .toList();
+    }
+
     @Cacheable("myPost")
     public List<ResponsePost> getAllMyPosts() {
         var fishList = fishRepository.findByAppUserId(CurrentUser.getId());
@@ -75,6 +84,14 @@ public class PostService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
         Post post = PostMapper.map(createPost, fish);
         postRepository.save(post);
+    }
+
+    //save with return
+    public Post saveAndReturn(CreatePost createPost) {
+        Fish fish = fishRepository.findById(createPost.fishId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
+        Post post = PostMapper.map(createPost, fish);
+        return postRepository.save(post);
     }
 
     @CacheEvict(value = {"post", "allPost", "myPost"}, key = "#id", allEntries = true)

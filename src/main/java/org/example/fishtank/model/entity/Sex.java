@@ -17,7 +17,7 @@ public class Sex {
     @Column(name = "name", nullable = false, length = Integer.MAX_VALUE)
     private String name;
 
-    @OneToMany(mappedBy = "sex", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sex", fetch = FetchType.EAGER)
     private List<Fish> fishes = new ArrayList<>();
 
     public Integer getId() {

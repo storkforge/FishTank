@@ -14,7 +14,6 @@ public interface PostRepository extends ListCrudRepository<Post, Integer> {
     @Query("UPDATE Post p SET p.posttext = :text  WHERE p.id = :id")
     void update(String text, int id);
 
-
     @Query("SELECT p FROM Post p WHERE p.fishid.id = :fishId")
-    List<Post> findByFishId(int fishId);
+    List<Post> findByFishId(Integer fishId);
 }

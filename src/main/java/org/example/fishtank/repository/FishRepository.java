@@ -8,6 +8,8 @@ import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import java.util.List;
 
 
@@ -19,6 +21,8 @@ public interface FishRepository extends ListCrudRepository<Fish, Integer> {
     @Query("UPDATE Fish f SET f.name = :name, f.description = :description WHERE f.id = :id")
     void update(String name, String description, int id);
 
+    @Query("select f from Fish f where f.name = :name")
+    Optional<Fish> findByName(String name);
 
     @Query("SELECT f FROM Fish f WHERE f.appUser.id = :id")
     List<Fish> findByAppUserId(int id);

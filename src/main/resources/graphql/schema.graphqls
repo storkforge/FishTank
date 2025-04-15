@@ -1,0 +1,66 @@
+type Query {
+    getAllFish: [ResponseFish]
+    getFishById(id:Int): ResponseFish
+    getAllPost: [ResponsePost]
+    getAllPostByFishId(id:Int): [ResponsePost]
+    getAllSex: [Sex]
+    getSexByName(name:String): Sex
+    getAllWaterType: [WaterType]
+    getWaterTypeByName(name:String): WaterType
+    getAllAccess: [Access]
+    getAccessByName(name:String): Access
+    getAllAppUser: [AppUser]
+    getAppUserByName(name:String): AppUser
+}
+
+type Mutation {
+    addFish(name: String, species: String, description: String, waterType: String, sex: String, appUser: String, image: String): ResponseFish
+    updateFish(name: String, description: String, id: Int): ResponseFish
+    addPost(text: String, fishId: Int): ResponsePost
+    updatePost(text: String, id: Int): ResponsePost
+}
+
+type ResponseFish {
+    id: Int
+    name: String
+    species: String
+    description: String
+    image: String
+    waterType: String
+    sex: String
+    appUser: String
+    posts: [ResponsePost]
+}
+
+type ResponsePost {
+    id: Int
+    text: String
+    fish: ResponseFish
+}
+
+type Fish {
+    id: Int
+    name: String
+}
+
+type Sex {
+    id: Int
+    name: String
+}
+
+type WaterType {
+    id: Int
+    name: String
+}
+
+type Access {
+    id: Int
+    name: String
+}
+
+type AppUser {
+    id: Int
+    name: String
+    email: String
+    access: Access
+}
