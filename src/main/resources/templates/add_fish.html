@@ -50,7 +50,7 @@
 <body>
 <h1 class="mb-4" th:text="#{addfish.addnewfish}">Add a New Fish</h1>
 <div class="card p-4 shadow-lg">
-    <form th:action="@{/add_fish}" method="post" enctype="multipart/form-data" th:object="${user}">
+    <form th:action="@{/add_fish}" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="name" class="form-label" th:text="#{addfish.fishname}">Fish Name:</label>
             <input type="text" id="name" name="name" class="form-control" required>
@@ -78,12 +78,10 @@
                 <option value="Hermaphrodite" th:text="#{addfish.hermaphrodite}">Hermaphrodite</option>
             </select>
         </div>
-
         <div class="mb-3">
-             <label for="appuser" class="form-label" th:text="#{addfish.user}">User:</label>
-             <input type="text" id="appuser" name="appuser" class="form-control" th:field="*{name}" readonly required>
+            <label for="appuser" class="form-label" th:text="#{addfish.user}">User:</label>
+            <input type="text" id="appuser" name="appuser" class="form-control" th:value="*{appuser.name}" readonly required>
         </div>
-
         <div class="mb-3">
             <label for="fishImage" class="form-label" th:text="#{addfish.image}">Upload Image:</label>
             <input type="file" id="fishImage" name="fishImage" class="form-control" accept="image/*" required>

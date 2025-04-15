@@ -59,8 +59,8 @@ public class FishController {
 
     @GetMapping("/add_fish")
     public String showAddFishForm(Model model) {
-        var user = appUserService.findById(CurrentUser.getId());
-        model.addAttribute("user", user);
+        var appuser = appUserService.findById(CurrentUser.getId());
+        model.addAttribute("appuser", appuser);
         return "add_fish";
     }
 
@@ -71,9 +71,9 @@ public class FishController {
             @RequestParam("description") String description,
             @RequestParam("watertype") String watertype,
             @RequestParam("sex") String sex,
-            @RequestParam("name") String appuser,
             @RequestParam("fishImage") MultipartFile fishImage) throws IOException {
         String imageName = imageService.saveImage(fishImage);
+        String appuser = appUserService.findById(CurrentUser.getId()).name();
         CreateFish createFish = new CreateFish(name, species, description, watertype, sex, appuser, imageName);
         fishService.save(createFish);
         return "redirect:/my_fishes";
