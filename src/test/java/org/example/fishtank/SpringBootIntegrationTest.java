@@ -45,6 +45,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 public class SpringBootIntegrationTest {
 
+
+    @Container
+    @ServiceConnection
     static PostgreSQLContainer<?> postgisContainer =
             new PostgreSQLContainer<>(DockerImageName.parse("postgis/postgis:15-3.3")
                     .asCompatibleSubstituteFor("postgres"))
@@ -77,15 +80,19 @@ public class SpringBootIntegrationTest {
     Fish testFish;
     Post testPost;
 
-    @BeforeAll
-    static void setUp() {
-        if (!postgisContainer.isRunning()) {
-            postgisContainer.start();
-        }
-    }
+//    @BeforeAll
+//    static void setUp() {
+//        if (!postgisContainer.isRunning()) {
+//            postgisContainer.start();
+//        }
+//    }
 
     @BeforeEach
     void beforeEach() {
+
+        if (!postgisContainer.isRunning()) {
+            postgisContainer.start();
+        }
         System.out.println("Testing database connection: " + postgisContainer.getJdbcUrl());
         System.out.println("Current profile: " + Arrays.toString(env.getActiveProfiles()));
 
