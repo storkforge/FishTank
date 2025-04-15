@@ -27,25 +27,15 @@ public class GeoService {
             return null;
         }
 
-        String url = UriComponentsBuilder.fromUriString(NOMINATIM_URL)
-                .queryParam("q", cityName)
+        URI uri = UriComponentsBuilder
+                .fromHttpUrl("https://nominatim.openstreetmap.org/search")
+                .queryParam("q", cityName.trim())
                 .queryParam("format", "json")
                 .queryParam("limit", "1")
                 .build()
-                .toUriString();
+                .toUri();
 
-        try {
-            URI uri = new URI(url);
-            String host = uri.getHost();
-            if (host == null || !ALLOWED_HOSTS.contains(host)) {
-                throw new IllegalArgumentException("Disallowed host: " + host);
-            }
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Invalid URI", e);
-        }
-
-
-        NominatimResponse[] response = restTemplate.getForObject(url, NominatimResponse[].class);
+        NominatimResponse[] response = restTemplate.getForObject(uri, NominatimResponse[].class);
 
 
         if (response == null || response.length == 0) {
