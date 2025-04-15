@@ -1,10 +1,13 @@
 package org.example.fishtank.controller;
 
+import org.example.fishtank.model.dto.appUserDto.UpdateAppUser;
 import org.example.fishtank.model.dto.fishDto.CreateFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFishList;
 import org.example.fishtank.model.dto.fishDto.UpdateFish;
 import org.example.fishtank.repository.FishRepository;
+import org.example.fishtank.service.AppUserService;
+import org.example.fishtank.service.CurrentUser;
 import org.example.fishtank.service.FishService;
 import org.example.fishtank.service.ImageService;
 import org.springframework.core.io.Resource;
@@ -27,11 +30,15 @@ public class FishController {
     private final FishService fishService;
     private final FishRepository fishRepository;
     private final ImageService imageService;
+    private final CurrentUser currentUser;
+    private final AppUserService appUserService;
 
-    public FishController(FishService fishService, FishRepository fishRepository, ImageService imageService) {
+    public FishController(FishService fishService, FishRepository fishRepository, ImageService imageService, CurrentUser currentUser, AppUserService appUserService) {
         this.fishService = fishService;
         this.fishRepository = fishRepository;
         this.imageService = imageService;
+        this.currentUser = currentUser;
+        this.appUserService = appUserService;
     }
 
     @GetMapping("/my_fishes")
@@ -70,6 +77,13 @@ public class FishController {
         String imageName = imageService.saveImage(fishImage);
         CreateFish createFish = new CreateFish(name, species, description, watertype, sex, appuser, imageName);
         fishService.save(createFish);
+
+        int userId = CurrentUser.getId();
+        int fishCount = fishService.getFishCountByAppUser(CurrentUser.getId());
+        if(fishCount > 5) {
+            appUserService.update(userId, new UpdateAppUser(null, null, null, "Premium"));
+        }
+
         return "redirect:/my_fishes";
     }
 

@@ -118,4 +118,8 @@ public class FishService {
                 .map(FishMapper::map)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
     }
+
+    public int getFishCountByAppUser(int userId) {
+        return fishRepository.countByAppUserId(userId);
+    }
 }
