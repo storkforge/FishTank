@@ -1,13 +1,16 @@
 package org.example.fishtank.model.entity;
 
 import jakarta.persistence.*;
+import org.geolatte.geom.G2D;
+import org.geolatte.geom.Point;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "appuser")
-public class AppUser {
+public class AppUser  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +28,9 @@ public class AppUser {
 
     @Column(name= "authentication_code", nullable = false, unique = true)
     private String authenticationCode;
+
+//    @Column
+//    private Point<G2D> coordinate;
 
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn (name = "appuser_access_id_fk" , nullable = false)

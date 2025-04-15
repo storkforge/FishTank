@@ -2,6 +2,7 @@ package org.example.fishtank;
 
 import org.example.fishtank.model.entity.*;
 import org.example.fishtank.repository.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.example.fishtank.service.CurrentUser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -43,10 +45,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 public class SpringBootIntegrationTest {
 
-    //Testcontainer for PostgreSQL database
+
     @Container
     @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
+    static PostgreSQLContainer<?> postgisContainer =
+            new PostgreSQLContainer<>(DockerImageName.parse("postgis/postgis:15-3.3")
+                    .asCompatibleSubstituteFor("postgres"))
+                    .withDatabaseName("fishtank")
+                    .withUsername("user")
+                    .withPassword("pass");
+
 
     @Autowired
     MockMvc mockMvc;
@@ -72,11 +80,20 @@ public class SpringBootIntegrationTest {
     Fish testFish;
     Post testPost;
 
-
+//    @BeforeAll
+//    static void setUp() {
+//        if (!postgisContainer.isRunning()) {
+//            postgisContainer.start();
+//        }
+//    }
 
     @BeforeEach
     void beforeEach() {
-        System.out.println("Testing database connection: " + postgres.getJdbcUrl());
+
+        if (!postgisContainer.isRunning()) {
+            postgisContainer.start();
+        }
+        System.out.println("Testing database connection: " + postgisContainer.getJdbcUrl());
         System.out.println("Current profile: " + Arrays.toString(env.getActiveProfiles()));
 
         postRepository.deleteAll();
@@ -85,7 +102,6 @@ public class SpringBootIntegrationTest {
         sexRepository.deleteAll();
         waterTypeRepository.deleteAll();
         accessRepository.deleteAll();
-
 
 
         var access = new Access();
@@ -181,7 +197,7 @@ public class SpringBootIntegrationTest {
 
     @Test
     void forumRoughWithIdShouldReturnReturnRightPost() throws Exception {
-        mockMvc.perform(get("/forum_rough/1")
+        mockMvc.perform(get("/forum_rough/" + testPost.getId())
                         .with(user("username")))
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.text").value("Test post"))
