@@ -61,13 +61,16 @@
         <div class="mb-3">
             <label for="fishId" class="form-label"th:text="#{addPost.selectFish}">Select Fish:</label>
             <select id="fishId" name="fishId" class="form-control" required>
-                <!-- Dynamically populate this dropdown with user's fish -->
                 <option th:each="fish : ${fishList}" th:value="${fish.id}" th:text="${fish.name}"></option>
             </select>
         </div>
         <div class="mb-3">
             <label for="text" class="form-label"th:text="#{addPost.postText}">Post Text:</label>
             <textarea id="text" name="text" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="cityName">City (optional)</label>
+            <input type="text" class="form-control" id="cityName" name="cityName" placeholder="Enter city name">
         </div>
         <button type="submit" class="btn-custom" th:text="#{addPost.createPost}">Create Post</button>
     </form>

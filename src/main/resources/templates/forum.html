@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>FishTank</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,19 +19,27 @@
             border-radius: 15px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            max-width: 500px;
+            max-width: 600px;
             margin: auto;
         }
 
         .list-group-item {
-            font-size: 1.2rem;
-            text-align: center;
+            font-size: 1.1rem;
+            text-align: left;
+            padding: 15px;
         }
+
         .fish-name {
             font-weight: bold;
+            font-size: 1.2rem;
             display: block;
-            margin-bottom: 5px;
         }
+
+        .location {
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+
         .btn-custom {
             display: inline-block;
             width: 250px;
@@ -45,38 +54,93 @@
             text-decoration: none;
             transition: background 0.3s ease-in-out, transform 0.2s;
         }
+
         .btn-custom:hover {
             background: linear-gradient(45deg, #0277bd, #004d73);
             transform: scale(1.05);
         }
+
         .btn-container {
             display: flex;
             justify-content: center;
             gap: 10px;
         }
 
+        .map {
+            height: 200px;
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+
+        .filter-form {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
-<h1 class="mb-4"th:text="#{forum.forum}">Forum</h1>
+<h1 class="mb-4" th:text="#{forum.forum}">Forum</h1>
+
 <div class="card p-4 shadow-lg">
-    <div style="max-height: 230px; overflow-y: auto;">
+    <!-- Filter by location -->
+    <form th:action="@{/forum}" method="get" class="filter-form">
+        <div class="row mb-3">
+            <div class="col">
+                <input type="text" name="location" class="form-control" placeholder="Enter a location..."
+                       th:value="${location}"/>
+            </div>
+            <div class="col">
+                <input type="number" name="radius" class="form-control" placeholder="Radius (km)"
+                       min="1" max="500" th:value="${radius}"/>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+
+
+    <div style="max-height: 400px; overflow-y: auto;">
         <ul class="list-group list-group-flush">
             <li class="list-group-item" th:each="post, stat : ${postList}">
                 <span th:with="fish=${fishList[stat.index]}">
                     <span class="fish-name" th:text="${fish.name}"></span>
                     <span th:text="${post.text}"></span>
+                    <div class="location mt-1" th:if="${post.cityName}">
+                        Location: <span th:text="${post.cityName}"></span>
+                    </div>
                 </span>
             </li>
         </ul>
     </div>
+
     <div class="btn-container mt-3">
-        <a href="/home" class="btn-custom"th:text="#{forum.home}">Home</a>
+        <a href="/home" class="btn-custom" th:text="#{forum.home}">Home</a>
         <a href="/add_post" class="btn-custom" th:text="#{forum.add}">Add post</a>
     </div>
+
     <div class="btn-container mt-3">
         <a href="/my_posts" class="btn-custom" th:text="#{forum.myposts}">My Posts</a>
+        <a href="/forum/map" class="btn-custom">View All on Map</a>
     </div>
 </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.map').forEach((mapEl) => {
+            const lat = parseFloat(mapEl.dataset.lat);
+            const lng = parseFloat(mapEl.dataset.lng);
+            const map = L.map(mapEl).setView([lat, lng], 12);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            L.marker([lat, lng]).addTo(map).bindPopup("Post Location");
+        });
+    });
+</script>
 </body>
 </html>

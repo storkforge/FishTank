@@ -7,11 +7,14 @@ import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.dto.postDto.UpdatePost;
 import org.example.fishtank.model.entity.Post;
 import org.example.fishtank.service.PostService;
+import org.geolatte.geom.G2D;
+import org.geolatte.geom.Point;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
+
 
 import java.util.List;
 
@@ -37,13 +40,19 @@ public class PostResolver {
     @MutationMapping
     public ResponsePost addPost(
             @Argument String text,
+            @Argument String cityName,
             @Argument Integer fishId) {
-        CreatePost createPost = new CreatePost(text, fishId);
+        CreatePost createPost = new CreatePost(text, cityName, fishId);
         Post savedPost = postService.saveAndReturn(createPost);
+
+        Point<G2D> coord = savedPost.getCoordinate();
 
         return new ResponsePost(
                 savedPost.getId(),
                 savedPost.getText(),
+                savedPost.getCityName(),
+                coord.getPosition().getLon(),
+                coord.getPosition().getLat(),
                 savedPost.getFishid().getId()
         );
     }
@@ -51,8 +60,9 @@ public class PostResolver {
     @MutationMapping
     public ResponsePost updatePost(
             @Argument String text,
+            @Argument String cityName,
             @Argument Integer id) {
-        UpdatePost updatePost = new UpdatePost(text);
+        UpdatePost updatePost = new UpdatePost(text, cityName);
         postService.update(id, updatePost);
 
         return postService.findById(id);
