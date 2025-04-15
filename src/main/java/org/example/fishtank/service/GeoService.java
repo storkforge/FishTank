@@ -7,10 +7,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+
 @Service
 public class GeoService {
     private final RestTemplate restTemplate = new RestTemplate();
     private static final String NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
+    private static final List<String> ALLOWED_HOSTS = List.of("nominatim.openstreetmap.org");
+
 
     public Point<G2D> geocodeCity(String cityName) {
         if (cityName == null || cityName.isBlank()) {
@@ -21,7 +27,6 @@ public class GeoService {
             return null;
         }
 
-
         String url = UriComponentsBuilder.fromUriString(NOMINATIM_URL)
                 .queryParam("q", cityName)
                 .queryParam("format", "json")
@@ -29,7 +34,19 @@ public class GeoService {
                 .build()
                 .toUriString();
 
+        try {
+            URI uri = new URI(url);
+            String host = uri.getHost();
+            if (host == null || !ALLOWED_HOSTS.contains(host)) {
+                throw new IllegalArgumentException("Disallowed host: " + host);
+            }
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Invalid URI", e);
+        }
+
+
         NominatimResponse[] response = restTemplate.getForObject(url, NominatimResponse[].class);
+
 
         if (response == null || response.length == 0) {
             return null;
