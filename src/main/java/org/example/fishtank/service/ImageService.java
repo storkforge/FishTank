@@ -37,7 +37,7 @@ public class ImageService {
         return fileName;
     }
 
-    private Path prepareUploadDirectory() throws IOException {
+    public Path prepareUploadDirectory() throws IOException {
         Path uploadPath = Paths.get(uploadDir);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
@@ -58,7 +58,7 @@ public class ImageService {
         return sanitized;
     }
 
-    private Path buildSafeFilePath(Path baseDir, String fileName) {
+    public Path buildSafeFilePath(Path baseDir, String fileName) {
         Path path = baseDir.resolve(fileName).normalize();
         if (!path.startsWith(baseDir)) {
             throw new IllegalArgumentException("Invalid filename");
@@ -66,7 +66,7 @@ public class ImageService {
         return path;
     }
 
-    private String generateUniqueFileName(String originalFileName) {
+    public String generateUniqueFileName(String originalFileName) {
         String sanitized = sanitizeFileName(originalFileName);
         return Instant.now(clock).toEpochMilli() + "_" + sanitized;
     }
