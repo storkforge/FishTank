@@ -10,6 +10,7 @@ import org.example.fishtank.model.entity.AppUser;
 import org.example.fishtank.repository.AccessRepository;
 import org.example.fishtank.repository.AppUserRepository;
 import org.example.fishtank.model.mapper.AppUserMapper;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -123,6 +124,18 @@ public class AppUserService {
     public boolean isAuthenticationCodePresentInDB(String authenticationCode) {
         return appUserRepository.findByAuthenticationCode(authenticationCode).isPresent();
     }
+
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        AppUser appUser = appUserRepository.findByName(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(appUser.getName())
+                .password(appUser.getPasswordHash())
+                .authorities("ROLE_" + appUser.getAccess().getName()) // e.g., ROLE_Premium
+                .build();
+    }
+
 }
 
 

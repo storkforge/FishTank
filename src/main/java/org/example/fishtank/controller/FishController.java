@@ -15,6 +15,10 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -82,6 +86,15 @@ public class FishController {
         int fishCount = fishService.getFishCountByAppUser(CurrentUser.getId());
         if(fishCount > 5) {
             appUserService.update(userId, new UpdateAppUser(null, null, null, "Premium"));
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails updatedUserDetails = appUserService.loadUserByUsername(auth.getName());
+
+            Authentication newAuth = new UsernamePasswordAuthenticationToken(
+                    updatedUserDetails,
+                    auth.getCredentials(),
+                    updatedUserDetails.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
         }
 
         return "redirect:/my_fishes";
