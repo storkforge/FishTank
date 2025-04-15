@@ -4,6 +4,7 @@ import org.example.fishtank.model.dto.fishDto.CreateFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.postDto.CreatePost;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
+import org.example.fishtank.model.dto.postDto.UpdatePost;
 import org.example.fishtank.model.entity.Post;
 import org.example.fishtank.service.PostService;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -45,6 +46,16 @@ public class PostResolver {
                 savedPost.getText(),
                 savedPost.getFishid().getId()
         );
+    }
+
+    @MutationMapping
+    public ResponsePost updatePost(
+            @Argument String text,
+            @Argument Integer id) {
+        UpdatePost updatePost = new UpdatePost(text);
+        postService.update(id, updatePost);
+
+        return postService.findById(id);
     }
 
     @SchemaMapping(typeName = "ResponseFish", field = "posts")
