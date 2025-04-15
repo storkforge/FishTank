@@ -47,21 +47,24 @@ public class LoginController {
                              @RequestParam("email") String email,
                              Model model) {
 
-        if (username == null || password == null || email == null) {
+        String authenticationCode = "form_" + username;
+
+        if (username == null || password == null || email == null ||
+        username.isBlank() || password.isBlank() || email.isBlank()) {
+
             model.addAttribute("error", "User data is incomplete!");
             return "signup";
         }
 
-        if(appUserService.isNamePresentInDB(username)){
+        if(appUserService.isAppUserAuthenticationCodePresentInDB(authenticationCode)){
+
             model.addAttribute("error", "Username already exists!");
             return "signup";
         }
 
-        String authenticationCode = "form_" + username;
-
         CreateAppUser createAppUser = new CreateAppUser(username, password, email, authenticationCode,"Standard");
 
-        appUserService.saveToDB(createAppUser);
+        appUserService.save(createAppUser);
 
         return "redirect:/login";
     }
