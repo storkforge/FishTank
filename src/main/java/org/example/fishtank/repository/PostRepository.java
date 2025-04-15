@@ -19,7 +19,6 @@ public interface PostRepository extends ListCrudRepository<Post, Integer> {
 
     @Query("SELECT p FROM Post p WHERE p.fishid.id = :fishId")
     List<Post> findByFishId(Integer fishId);
-    List<Post> findByFishId(int fishId);
 
     @Query(value = """
     SELECT * FROM post 
