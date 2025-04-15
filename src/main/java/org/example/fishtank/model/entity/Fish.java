@@ -23,19 +23,19 @@ public class Fish implements Serializable {
     @Column(name = "description", nullable = false, length = Integer.MAX_VALUE)
     private String description;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn (name = "fish_watertype_id_fk" , nullable = false)
     private WaterType waterType;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn (name = "fish_sex_id_fk" , nullable = false)
     private Sex sex;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn (name = "fish_appuser_id_fk" , nullable = false)
     private AppUser appUser;
 
-    @OneToMany (mappedBy = "fishid", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany (mappedBy = "fishid", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
     @Column(name = "image")

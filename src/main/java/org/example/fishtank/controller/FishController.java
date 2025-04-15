@@ -36,7 +36,7 @@ public class FishController {
 
     @GetMapping("/my_fishes")
     String myFishes(Model model) {
-        var fishList = fishService.getAllFish();
+        var fishList = fishService.getMyFish();
         model.addAttribute("fishList", fishList);
         return "my_fishes";
     }
@@ -44,13 +44,13 @@ public class FishController {
     @ResponseBody
     @GetMapping("/my_fishes_rough/{id}")
     public ResponseFish myFishesById(@PathVariable(name = "id") int id) {
-        return fishService.findById(id);
+        return fishService.findMyFishById(id);
     }
 
     @ResponseBody
     @GetMapping("/my_fishes_rough")
     public ResponseFishList myFishesRough() {
-        return new ResponseFishList(fishService.getAllFish());
+        return new ResponseFishList(fishService.getMyFish());
     }
 
     @GetMapping("/add_fish")
@@ -75,7 +75,7 @@ public class FishController {
 
     @GetMapping("/my_fishes/{id}")
     String fishById(Model model, @PathVariable Integer id) {
-        var fish = fishService.findById(id);
+        var fish = fishService.findMyFishById(id);
         model.addAttribute("fish", fish);
         return "fish";
     }
@@ -92,10 +92,7 @@ public class FishController {
 
     @GetMapping("/update_fish/{id}")
     public String showUpdateFishForm(@PathVariable Integer id, Model model) {
-        ResponseFish fish = fishService.findById(id);
-        if (fish == null) {
-            System.out.println("Fish not found for ID: " + id);
-        }
+        ResponseFish fish = fishService.findMyFishById(id);
         model.addAttribute("fish", fish);
         return "update_fish";
     }

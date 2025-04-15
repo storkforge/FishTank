@@ -44,7 +44,16 @@ public class FishService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
     }
 
+    @Cacheable(value = "fish", key = "#id")
+    public ResponseFish findMyFishById(Integer id) {
+        Integer currentUserId = CurrentUser.getId();
+        return fishRepository.findById(id)
+                .filter(fish -> fish.getAppUser().getId().equals(currentUserId))
+                .map(FishMapper::map)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Not allowed to access this fish"));
+    }
 
+    @Cacheable("myFish")
     public List<ResponseFish> getFishByPost(List<ResponsePost> postList) {
         return postList.stream()
                 .map(post -> fishRepository.findById(post.fishId())
@@ -53,6 +62,16 @@ public class FishService {
                 .filter(Objects::nonNull)
                 .toList();
     }
+
+    @Cacheable("myFish")
+    public List<ResponseFish> getMyFish() {
+        return fishRepository.findByAppUserId(CurrentUser.getId())
+                .stream()
+                .map(FishMapper::map)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
 
     @Cacheable("allFish")
     public List<ResponseFish> getAllFish() {
@@ -63,7 +82,7 @@ public class FishService {
                 .toList();
     }
 
-    @CacheEvict(value = {"allFish"}, allEntries = true)
+    @CacheEvict(value = {"myFish","allFish"}, allEntries = true)
     public void save(CreateFish createFish) {
 
         Optional<AppUser> appUser = appUserRepository.findByName(createFish.appUser());
@@ -79,7 +98,7 @@ public class FishService {
         fishRepository.save(fish);
     }
 
-    @CacheEvict(value = {"fish", "allFish"}, key = "#id", allEntries = true)
+    @CacheEvict(value = {"fish", "myFish", "allFish"}, key = "#id", allEntries = true)
     public void update(int id, UpdateFish fish) {
         Fish oldFish = fishRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
@@ -87,11 +106,16 @@ public class FishService {
         fishRepository.update(oldFish.getName(), oldFish.getDescription(), oldFish.getId());
     }
 
-    @CacheEvict(value = {"fish", "allFish"}, key = "#id", allEntries = true)
+    @CacheEvict(value = {"fish", "myFish", "allFish"}, key = "#id", allEntries = true)
     public void delete(int id) {
         var fish = fishRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
         fishRepository.delete(fish);
     }
 
+    public ResponseFish findFishByName(String name) {
+        return fishRepository.findByName(name)
+                .map(FishMapper::map)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
+    }
 }

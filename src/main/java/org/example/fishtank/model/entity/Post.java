@@ -3,6 +3,8 @@ package org.example.fishtank.model.entity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.beans.FeatureDescriptor;
 import java.io.Serializable;
 
 @Entity
@@ -16,7 +18,7 @@ public class Post implements Serializable {
     @Column(name = "posttext", nullable = false, length = 100)
     private String posttext;
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "post_fish_id_fk", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Fish fishid;

@@ -1,6 +1,7 @@
 package org.example.fishtank.service;
 
 import jakarta.transaction.Transactional;
+import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.postDto.CreatePost;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.dto.postDto.UpdatePost;
@@ -15,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -35,6 +37,18 @@ public class PostService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
     }
 
+    @Cacheable(value = "post", key = "#id")
+    public ResponsePost findByMyId(Integer id) {
+        var currentUserId = CurrentUser.getId();
+        var fishList = fishRepository.findByAppUserId(currentUserId);
+        return fishList.stream()
+                .flatMap(fish -> postRepository.findByFishId(fish.getId()).stream())
+                .filter(post -> post.getId().equals(id))
+                .map(PostMapper::map)
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found or you do not have access"));
+    }
+
     @Cacheable("allPost")
     public List<ResponsePost> getAllPost() {
         return postRepository.findAll()
@@ -44,8 +58,27 @@ public class PostService {
                 .toList();
     }
 
+    public List<ResponsePost> findByFishId(Integer id) {
+        List<Post> posts = postRepository.findByFishId(id);
+        return posts.stream()
+                .map(PostMapper::map)
+                .toList();
+    }
 
-    @CacheEvict(value = {"allPost"}, allEntries = true)
+    @Cacheable("myPost")
+    public List<ResponsePost> getAllMyPosts() {
+        var fishList = fishRepository.findByAppUserId(CurrentUser.getId());
+        return fishList.stream()
+                .flatMap(fish -> {
+                    var posts = postRepository.findByFishId(fish.getId());
+                    return posts.stream();
+                })
+                .map(PostMapper::map)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    @CacheEvict(value = {"post", "allPost", "myPost"}, allEntries = true)
     public void save(CreatePost createPost) {
         Fish fish = fishRepository.findById(createPost.fishId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
@@ -53,7 +86,15 @@ public class PostService {
         postRepository.save(post);
     }
 
-    @CacheEvict(value = {"post", "allPost"},key = "#id", allEntries = true)
+    //save with return
+    public Post saveAndReturn(CreatePost createPost) {
+        Fish fish = fishRepository.findById(createPost.fishId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
+        Post post = PostMapper.map(createPost, fish);
+        return postRepository.save(post);
+    }
+
+    @CacheEvict(value = {"post", "allPost", "myPost"}, key = "#id", allEntries = true)
     public void update(int id, UpdatePost post) {
         Post oldPost = postRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
@@ -61,11 +102,10 @@ public class PostService {
         postRepository.update(oldPost.getText(), oldPost.getId());
     }
 
-    @CacheEvict(value = {"post", "allPost"}, key = "#id", allEntries = true)
+    @CacheEvict(value = {"post", "allPost", "myPost"}, key = "#id", allEntries = true)
     public void delete(int id) {
         var post = postRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
         postRepository.delete(post);
     }
-
 }
