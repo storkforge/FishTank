@@ -156,6 +156,25 @@ class AppUserServiceTest {
     }
 
     @Test
+    @DisplayName("call to save should not make call to appUserRepository.save() when trying to save duplicate")
+    void callToSaveShouldNotCallAppUserRepositorySaveForDuplicate() {
+
+        CreateAppUser createAppUser = new CreateAppUser(
+                expectedAppUser.getName(),
+                expectedAppUser.getPasswordHash(),
+                expectedAppUser.getEmail(),
+                expectedAppUser.getAuthenticationCode(),
+                expectedAppUser.getAccess().getName()
+        );
+
+        when(appUserRepository.findByAuthenticationCode(createAppUser.authenticationCode())).thenReturn(Optional.of(expectedAppUser));
+
+        appUserService.save(createAppUser);
+
+        verify(appUserRepository, times(0)).save(any(AppUser.class));
+    }
+
+    @Test
     @DisplayName("call to updateCurrentUser should set the current users values to passed non null values")
     void updateCurrentUserShouldSetCurrentUserValuesToPassedNonNullValues() {
 
@@ -179,6 +198,7 @@ class AppUserServiceTest {
     }
 
     @Test
+    @DisplayName("call to updateCurrentUserAccess should set current user access to passed access")
     void updateCurrentUserAccessShouldSetCurrentUserAccessToPassedAccess() {
 
         String accessString = "TestAccess";
