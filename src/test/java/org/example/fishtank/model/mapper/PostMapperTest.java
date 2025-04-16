@@ -46,12 +46,13 @@ class PostMapperTest {
 
     @Test
     @DisplayName("Map CreatePost to post should be same")
-    void mapCreatePostToPostShouldBeSame(){
+    void mapCreatePostToPostShouldBeSame() {
         Fish fish = new Fish();
         fish.setId(1);
 
-        CreatePost createPost = new CreatePost("new text", "New city",1);
-        Post post = PostMapper.map(createPost, fish);
+        CreatePost createPost = new CreatePost("new text", "New city", 1);
+        Point<G2D> point = null;
+        Post post = PostMapper.map(createPost, fish, null);
 
         assertNotNull(post);
         assertEquals("new text", post.getText());
@@ -61,7 +62,7 @@ class PostMapperTest {
 
     @Test
     @DisplayName("Map UpdatePost to Post should update post")
-    void mapUpdatePostToPostShouldUpdatePost(){
+    void mapUpdatePostToPostShouldUpdatePost() {
         Post oldPost = new Post();
         oldPost.setId(1);
         oldPost.setText("Test text");
@@ -77,7 +78,7 @@ class PostMapperTest {
 
     @Test
     @DisplayName("Map Null Post to ResponsePost")
-    void mapNullPostToResponsePost(){
+    void mapNullPostToResponsePost() {
         ResponsePost responsePost = PostMapper.map(null);
         assertNull(responsePost);
     }
@@ -85,7 +86,12 @@ class PostMapperTest {
     @Test
     @DisplayName("Map Null CreatePost to Post")
     void mapNullCreatePostToPost() {
-        Post post = PostMapper.map(null, new Fish());
+        Point<G2D> point = null;
+        Post post = PostMapper.map(null, new Fish(), null);
         assertNull(post);
     }
 }
+
+
+
+

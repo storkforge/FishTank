@@ -10,6 +10,8 @@ import org.example.fishtank.model.entity.Post;
 import org.example.fishtank.model.mapper.PostMapper;
 import org.example.fishtank.repository.FishRepository;
 import org.example.fishtank.repository.PostRepository;
+import org.geolatte.geom.G2D;
+import org.geolatte.geom.Point;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -86,22 +88,26 @@ public class PostService {
     public void save(CreatePost createPost) {
         Fish fish = fishRepository.findById(createPost.fishId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
-        Post post = PostMapper.map(createPost, fish);
 
+        Point<G2D> point = null;
         if (createPost.cityName() != null && !createPost.cityName().isBlank()) {
-            var point = geoService.geocodeCity(createPost.cityName());
-            if (point != null) {
-                post.setCoordinate(point);
-            }
+            point = geoService.geocodeCity(createPost.cityName());
         }
+
+        Post post = PostMapper.map(createPost, fish, point);
         postRepository.save(post);
     }
 
-    //save with return
     public Post saveAndReturn(CreatePost createPost) {
         Fish fish = fishRepository.findById(createPost.fishId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
-        Post post = PostMapper.map(createPost, fish);
+
+        Point<G2D> point = null;
+        if (createPost.cityName() != null && !createPost.cityName().isBlank()) {
+            point = geoService.geocodeCity(createPost.cityName());
+        }
+
+        Post post = PostMapper.map(createPost, fish, point);
         return postRepository.save(post);
     }
 

@@ -39,7 +39,8 @@
 <script th:inline="javascript">
     const posts = /*[[${postList}]]*/ [];
 
-    const map = L.map('map').setView([59.3293, 18.0686], 10); // Center on Stockholm
+    const map = L.map('map').setView([62.0, 15.0], 5);
+
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
@@ -60,7 +61,7 @@
 
     map.addLayer(markers);
 
-    // Display a message if no markers were added
+    //Display a message if no markers were added
     if (markerCount === 0) {
         const noPostsControl = L.control({position: 'topleft'});
         noPostsControl.onAdd = function (map) {
