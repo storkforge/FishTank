@@ -65,6 +65,8 @@
         <input type="hidden" name="_method" value="delete">
         <button type="submit" class="btn-custom mt-3">Delete</button>
     </form>
+    <a th:href="@{/recommendations/{id}(id=${fish.id})}" class="btn-custom mt-3">Recommend accessories</a>
+    <a th:href="@{/healthcare/{id}(id=${fish.id})}" class="btn-custom mt-3">Recommend healthcare</a>
     <a href="/my_fishes" class="btn-custom mt-3">Back to My Fishes</a>
     <a href="/home" class="btn-custom mt-3">Home</a>
 </div>
