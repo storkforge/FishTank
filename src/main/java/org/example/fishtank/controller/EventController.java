@@ -35,7 +35,7 @@ public class EventController {
 
     @GetMapping("/add_event")
     public String showAddEventForm(Model model) {
-        model.addAttribute("event", new CreateEvent("", "", LocalDateTime.now(), 0));
+        model.addAttribute("event", new CreateEvent("temp", "temp", LocalDateTime.now()));
         return "add_event";
     }
 
@@ -43,11 +43,9 @@ public class EventController {
     public String addEvent(
             @RequestParam("text") String text,
             @RequestParam("cityName") String cityName,
-            @RequestParam("eventDate") LocalDateTime eventDate,
-            @RequestParam("userId") Integer userId
-
+            @RequestParam("eventDate") LocalDateTime eventDate
     ) {
-        CreateEvent createEvent = new CreateEvent(text, cityName, eventDate, userId);
+        CreateEvent createEvent = new CreateEvent(text, cityName, eventDate);
         eventService.create(createEvent);
         return "redirect:/events";
     }
