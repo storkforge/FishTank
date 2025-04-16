@@ -1,10 +1,10 @@
 package org.example.fishtank.controller;
 
+import org.example.fishtank.model.dto.appUserDto.UpdateAppUser;
 import org.example.fishtank.model.dto.fishDto.CreateFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFishList;
 import org.example.fishtank.model.dto.fishDto.UpdateFish;
-import org.example.fishtank.repository.FishRepository;
 import org.example.fishtank.service.AppUserService;
 import org.example.fishtank.service.CurrentUser;
 import org.example.fishtank.service.FishService;
@@ -14,6 +14,10 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,15 +31,14 @@ import java.nio.file.Path;
 public class FishController {
 
     private final FishService fishService;
-    private final FishRepository fishRepository;
     private final ImageService imageService;
     private final AppUserService appUserService;
 
-    public FishController(FishService fishService, FishRepository fishRepository,AppUserService appUserService , ImageService imageService) {
+
+    public FishController(FishService fishService, ImageService imageService, AppUserService appUserService) {
         this.fishService = fishService;
-        this.fishRepository = fishRepository;
-        this.appUserService = appUserService;
         this.imageService = imageService;
+        this.appUserService = appUserService;
     }
 
     @GetMapping("/my_fishes")
@@ -76,6 +79,22 @@ public class FishController {
         String appuser = appUserService.findById(CurrentUser.getId()).name();
         CreateFish createFish = new CreateFish(name, species, description, watertype, sex, appuser, imageName);
         fishService.save(createFish);
+
+        int userId = CurrentUser.getId();
+        int fishCount = fishService.getFishCountByAppUser(CurrentUser.getId());
+        if(fishCount > 5) {
+            appUserService.update(userId, new UpdateAppUser(null, null, null, "Premium"));
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails updatedUserDetails = appUserService.loadUserByUsername(auth.getName());
+
+            Authentication newAuth = new UsernamePasswordAuthenticationToken(
+                    updatedUserDetails,
+                    auth.getCredentials(),
+                    updatedUserDetails.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
+        }
+
         return "redirect:/my_fishes";
     }
 

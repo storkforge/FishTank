@@ -89,15 +89,23 @@
         <img th:src="${authentication == 'Premium' ? '/dolphin_crown.jpg' : 'dolphin.jpg'}"
              alt="User role image" width="300" height="300">
     </div>
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-            <strong>Username:</strong> <span th:text="${user}">Username</span>
-        </li>
-        <li class="list-group-item">
-            <strong>Role:</strong> <span th:text="${authentication}">Role</span>
-        </li>
+    <div class="mb-3">
+        <h4>
+            <span class="text-primary" style="margin-left: 10px;" th:text="${user}">Username</span>
+        </h4>
+    </div>
+    <div class="mb-3">
+        <h4>
+            <span class="badge"
+                  th:classappend="${authentication == 'Premium'} ? ' bg-warning text-dark' : ' bg-secondary'"
+                  th:title="${authentication == 'Premium'} ? 'We in the FishTank team loves you and gives you limitless access to magical fish wisdoms!' : 'Create more fishes to achieve Premium status and unlock magical fish wisdom!'"
+                  style="margin-left: 10px;"
+                  th:text="${authentication}">
+            Role
+        </span>
+        </h4>
+    </div>
 
-    </ul>
 </div>
 <div class="d-flex flex-column align-items-center" th:if="${authentication == 'Premium'}">
     <a href="wisdom" class="btn-custom-premium mt-3">Get a fish wisdom</a>

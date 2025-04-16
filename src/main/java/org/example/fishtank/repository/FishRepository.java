@@ -27,5 +27,8 @@ public interface FishRepository extends ListCrudRepository<Fish, Integer> {
     @Query("SELECT f FROM Fish f WHERE f.appUser.id = :id")
     List<Fish> findByAppUserId(int id);
 
+    @Query("SELECT COUNT(f) FROM Fish f WHERE f.appUser.id = :userId")
+    int countByAppUserId(int userId);
+
 
 }
