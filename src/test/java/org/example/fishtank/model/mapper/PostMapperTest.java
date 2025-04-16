@@ -17,10 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PostMapperTest {
 
-    @InjectMocks
-    PostMapper postMapper;
-
-
     @Test
     @DisplayName("Map Post to ResponsePost should return same ")
     void mapPostToResponsePostShouldReturnSame() {
