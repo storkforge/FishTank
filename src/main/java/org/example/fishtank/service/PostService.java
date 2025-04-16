@@ -64,6 +64,7 @@ public class PostService {
                 .toList();
     }
 
+    @Cacheable(value = "postByFish", key = "#id")
     public List<ResponsePost> findByFishId(Integer id) {
         List<Post> posts = postRepository.findByFishId(id);
         return posts.stream()
@@ -98,6 +99,7 @@ public class PostService {
         postRepository.save(post);
     }
 
+    @CacheEvict(value = {"post", "allPost", "myPost", "postByFish"}, allEntries = true)
     public Post saveAndReturn(CreatePost createPost) {
         Fish fish = fishRepository.findById(createPost.fishId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
