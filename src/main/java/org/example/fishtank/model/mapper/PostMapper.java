@@ -5,6 +5,7 @@ import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.dto.postDto.UpdatePost;
 import org.example.fishtank.model.entity.*;
 import org.geolatte.geom.G2D;
+import org.geolatte.geom.Point;
 
 import java.util.Objects;
 
@@ -33,13 +34,15 @@ public class PostMapper {
         );
     }
 
-    public static Post map(CreatePost createPost, Fish fish) {
+    public static Post map(CreatePost createPost, Fish fish, Point<G2D> point) {
         if (Objects.isNull(createPost))
             return null;
+
         Post post = new Post();
         post.setText(createPost.text());
         post.setFishid(fish);
         post.setCityName(createPost.cityName());
+        post.setCoordinate(point);
 
         return post;
     }

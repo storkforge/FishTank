@@ -25,7 +25,7 @@ public class Post implements Serializable {
     @Column(name = "cityname")
     private String cityName;
 
-    @Column
+    @Column(columnDefinition = "geometry(Point,4326)")
     private Point<G2D> coordinate;
 
     @ManyToOne (fetch = FetchType.EAGER)
