@@ -1,94 +1,126 @@
-/*package org.example.fishtank.repository;
+package org.example.fishtank.repository;
 
 import org.example.fishtank.model.entity.Access;
 import org.example.fishtank.model.entity.AppUser;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import java.util.List;
+
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Testcontainers
 class AppUserRepositoryTest {
+
+    @Autowired
+    AppUserRepository appUserRepository;
+
+    @Autowired
+    AccessRepository accessRepository;
 
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest");
 
-    @Autowired
-    AppUserRepository appUserRepository;
-    @Autowired
-    AccessRepository accessRepository;
-
-    private Access standardAccess;
-    private Access adminAccess;
+    AppUser expectedAppUser;
 
     @BeforeEach
-    void beforeEach() {
-        standardAccess = new Access();
-        standardAccess.setName("Standard");
-        accessRepository.save(standardAccess);
+    void setUp() {
 
-        adminAccess = new Access();
-        adminAccess.setName("Admin");
-        accessRepository.save(adminAccess);
+        Access access = new Access();
+        access.setName("Standard");
+        accessRepository.save(access);
 
-        AppUser user = new AppUser();
-        user.setName("John Doe");
-        user.setEmail("john.doe@example.com");
-        user.setPasswordHash("hashedPassword");
-        user.setAccess(standardAccess);
-        appUserRepository.save(user);
+        expectedAppUser = new AppUser();
+        expectedAppUser.setName("name_1");
+        expectedAppUser.setPasswordHash("password_1");
+        expectedAppUser.setEmail("email@email.com");
+        expectedAppUser.setAuthenticationCode("test_name_1");
+        expectedAppUser.setAccess(access);
+
+        appUserRepository.save(expectedAppUser);
+    }
+
+    @AfterEach
+    void tearDown() {
+        appUserRepository.deleteAll();
+        accessRepository.deleteAll();
     }
 
     @Test
-    void TestFindByEmail() {
+    @DisplayName("findAll should return a list with expectedAppUser")
+    void findAllShouldReturnListOfAllAppUsers() {
 
-        AppUser foundUser = appUserRepository.findByEmail("john.doe@example.com").get();
+        List<AppUser> appUsers = appUserRepository.findAll();
 
-        assertThat(foundUser).isNotNull();
-        assertThat(foundUser.getEmail()).isEqualTo("john.doe@example.com");
+        assertThat(appUsers.size()).isEqualTo(1);
+        assertThat(appUsers.getFirst().getName()).isEqualTo("name_1");
     }
 
     @Test
-    void TestUpdate() {
-        AppUser user = new AppUser();
-        user.setName("John Doe");
-        user.setEmail("john.doe@example.com");
-        user.setPasswordHash("originalHash");
-        user.setAccess(standardAccess);
-        AppUser savedUser = appUserRepository.save(user);
+    @DisplayName("findById should return AppUser with matching id")
+    void findByIdShouldReturnAppUserWhenMatch() {
 
-        String newName = "Jane Doe";
-        String newPasswordHash = "newHashedPassword";
-        String newEmail = "jane.doe@example.com";
+        var actualAppUser = appUserRepository.findById(expectedAppUser.getId());
 
-        savedUser.setName(newName);
-        savedUser.setPasswordHash(newPasswordHash);
-        savedUser.setEmail(newEmail);
-        savedUser.setAccess(adminAccess);
-        appUserRepository.save(savedUser);
-
-        AppUser updatedUser = appUserRepository.findByEmail(newEmail).get();
-        assertThat(updatedUser).isNotNull();
-        assertThat(updatedUser.getName()).isEqualTo(newName);
-        assertThat(updatedUser.getPasswordHash()).isEqualTo(newPasswordHash);
-        assertThat(updatedUser.getEmail()).isEqualTo(newEmail);
-        assertThat(updatedUser.getAccess().getName()).isEqualTo(adminAccess.getName());
+        assertThat(actualAppUser).isPresent();
+        assertThat(actualAppUser.get().getId()).isEqualTo(expectedAppUser.getId());
     }
 
     @Test
-    void TestFindByName() {
-        AppUser foundUser = appUserRepository.findByName("John Doe").get();
+    @DisplayName("findById should return empty Optional if no matching id")
+    void findByIdShouldReturnEmptyOptionalWhenNoMatch() {
 
-        assertThat(foundUser).isNotNull();
-        assertThat(foundUser.getName()).isEqualTo("John Doe");
+        var actualAppUser = appUserRepository.findById(expectedAppUser.getId());
+
+        assertThat(actualAppUser).isPresent();
+        assertThat(actualAppUser.get().getId()).isEqualTo(expectedAppUser.getId());
     }
+
+    @Test
+    @DisplayName("findByAuthenticationCode should return AppUser with matching authenticationCode")
+    void findByAuthenticationCodeShouldReturnAppUserWhenMatch() {
+
+        var actualAppUser = appUserRepository.findByAuthenticationCode("test_name_1");
+
+        assertThat(actualAppUser).isPresent();
+        assertThat(actualAppUser.get().getAuthenticationCode()).isEqualTo(expectedAppUser.getAuthenticationCode());
+    }
+
+    @Test
+    @DisplayName("findByAuthenticationCode should return empty Optional if no matching authenticationCode")
+    void findByAuthenticationCodeShouldReturnEmptyOptionalWhenNoMatch() {
+
+        var actualAppUser = appUserRepository.findByAuthenticationCode("null");
+
+        assertThat(actualAppUser).isEmpty();
+    }
+
+    @Test
+    @DisplayName("findByName should return AppUser with matching name")
+    void findByNameShouldReturnAppUserWhenMatch() {
+
+        var actualAppUser = appUserRepository.findByName("name_1");
+
+        assertThat(actualAppUser).isPresent();
+        assertThat(actualAppUser.get().getName()).isEqualTo(expectedAppUser.getName());
+    }
+
+    @Test
+    @DisplayName("findByName should return null if no matching name")
+    void findByNameShouldReturnEmptyOptionalWhenNoMatch() {
+
+        var actualAppUser = appUserRepository.findByName("null");
+
+        assertThat(actualAppUser).isEmpty();
+    }
+
 }
- */
