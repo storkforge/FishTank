@@ -34,9 +34,10 @@ public class FishController {
     private final FishService fishService;
     private final FishRepository fishRepository;
     private final ImageService imageService;
-    private final CurrentUser currentUser;
     private final AppUserService appUserService;
+    private final CurrentUser currentUser;
 
+    public FishController(FishService fishService, FishRepository fishRepository,AppUserService appUserService , ImageService imageService) {
     public FishController(FishService fishService, FishRepository fishRepository, ImageService imageService, CurrentUser currentUser, AppUserService appUserService) {
         this.fishService = fishService;
         this.fishRepository = fishRepository;
@@ -65,7 +66,9 @@ public class FishController {
     }
 
     @GetMapping("/add_fish")
-    public String showAddFishForm() {
+    public String showAddFishForm(Model model) {
+        var appuser = appUserService.findById(CurrentUser.getId());
+        model.addAttribute("appuser", appuser);
         return "add_fish";
     }
 
@@ -76,9 +79,9 @@ public class FishController {
             @RequestParam("description") String description,
             @RequestParam("watertype") String watertype,
             @RequestParam("sex") String sex,
-            @RequestParam("appuser") String appuser,
             @RequestParam("fishImage") MultipartFile fishImage) throws IOException {
         String imageName = imageService.saveImage(fishImage);
+        String appuser = appUserService.findById(CurrentUser.getId()).name();
         CreateFish createFish = new CreateFish(name, species, description, watertype, sex, appuser, imageName);
         fishService.save(createFish);
 
