@@ -41,7 +41,7 @@ public class Haversine {
      * @param lng longitude (-180 to 180)
      * @throws IllegalArgumentException if coordinates are out of range
      */
-    private static void validateCoordinates(double lat, double lng) {
+    public static void validateCoordinates(double lat, double lng) {
         if (lat < -90 || lat > 90) {
             throw new IllegalArgumentException("Latitude must be between -90 and 90 degrees");
         }
