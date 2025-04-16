@@ -5,7 +5,6 @@ import org.example.fishtank.model.dto.fishDto.CreateFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFishList;
 import org.example.fishtank.model.dto.fishDto.UpdateFish;
-import org.example.fishtank.repository.FishRepository;
 import org.example.fishtank.service.AppUserService;
 import org.example.fishtank.service.CurrentUser;
 import org.example.fishtank.service.FishService;
@@ -32,17 +31,13 @@ import java.nio.file.Path;
 public class FishController {
 
     private final FishService fishService;
-    private final FishRepository fishRepository;
     private final ImageService imageService;
     private final AppUserService appUserService;
-    private final CurrentUser currentUser;
 
-    public FishController(FishService fishService, FishRepository fishRepository,AppUserService appUserService , ImageService imageService) {
-    public FishController(FishService fishService, FishRepository fishRepository, ImageService imageService, CurrentUser currentUser, AppUserService appUserService) {
+
+    public FishController(FishService fishService, ImageService imageService, AppUserService appUserService) {
         this.fishService = fishService;
-        this.fishRepository = fishRepository;
         this.imageService = imageService;
-        this.currentUser = currentUser;
         this.appUserService = appUserService;
     }
 
