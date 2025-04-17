@@ -89,10 +89,9 @@ class AppUserRepositoryTest {
     @DisplayName("findById should return empty Optional if no matching id")
     void findByIdShouldReturnEmptyOptionalWhenNoMatch() {
 
-        var actualAppUser = appUserRepository.findById(expectedAppUser.getId());
+        var actualAppUser = appUserRepository.findById(-1);
 
-        assertThat(actualAppUser).isPresent();
-        assertThat(actualAppUser.get().getId()).isEqualTo(expectedAppUser.getId());
+        assertThat(actualAppUser).isEmpty();
     }
 
     @Test
