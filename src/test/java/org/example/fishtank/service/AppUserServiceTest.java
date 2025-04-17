@@ -52,7 +52,7 @@ class AppUserServiceTest {
     void setUp() {
 
         expectedAccess = new Access();
-        expectedAccess.setName("Standard");
+        expectedAccess.setName(AppUserService.ACCESS_STANDARD);
 
         expectedAppUser = new AppUser();
         expectedAppUser.setId(1);
@@ -175,8 +175,8 @@ class AppUserServiceTest {
     }
 
     @Test
-    @DisplayName("call to updateCurrentUser should set the current users values to passed non null values")
-    void updateCurrentUserShouldSetCurrentUserValuesToPassedNonNullValues() {
+    @DisplayName("call to updateAppUser should set the AppUser values to passed non null values")
+    void updateAppUserShouldSetAppUserValuesToPassedNonNullValues() {
 
         UpdateAppUser updateAppUser = new UpdateAppUser(
                 "UpdateAppUser",
@@ -185,12 +185,10 @@ class AppUserServiceTest {
         );
 
         String expectedEmail = expectedAppUser.getEmail();
-        Authentication authentication = setSecurityContextHolderAndGetAuthentication();
-        when(authentication.getName()).thenReturn(expectedAppUser.getId().toString());
         when(appUserRepository.findById(expectedAppUser.getId())).thenReturn(Optional.of(expectedAppUser));
         when(passwordEncoder.encode(updateAppUser.password())).thenReturn(updateAppUser.password());
 
-        appUserService.updateCurrentUser(updateAppUser);
+        appUserService.updateAppUser(expectedAppUser.getId(), updateAppUser);
 
         assertThat(expectedAppUser.getName()).isEqualTo(updateAppUser.name());
         assertThat(expectedAppUser.getEmail()).isEqualTo(expectedEmail);
@@ -198,22 +196,43 @@ class AppUserServiceTest {
     }
 
     @Test
-    @DisplayName("call to updateCurrentUserAccess should set current user access to passed access")
-    void updateCurrentUserAccessShouldSetCurrentUserAccessToPassedAccess() {
+    @DisplayName("call to updateAppUserToAccessStandard should set passed user:s access to Standard.")
+    void updateAppUserToAccessStandardShouldSetAppUserAccessToStandard(){
 
-        String accessString = "TestAccess";
+        Access accessStandard = new Access();
+        accessStandard.setName(AppUserService.ACCESS_STANDARD);
 
-        Access testAccess = new Access();
-        testAccess.setName(accessString);
+        Access accessPremium = new Access();
+        accessPremium.setName(AppUserService.ACCESS_PREMIUM);
+        expectedAppUser.setAccess(accessPremium);
 
-        Authentication authentication = setSecurityContextHolderAndGetAuthentication();
-        when(authentication.getName()).thenReturn(expectedAppUser.getId().toString());
         when(appUserRepository.findById(expectedAppUser.getId())).thenReturn(Optional.of(expectedAppUser));
-        when(accessRepository.findByName(anyString())).thenReturn(Optional.of(testAccess));
+        when(accessRepository.findByName(AppUserService.ACCESS_STANDARD)).thenReturn(Optional.of(accessStandard));
 
-        appUserService.updateCurrentUserAccess(accessString);
+        appUserService.updateAppUserToAccessStandard(expectedAppUser.getId());
 
-        assertThat(expectedAppUser.getAccess()).isEqualTo(testAccess);
+        assertThat(expectedAppUser.getAccess()).isEqualTo(accessStandard);
+        assertThat(expectedAppUser.getAccess().getName()).isEqualTo(AppUserService.ACCESS_STANDARD);
+    }
+
+    @Test
+    @DisplayName("call to updateAppUserToAccessPremium should set passed user:s access to Premium.")
+    void updateAppUserToAccessPremiumShouldSetAppUserAccessToPremium(){
+
+        Access accessStandard = new Access();
+        accessStandard.setName(AppUserService.ACCESS_STANDARD);
+        expectedAppUser.setAccess(accessStandard);
+
+        Access accessPremium = new Access();
+        accessPremium.setName(AppUserService.ACCESS_PREMIUM);
+
+        when(appUserRepository.findById(expectedAppUser.getId())).thenReturn(Optional.of(expectedAppUser));
+        when(accessRepository.findByName(AppUserService.ACCESS_PREMIUM)).thenReturn(Optional.of(accessPremium));
+
+        appUserService.updateAppUserToAccessPremium(expectedAppUser.getId());
+
+        assertThat(expectedAppUser.getAccess()).isEqualTo(accessPremium);
+        assertThat(expectedAppUser.getAccess().getName()).isEqualTo(AppUserService.ACCESS_PREMIUM);
     }
 
     /**
