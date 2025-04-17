@@ -3,8 +3,6 @@ package org.example.fishtank.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,7 +17,6 @@ public class WeatherController {
     public String getWeather(@RequestParam(required = false) String location, Model model) {
 
         String apiUrl = "https://api.weatherapi.com/v1/current.json?key=25c23807bbdb4d399b391221251604&q=" + location;
-
 
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> response = restTemplate.getForObject(apiUrl, Map.class, location);
