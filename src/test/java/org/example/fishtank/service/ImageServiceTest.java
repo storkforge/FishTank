@@ -40,10 +40,6 @@ class ImageServiceTest {
     private final String testUploadDir = "test/uploads";
     Instant fixedInstant = Instant.ofEpochMilli(123456789L);
 
-    @BeforeEach
-    void setUp() {
-    }
-
     @AfterEach
     void cleanUp() throws IOException {
         Path path = Path.of("test/uploads");
