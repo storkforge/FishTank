@@ -23,7 +23,10 @@ import java.util.Objects;
 @Service
 @Transactional
 public class AppUserService {
-    
+
+    public final static String ACCESS_PREMIUM = "Premium";
+    public final static String ACCESS_STANDARD = "Standard";
+
     private final AppUserRepository appUserRepository;
     private final AccessRepository accessRepository;
     private final PasswordEncoder passwordEncoder;
@@ -33,7 +36,6 @@ public class AppUserService {
         this.accessRepository = accessRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
 
     public LoginAppUser getLoginAppUserByAuthenticationCode(String authenticationCode) {
         return appUserRepository.findByAuthenticationCode(authenticationCode)
@@ -74,9 +76,9 @@ public class AppUserService {
         }
     }
 
-    public void updateCurrentUser(UpdateAppUser updateAppUser) {
+    public void updateAppUser(Integer appUserId, UpdateAppUser updateAppUser) {
 
-        AppUser appUserToUpdate = getAppUserById(CurrentUser.getId());
+        AppUser appUserToUpdate = getAppUserById(appUserId);
 
         if(updateAppUser.name() != null) {
             appUserToUpdate.setName(updateAppUser.name());
@@ -91,10 +93,18 @@ public class AppUserService {
         }
     }
 
-    public void updateCurrentUserAccess(String access) {
+    public void updateAppUserToAccessStandard(Integer appUserId) {
 
-        AppUser appUserToUpdate = getAppUserById(CurrentUser.getId());
-        Access accessNew = getAccessByName(access);
+        AppUser appUserToUpdate = getAppUserById(appUserId);
+        Access accessNew = getAccessByName(ACCESS_STANDARD);
+
+        appUserToUpdate.setAccess(accessNew);
+    }
+
+    public void updateAppUserToAccessPremium(Integer appUserId) {
+
+        AppUser appUserToUpdate = getAppUserById(appUserId);
+        Access accessNew = getAccessByName(ACCESS_PREMIUM);
 
         appUserToUpdate.setAccess(accessNew);
     }
@@ -125,7 +135,6 @@ public class AppUserService {
                 .authorities("ROLE_" + appUser.getAccess().getName()) // e.g., ROLE_Premium
                 .build();
     }
-
 }
 
 
