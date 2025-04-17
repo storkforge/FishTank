@@ -62,7 +62,7 @@ public class FishController {
 
     @GetMapping("/add_fish")
     public String showAddFishForm(Model model) {
-        var appuser = appUserService.findById(CurrentUser.getId());
+        var appuser = appUserService.getResponseAppUserById(CurrentUser.getId());
         model.addAttribute("appuser", appuser);
         return "add_fish";
     }
@@ -76,14 +76,16 @@ public class FishController {
             @RequestParam("sex") String sex,
             @RequestParam("fishImage") MultipartFile fishImage) throws IOException {
         String imageName = imageService.saveImage(fishImage);
-        String appuser = appUserService.findById(CurrentUser.getId()).name();
+        String appuser = appUserService.getResponseAppUserById(CurrentUser.getId()).name();
         CreateFish createFish = new CreateFish(name, species, description, watertype, sex, appuser, imageName);
         fishService.save(createFish);
 
         int userId = CurrentUser.getId();
         int fishCount = fishService.getFishCountByAppUser(CurrentUser.getId());
+
         if(fishCount > 5) {
-            appUserService.update(userId, new UpdateAppUser(null, null, null, "Premium"));
+
+            appUserService.updateAppUserToAccessPremium(userId);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             UserDetails updatedUserDetails = appUserService.loadUserByUsername(auth.getName());
 
