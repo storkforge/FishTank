@@ -2,7 +2,6 @@ package org.example.fishtank.service;
 
 import org.example.fishtank.util.FileStorage;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,7 +50,7 @@ class ImageServiceTest {
     @Test
     @DisplayName("PrepareUploadDirectory should return uploadPath if directory exists")
     void prepareUploadDirectoryShouldReturnUploadPathIfDirectoryExists() throws IOException {
-        Files.createDirectory(Path.of(testUploadDir));
+        Files.createDirectories(Path.of(testUploadDir));
         ReflectionTestUtils.setField(imageService, "uploadDir", testUploadDir);
 
         Path expectedPath = Path.of(testUploadDir);
