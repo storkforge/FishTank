@@ -14,9 +14,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ImageServiceTest {
@@ -25,9 +29,12 @@ class ImageServiceTest {
     ImageService imageService;
 
     @Mock
+    private Clock clock;
+    @Mock
     private FileStorage fileStorage;
     String testImageName = "test_Image.png";
     private final String testUploadDir = "test/uploads";
+    Instant fixedInstant = Instant.ofEpochMilli(123456789L);
 
     @BeforeEach
     void setUp() {
@@ -80,6 +87,15 @@ class ImageServiceTest {
         String fileNameSpaces = "test Image.png";
 
         assertThat(imageService.sanitizeFileName(fileNameSpaces)).isEqualTo(testImageName);
+    }
+
+    @Test
+    @DisplayName("generateUniqueFileName should return originalFileName with timestamp")
+    void generateUniqueFileNameShouldReturnOriginalFileNameWithTimestamp() {
+        when(clock.instant()).thenReturn(fixedInstant);
+
+        String expectedName = "123456789" + "_" + testImageName;
+        assertThat(imageService.generateUniqueFileName(testImageName)).isEqualTo(expectedName);
     }
 
 }
