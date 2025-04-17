@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
 
@@ -18,17 +20,25 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@Testcontainers
 class AppUserRepositoryTest {
+
+//    @Container
+//    @ServiceConnection
+//    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest");
+
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgisContainer = new PostgreSQLContainer<>(
+            DockerImageName.parse("postgis/postgis:15-3.3")
+                    .asCompatibleSubstituteFor("postgres") // critical for compatibility
+    );
 
     @Autowired
     AppUserRepository appUserRepository;
 
     @Autowired
     AccessRepository accessRepository;
-
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest");
 
     AppUser expectedAppUser;
 
