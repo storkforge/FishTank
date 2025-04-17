@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class LoginController {
 
-    private AppUserService appUserService;
+    private final AppUserService appUserService;
 
     public LoginController(AppUserService appUserService) {
         this.appUserService = appUserService;
@@ -62,7 +62,7 @@ public class LoginController {
             return "signup";
         }
 
-        CreateAppUser createAppUser = new CreateAppUser(username, password, email, authenticationCode,"Standard");
+        CreateAppUser createAppUser = new CreateAppUser(username, password, email, authenticationCode, AppUserService.ACCESS_STANDARD);
 
         appUserService.save(createAppUser);
 
