@@ -124,7 +124,7 @@ class AppUserRepositoryTest {
     }
 
     @Test
-    @DisplayName("findByName should return null if no matching name")
+    @DisplayName("findByName should return empty Optional if no matching name")
     void findByNameShouldReturnEmptyOptionalWhenNoMatch() {
 
         var actualAppUser = appUserRepository.findByName("null");

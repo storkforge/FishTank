@@ -53,7 +53,6 @@ public class AppUserService {
         return appUserRepository.findAll()
                 .stream()
                 .map(AppUserMapper::mapToResponseAppUser)
-                .filter(Objects::nonNull)
                 .toList();
     }
 
