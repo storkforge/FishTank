@@ -14,11 +14,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Clock;
 import java.time.Instant;
-import java.time.ZoneOffset;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -90,12 +91,34 @@ class ImageServiceTest {
     }
 
     @Test
-    @DisplayName("generateUniqueFileName should return originalFileName with timestamp")
+    @DisplayName("GenerateUniqueFileName should return originalFileName with timestamp")
     void generateUniqueFileNameShouldReturnOriginalFileNameWithTimestamp() {
         when(clock.instant()).thenReturn(fixedInstant);
 
         String expectedName = "123456789" + "_" + testImageName;
         assertThat(imageService.generateUniqueFileName(testImageName)).isEqualTo(expectedName);
+    }
+
+    @Test
+    @DisplayName("BuildSafeFilePath should return resolved path when filename is valid")
+    void buildSafeFilePathShouldReturnResolvedPathWhenFilenameIsValid() {
+        Path baseDir = Paths.get(testUploadDir);
+        String fileName = "photo.jpg";
+
+        Path result = imageService.buildSafeFilePath(baseDir, fileName);
+
+        assertThat(result).isEqualTo(baseDir.resolve(fileName).normalize());
+    }
+
+    @Test
+    @DisplayName("BuildSafeFilePath should throw exception when filename is trying to escape baseDir")
+    void buildSafeFilePathShouldThrowExceptionWhenFilenameIsTryingToEscapeBaseDir() {
+        Path baseDir = Paths.get(testUploadDir);
+        String fileName = "../etc/passwd";
+
+        assertThatThrownBy(() -> imageService.buildSafeFilePath(baseDir, fileName))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Invalid filename");
     }
 
 }
