@@ -184,7 +184,8 @@ class PostServiceTest {
     @DisplayName("save creates a new post with correct values")
     void saveCreatesANewPostWithCorrectValues() {
         CreatePost createPost = new CreatePost("saveTest", "Stockholm", fishTest.getId());
-        Post post = PostMapper.map(createPost, fishTest);
+        Point<G2D> point = null;
+        Post post = PostMapper.map(createPost, fishTest, null);
         when(fishRepository.findById(fishTest.getId())).thenReturn(Optional.of(fishTest));
         when(geoService.geocodeCity("Stockholm")).thenReturn(new Point<>(
                 new G2D(18.0686, 59.3293), CoordinateReferenceSystems.WGS84));
@@ -261,5 +262,49 @@ class PostServiceTest {
         assertEquals("Post not found", exception.getReason());
 
     }
+
+    @Test
+    @DisplayName("saveAndReturn saves and returns the created post")
+    void saveAndReturnSavesAndReturnsPost() {
+        CreatePost createPost = new CreatePost("saveReturnTest", "Göteborg", fishTest.getId());
+        Point<G2D> point = new Point<>(new G2D(11.9746, 57.7089), CoordinateReferenceSystems.WGS84);
+
+        when(fishRepository.findById(fishTest.getId())).thenReturn(Optional.of(fishTest));
+        when(geoService.geocodeCity("Göteborg")).thenReturn(point);
+        when(postRepository.save(any(Post.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Post result = postService.saveAndReturn(createPost);
+
+        assertNotNull(result);
+        assertEquals("saveReturnTest", result.getText());
+        assertEquals("Göteborg", result.getCityName());
+        assertEquals(point, result.getCoordinate());
+        assertEquals(fishTest, result.getFishid());
+    }
+
+    @Test
+    @DisplayName("findByFishId returns all posts related to fishId")
+    void findByFishIdReturnsPostsForGivenFishId() {
+        int fishId = 1;
+
+        Post post1 = new Post();
+        post1.setId(10);
+        post1.setText("First Post");
+        post1.setFishid(fishTest);
+
+        Post post2 = new Post();
+        post2.setId(11);
+        post2.setText("Second Post");
+        post2.setFishid(fishTest);
+
+        when(postRepository.findByFishId(fishId)).thenReturn(List.of(post1, post2));
+
+        List<ResponsePost> results = postService.findByFishId(fishId);
+
+        assertEquals(2, results.size());
+        assertEquals("First Post", results.get(0).text());
+        assertEquals("Second Post", results.get(1).text());
+    }
+
 
 }

@@ -11,6 +11,8 @@ import org.example.fishtank.model.entity.Sex;
 import org.example.fishtank.model.entity.WaterType;
 import org.example.fishtank.model.mapper.FishMapper;
 import org.example.fishtank.repository.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -72,7 +74,6 @@ public class FishService {
                 .toList();
     }
 
-
     @Cacheable("allFish")
     public List<ResponseFish> getAllFish() {
         return fishRepository.findAll()
@@ -82,7 +83,7 @@ public class FishService {
                 .toList();
     }
 
-    @CacheEvict(value = {"myFish","allFish"}, allEntries = true)
+    @CacheEvict(value = {"fish","myFish","allFish", "post", "allPost", "myPost","postByFish"}, allEntries = true)
     public void save(CreateFish createFish) {
 
         Optional<AppUser> appUser = appUserRepository.findByName(createFish.appUser());
@@ -98,7 +99,7 @@ public class FishService {
         fishRepository.save(fish);
     }
 
-    @CacheEvict(value = {"fish", "myFish", "allFish"}, key = "#id", allEntries = true)
+    @CacheEvict(value = {"fish", "myFish", "allFish", "post", "allPost", "myPost","postByFish"}, key = "#id", allEntries = true)
     public void update(int id, UpdateFish fish) {
         Fish oldFish = fishRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
@@ -106,7 +107,7 @@ public class FishService {
         fishRepository.update(oldFish.getName(), oldFish.getDescription(), oldFish.getId());
     }
 
-    @CacheEvict(value = {"fish", "myFish", "allFish"}, key = "#id", allEntries = true)
+    @CacheEvict(value = {"fish", "myFish", "allFish", "post", "allPost", "myPost","postByFish"}, key = "#id", allEntries = true)
     public void delete(int id) {
         var fish = fishRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));

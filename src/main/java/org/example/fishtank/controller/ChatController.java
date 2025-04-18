@@ -18,7 +18,6 @@ public class ChatController {
     private final OpenAiChatModel chatModel;
     private FishService fishService;
 
-
     @Autowired
     public ChatController(OpenAiChatModel chatModel, FishService fishService) {
         this.chatModel = chatModel;
@@ -28,11 +27,8 @@ public class ChatController {
     @GetMapping("/recommendations/{id}")
     public String recommendById(@PathVariable Integer id, Model model) {
 
-
-        // Fetch fish using the service
         ResponseFish responseFish = fishService.findById(id);
 
-        // Use the retrieved fish details for generating recommendations
          String fishName = responseFish.species();
 
         String toysPrompt = "Suggest short and concise exactly one engaging toy for a '" + fishName + "'.";
@@ -43,22 +39,21 @@ public class ChatController {
         String foodRecommendation = chatModel.call(foodPrompt);
         String aquariumRecommendation = chatModel.call(aquariumPrompt);
 
-        // Add fish to the model so it's shared with Thymeleaf
         model.addAttribute("fish", responseFish);
 
-        // Add recommendations to the model for rendering
         model.addAttribute("recommendations", Map.of(
                 "toys", toyRecommendation,
                 "food", foodRecommendation,
                 "aquarium", aquariumRecommendation
         ));
 
-        return "recommendations"; // Ensure this matches your Thymeleaf template
+        return "recommendations";
     }
 
     @GetMapping("/healthcare/{id}")
     public String healthcare(@PathVariable Integer id, Model model) {
         ResponseFish responseFish = fishService.findById(id);
+
         String fishName = responseFish.species();
 
         String healthcarePrompt = "Give short and concise fish healthcare tips for a '" + fishName + " without acting like an ai'.";
