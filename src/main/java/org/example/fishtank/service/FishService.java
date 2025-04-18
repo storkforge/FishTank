@@ -47,7 +47,7 @@ public class FishService {
     public ResponseFish findById(Integer id) {
         return fishRepository.findById(id)
                 .map(FishMapper::map)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish1 not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
     }
 
     @Cacheable(value = "fish", key = "#id")
