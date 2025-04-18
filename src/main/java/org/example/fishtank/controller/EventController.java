@@ -7,6 +7,8 @@ import org.example.fishtank.model.dto.eventDto.UpdateEvent;
 import org.example.fishtank.model.entity.AppUser;
 import org.example.fishtank.repository.AppUserRepository;
 import org.example.fishtank.service.AppUserService;
+import org.example.fishtank.service.CurrentUser;
+import org.example.fishtank.service.EventJoiningService;
 import org.example.fishtank.service.EventService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -14,7 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.logging.Logger;
 
 @Controller
 public class EventController {
@@ -22,13 +25,17 @@ public class EventController {
     private final EventService eventService;
     private final AppUserService appUserService;
     private final AppUserRepository appUserRepository;
+    private final EventJoiningService eventJoiningService;
+    private final CurrentUser currentUser;
 
-    public EventController(EventService eventService, AppUserService appUserService, AppUserRepository appUserRepository) {
+    Logger logger = Logger.getLogger(EventController.class.getName());
+
+    public EventController(EventService eventService, AppUserService appUserService, AppUserRepository appUserRepository, EventJoiningService eventJoiningService, CurrentUser currentUser) {
         this.eventService = eventService;
         this.appUserService = appUserService;
         this.appUserRepository = appUserRepository;
-
-
+        this.eventJoiningService = eventJoiningService;
+        this.currentUser = currentUser;
     }
 
     @ResponseBody
@@ -93,17 +100,18 @@ public class EventController {
 
     @GetMapping("/events")
     public String showEvents(Model model) {
-        // Fetch the event list from the service
-        var eventList = eventService.getAllEvents();
+        List<ResponseEvent> eventList = eventService.getAllEvents();
+        Map<Integer, AppUser> eventCreators = new HashMap<>();
 
-        // Ensure eventList is not null and properly populated
-        if (eventList != null) {
-            model.addAttribute("eventList", eventList);
-        } else {
-            model.addAttribute("eventList", new ArrayList<>()); // Avoid null pointer issues
+        for (ResponseEvent event : eventList) {
+            appUserRepository.findById(event.appUserId())
+                    .ifPresent(user -> eventCreators.put(event.id(), user));
         }
 
-        return "events"; // Thymeleaf template name
+        model.addAttribute("eventCreators", eventCreators);
+        model.addAttribute("eventList", eventList);
+
+        return "events";
     }
 
     @GetMapping("/my_events")
@@ -114,20 +122,45 @@ public class EventController {
     }
 
     @GetMapping("/event/{id}")
-    public String showEventById(Model model, @PathVariable Integer id) {
-        var event = eventService.findById(id);
+    public String showEventDetails(@PathVariable Integer id, Model model) {
+        ResponseEvent event = eventService.findById(id);
+
+        List<AppUser> participants = eventJoiningService.getAllUsersByEventId(id);
+
+        AppUser eventCreator = appUserRepository.findById(event.appUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String currentAppUser = currentUser.getUsername();
+
+        AppUser currentUser = appUserRepository.findByName(currentAppUser)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        boolean isOwner = event.appUserId().equals(currentUser.getId());
+
         model.addAttribute("event", event);
+        model.addAttribute("eventCreator", eventCreator);
+        model.addAttribute("participants", participants);
+        model.addAttribute("isOwner", isOwner);
+
         return "event";
     }
 
     @PostMapping("/join_event/{eventId}")
     public String joinEvent(@PathVariable Integer eventId, @RequestParam Integer userId) {
-        AppUser user = appUserRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        try {
+            boolean hasJoined = eventJoiningService.hasAppUserJoinedEvent(eventId, userId);
 
+            if (!hasJoined) {
+                eventService.joinEvent(eventId, userId);
+            }
 
-        eventService.joinEvent(eventId, userId);
-        return "redirect:/event/" + eventId;
+            return "redirect:/event/" + eventId;
+
+        } catch (Exception e) {
+            logger.warning("Error joining event: " + e.getMessage());
+            return "redirect:/event/" + eventId;
+        }
     }
+
 
 }

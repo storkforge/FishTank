@@ -80,10 +80,13 @@
     <div style="max-height: 400px; overflow-y: auto;">
         <ul class="list-group list-group-flush">
             <li class="list-group-item" th:each="event : ${eventList}">
+                <a th:href="@{/event/{id}(id=${event.id})}" class="fw-bold text-decoration-none text-primary">
                 <span class="event-title" th:text="${event.title}">Event Title</span>
                 <span class="event-text" th:text="${event.text}">Event Description</span>
                 <div class="event-details mt-1">
-                    <span th:if="${event.appUserId != null}" th:text="'Created by: ' + ${event.appUserId}"></span><br/>
+                    <p th:if="${eventCreators[event.id] != null}"
+                       th:text="${eventCreators[event.id].name}">Creator Name</p>
+                    <p th:unless="${eventCreators[event.id] != null}">Unknown Creator</p>
                     <span th:if="${event.cityName}">📍 <span th:text="${event.cityName}"></span></span><br/>
                     <span>📅 <span th:text="${event.eventDate.toString()}"></span></span>
                 </div>

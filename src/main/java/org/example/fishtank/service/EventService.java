@@ -107,4 +107,9 @@ public class EventService {
         eventJoiningRepository.save(eventJoining);
     }
 
+    public Object getEventById(Integer id) {
+        return eventRepository.findById(id)
+                .map(EventMapper::map)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+    }
 }

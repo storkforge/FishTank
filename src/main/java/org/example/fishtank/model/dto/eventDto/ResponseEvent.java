@@ -14,4 +14,5 @@ public record ResponseEvent (
         LocalDateTime eventDate,
         Integer appUserId)
         implements Serializable {
+
 }

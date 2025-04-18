@@ -63,20 +63,31 @@
 <div class="card">
     <div>
         <span class="event-title" th:text="${event.title}">Sample Event</span>
+        <p class="event-creator">
+            <strong th:text="#{event.creator}">Creator: </strong> <span th:text="${eventCreator.name}"></span>
+        </p>
         <p th:text="${event.text}">Event description goes here.</p>
 
         <p th:if="${event.cityName}">
-            <strong>Location:</strong> <span th:text="${event.cityName}"></span>
+            <strong th:text="#{event.location}"></strong> <span th:text="${event.cityName}"></span>
         </p>
 
         <p>
-            <strong>Date:</strong> <span th:text="${#temporals.format(event.eventDate, 'dd MMM yyyy HH:mm')}">2025-04-10</span>
+        <p><strong th:text="#{event.date}"></strong> <span th:text="${#temporals.format(event.eventDate, 'dd MMM yyyy HH:mm')}">2025-04-10</span></p>
         </p>
     </div>
 
-    <div class="btn-container mt-3">
+    <div class="mt-4">
+        <h4 th:text="#{event.participants}">Participants</h4>
+        <ul class="list-group">
+            <li class="list-group-item" th:each="user : ${participants}" th:text="${user.name}">User Name</li>
+        </ul>
+    </div>
+
+    <!-- Display Update/Delete buttons only if user is the event owner -->
+    <div class="btn-container mt-3" th:if="${isOwner}">
         <a th:href="@{/update_event/{id}(id=${event.id})}" class="btn-custom" th:text="#{event.update}">Update</a>
-        <form th:action="@{/delete_event/{id}(id=${event.id})}" method="post">
+        <form th:action="@{/delete_event/{id}(id=${event.id})}" method="post" th:object="${event}">
             <input type="hidden" name="_method" value="delete">
             <button type="submit" class="btn-custom" th:text="#{event.delete}">Delete</button>
         </form>
@@ -87,10 +98,12 @@
         <a href="/my_events" class="btn-custom" th:text="#{event.myEvents}">My Events</a>
     </div>
 
-    <form th:action="@{/join_event/{id}(id=${event.id})}" method="post">
+    <!-- Form to join the event -->
+    <form th:action="@{/join_event/{id}(id=${event.id})}" method="post" th:if="${not isOwner}">
         <input type="hidden" name="userId" th:value="${#authentication.principal.name}"/>
         <button type="submit" class="btn-custom" th:text="#{event.join}">Join Event</button>
     </form>
 
+</div>
 </body>
 </html>
