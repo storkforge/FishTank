@@ -163,7 +163,7 @@ class PostResolverTest {
 
         graphQlTester.document("""
                         mutation {
-                            updatePost(id: 1) {
+                            updatePost(id: 1, text: "Updated post") {
                                 id
                                 text
                             }
