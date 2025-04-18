@@ -13,9 +13,10 @@ public interface EventRepository extends ListCrudRepository<Event, Integer> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Event e SET e.eventtext = :text  WHERE e.id = :id")
+    @Query("UPDATE Event e SET e.eventText = :text  WHERE e.id = :id")
     void update(String text, int id);
 
-    @Query("SELECT e FROM Event e WHERE e. appUserId.id = :appUserId")
-    List<Post> findByAppUserId(Integer appUserId);
+    @Query("SELECT e FROM Event e WHERE e.appUserId.id = :appUserId")
+    List<Event> findByAppUserId(Integer appUserId);
+
 }

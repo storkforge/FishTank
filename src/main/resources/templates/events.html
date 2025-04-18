@@ -29,8 +29,13 @@
             padding: 15px;
         }
 
-        .event-text {
+        .event-title {
             font-weight: bold;
+            font-size: 1.5rem;
+            color: #2e7d32;
+        }
+
+        .event-text {
             font-size: 1.2rem;
             display: block;
         }
@@ -75,8 +80,10 @@
     <div style="max-height: 400px; overflow-y: auto;">
         <ul class="list-group list-group-flush">
             <li class="list-group-item" th:each="event : ${eventList}">
+                <span class="event-title" th:text="${event.title}">Event Title</span>
                 <span class="event-text" th:text="${event.text}">Event Description</span>
                 <div class="event-details mt-1">
+                    <span th:if="${event.appUserId != null}" th:text="'Created by: ' + ${event.appUserId}"></span><br/>
                     <span th:if="${event.cityName}">📍 <span th:text="${event.cityName}"></span></span><br/>
                     <span>📅 <span th:text="${event.eventDate.toString()}"></span></span>
                 </div>
@@ -86,7 +93,8 @@
 
     <div class="btn-container mt-4">
         <a href="/home" class="btn-custom">Home</a>
-        <a href="/add_event" class="btn-custom">Add New Event</a>
+        <a href="/add_event" class="btn-custom">Add new event</a>
+        <a href="/my_events" class="btn-custom">My events</a>
     </div>
 </div>
 </body>

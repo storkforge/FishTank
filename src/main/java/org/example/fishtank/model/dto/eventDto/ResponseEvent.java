@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public record ResponseEvent (
         @NonNull
         Integer id,
+        String title,
         String text,
         String cityName,
         LocalDateTime eventDate,

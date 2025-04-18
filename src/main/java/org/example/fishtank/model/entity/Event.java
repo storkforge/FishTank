@@ -1,8 +1,6 @@
 package org.example.fishtank.model.entity;
 
 import jakarta.persistence.*;
-import org.geolatte.geom.G2D;
-import org.geolatte.geom.Point;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -19,14 +17,17 @@ public class Event implements Serializable {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Column(name = "eventtitle", nullable = false, length = 100)
+    private String eventTitle;
+
     @Column(name = "eventtext", nullable = false, length = 100)
-    private String eventtext;
+    private String eventText;
 
     @Column(name = "cityname")
-    private String cityname;
+    private String cityName;
 
     @Column(name = "eventdate")
-    private LocalDateTime eventdate;
+    private LocalDateTime eventDate;
 
     @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "event_appuser_id_fk", nullable = false)
@@ -36,12 +37,20 @@ public class Event implements Serializable {
     @OneToMany(mappedBy = "eventId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventJoining> eventJoinings = new ArrayList<>();
 
+    public String getEventTitle() {
+        return eventTitle;
+    }
+
+    public void setEventTitle(String eventtitle) {
+        this.eventTitle = eventtitle;
+    }
+
     public LocalDateTime getEventDate() {
-        return eventdate;
+        return eventDate;
     }
 
     public void setEventDate(LocalDateTime eventDate) {
-        this.eventdate = eventDate;
+        this.eventDate = eventDate;
     }
 
     public List<EventJoining> getEventJoinings() {
@@ -61,19 +70,19 @@ public class Event implements Serializable {
     }
 
     public String getEventtext() {
-        return eventtext;
+        return eventText;
     }
 
     public void setEventtext(String eventtext) {
-        this.eventtext = eventtext;
+        this.eventText = eventtext;
     }
 
     public String getCityName() {
-        return cityname;
+        return cityName;
     }
 
     public void setCityName(String cityname) {
-        this.cityname = cityname;
+        this.cityName = cityname;
     }
 
     public AppUser getAppUserId() {

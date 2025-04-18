@@ -11,15 +11,16 @@ import java.util.Objects;
 public class EventMapper {
 
     public static ResponseEvent map(Event event) {
-        if (Objects.isNull(event)) {
+        if (event == null) {
             return null;
         }
         return new ResponseEvent(
                 event.getId(),
+                event.getEventTitle(),
                 event.getEventtext(),
                 event.getCityName(),
                 event.getEventDate(),
-                event.getAppUserId().getId()
+                event.getAppUserId() != null ? event.getAppUserId().getId() : null
         );
     }
 
@@ -27,6 +28,7 @@ public class EventMapper {
         if (Objects.isNull(createEvent))
             return null;
         Event event = new Event();
+        event.setEventTitle(createEvent.title());
         event.setEventtext(createEvent.text());
         event.setAppUserId(appUser);
         event.setCityName(createEvent.cityName());

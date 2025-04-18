@@ -82,4 +82,25 @@ public class EventService {
 
         eventRepository.delete(event);
     }
+
+    public List<ResponseEvent> getAllMyEvents() {
+        Integer currentUserId = CurrentUser.getId();
+
+        return eventRepository.findByAppUserId(currentUserId).stream()
+                .map(EventMapper::map)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+
+    @Cacheable(value = "event", key = "#id")
+    public ResponseEvent findByMyId(Integer id) {
+        var currentUserId = CurrentUser.getId();
+        return eventRepository.findByAppUserId(currentUserId).stream()
+                .filter(event -> event.getId().equals(id))
+                .map(EventMapper::map)
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found or you do not have access"));
+    }
+
 }

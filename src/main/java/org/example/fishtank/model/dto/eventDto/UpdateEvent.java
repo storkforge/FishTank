@@ -5,6 +5,7 @@ import org.springframework.lang.NonNull;
 import java.time.LocalDateTime;
 
 public record UpdateEvent(@NonNull
+                          String tile,
                           String text,
                           String cityName,
                           LocalDateTime eventDate) {
