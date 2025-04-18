@@ -4,6 +4,8 @@ import org.example.fishtank.model.dto.eventDto.CreateEvent;
 import org.example.fishtank.model.dto.eventDto.ResponseEvent;
 import org.example.fishtank.model.dto.eventDto.ResponseEventList;
 import org.example.fishtank.model.dto.eventDto.UpdateEvent;
+import org.example.fishtank.model.entity.AppUser;
+import org.example.fishtank.repository.AppUserRepository;
 import org.example.fishtank.service.AppUserService;
 import org.example.fishtank.service.EventService;
 import org.springframework.http.MediaType;
@@ -19,10 +21,13 @@ public class EventController {
 
     private final EventService eventService;
     private final AppUserService appUserService;
+    private final AppUserRepository appUserRepository;
 
-    public EventController(EventService eventService, AppUserService appUserService) {
+    public EventController(EventService eventService, AppUserService appUserService, AppUserRepository appUserRepository) {
         this.eventService = eventService;
         this.appUserService = appUserService;
+        this.appUserRepository = appUserRepository;
+
 
     }
 
@@ -113,6 +118,16 @@ public class EventController {
         var event = eventService.findById(id);
         model.addAttribute("event", event);
         return "event";
+    }
+
+    @PostMapping("/join_event/{eventId}")
+    public String joinEvent(@PathVariable Integer eventId, @RequestParam Integer userId) {
+        AppUser user = appUserRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+
+        eventService.joinEvent(eventId, userId);
+        return "redirect:/event/" + eventId;
     }
 
 }

@@ -4,7 +4,9 @@ import jakarta.transaction.Transactional;
 import org.example.fishtank.model.dto.eventDto.CreateEvent;
 import org.example.fishtank.model.dto.eventDto.ResponseEvent;
 import org.example.fishtank.model.dto.eventDto.UpdateEvent;
+import org.example.fishtank.model.entity.AppUser;
 import org.example.fishtank.model.entity.Event;
+import org.example.fishtank.model.entity.EventJoining;
 import org.example.fishtank.model.mapper.EventMapper;
 import org.example.fishtank.repository.AppUserRepository;
 import org.example.fishtank.repository.EventJoiningRepository;
@@ -92,15 +94,17 @@ public class EventService {
                 .toList();
     }
 
+    public void joinEvent(Integer eventId, Integer userId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+        AppUser appUser = appUserRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-    @Cacheable(value = "event", key = "#id")
-    public ResponseEvent findByMyId(Integer id) {
-        var currentUserId = CurrentUser.getId();
-        return eventRepository.findByAppUserId(currentUserId).stream()
-                .filter(event -> event.getId().equals(id))
-                .map(EventMapper::map)
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found or you do not have access"));
+        EventJoining eventJoining = new EventJoining();
+        eventJoining.setEventId(event);
+        eventJoining.setAppUserId(appUser);
+
+        eventJoiningRepository.save(eventJoining);
     }
 
 }

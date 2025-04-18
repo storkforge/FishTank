@@ -86,7 +86,11 @@
         <a href="/events" class="btn-custom" th:text="#{event.backToEvents}">Back to Events</a>
         <a href="/my_events" class="btn-custom" th:text="#{event.myEvents}">My Events</a>
     </div>
-</div>
+
+    <form th:action="@{/join_event/{id}(id=${event.id})}" method="post">
+        <input type="hidden" name="userId" th:value="${#authentication.principal.name}"/>
+        <button type="submit" class="btn-custom" th:text="#{event.join}">Join Event</button>
+    </form>
 
 </body>
 </html>
