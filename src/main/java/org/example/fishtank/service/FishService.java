@@ -27,10 +27,6 @@ import java.util.Optional;
 @Transactional
 public class FishService {
 
-
-    private static final Logger logger = LoggerFactory.getLogger(FishService.class);
-
-
     private FishRepository fishRepository;
     private WaterTypeRepository waterTypeRepository;
     private SexRepository sexRepository;
@@ -78,7 +74,6 @@ public class FishService {
                 .toList();
     }
 
-
     @Cacheable("allFish")
     public List<ResponseFish> getAllFish() {
         return fishRepository.findAll()
@@ -116,9 +111,7 @@ public class FishService {
     public void delete(int id) {
         var fish = fishRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Fish not found"));
-        logger.info("Deleting fish with id: {}", id);
         fishRepository.delete(fish);
-        logger.info("Deleted fish with id: {}", id);
     }
 
     public ResponseFish findFishByName(String name) {

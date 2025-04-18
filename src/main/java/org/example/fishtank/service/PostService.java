@@ -27,10 +27,6 @@ import java.util.Objects;
 @Transactional
 public class PostService {
 
-
-    private static final Logger logger = LoggerFactory.getLogger(FishService.class);
-
-
     PostRepository postRepository;
     FishRepository fishRepository;
     GeoService geoService;
@@ -130,8 +126,6 @@ public class PostService {
     public void delete(int id) {
         var post = postRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
-        logger.info("Deleting post with id: {}", id);
         postRepository.delete(post);
-        logger.info("Deleted post with id: {}", id);
     }
 }
