@@ -82,8 +82,9 @@ class FishServiceTest {
         mockedStatic = mockStatic(CurrentUser.class);
         mockedStatic.when(CurrentUser::getId).thenReturn(userID);
     }
+
     @AfterEach
-            void tearDown() {
+    void tearDown() {
         mockedStatic.close();
     }
 
@@ -159,7 +160,7 @@ class FishServiceTest {
 
     @Test
     @DisplayName("GetMyFish returns my fish")
-    void getMyFishReturnsMyFish(){
+    void getMyFishReturnsMyFish() {
 
         java.util.List<Fish> fishes = new ArrayList<>();
         Fish fishTest2 = new Fish();
@@ -347,7 +348,6 @@ class FishServiceTest {
     @Test
     @DisplayName("update Updates fish and rep.update is only called once")
     void updateUpdatesFishAndRepUpdateIsOnlyCalledOnce() {
-
         UpdateFish updateFish = new UpdateFish("updatedFish", "updatedDescription");
         when(fishRepository.findById(1)).thenReturn(Optional.of(fishTest));
 
@@ -395,6 +395,47 @@ class FishServiceTest {
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Fish not found", exception.getReason());
-
     }
+
+    @Test
+    @DisplayName("FindFishByName returns correct fish")
+    void findFishByNameReturnsCorrectFish() {
+        ResponseFish responseFish = new ResponseFish(
+                fishTest.getId(),
+                fishTest.getName(),
+                fishTest.getSpecies(),
+                fishTest.getDescription(),
+                fishTest.getWaterType().getName(),
+                fishTest.getSex().getName(),
+                fishTest.getAppUser().getName(),
+                fishTest.getImage());
+
+        when(fishRepository.findByName(fishTest.getName())).thenReturn(Optional.ofNullable(fishTest));
+
+        ResponseFish result = fishService.findFishByName(fishTest.getName());
+        assertEquals(responseFish, result);
+    }
+
+    @Test
+    @DisplayName("FindFishByName throws NotFound when fish is not found")
+    void findFishByNameThrowsNotFoundWhenFishIsNotFound() {
+        when(fishRepository.findByName(fishTest.getName())).thenReturn(Optional.empty());
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                fishService.findFishByName(fishTest.getName()));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Fish not found", exception.getReason());
+    }
+    @Test
+    @DisplayName("getFishCountByUserId returns correct number of fish for the user")
+    void getFishCountByUserIdReturnsCorrectNumberOfFishForTheUser(){
+        int userId = 1;
+        int expectedCount = 5;
+
+        when(fishRepository.countByAppUserId(userId)).thenReturn(expectedCount);
+        int actualCount = fishService.getFishCountByAppUser(userId);
+        assertEquals(expectedCount, actualCount);
+    }
+
+
 }
