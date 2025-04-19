@@ -46,3 +46,12 @@ VALUES
     ('Betta Fish Care Tips', 3),      -- Linked to the Betta Fish (ID 3)
     ('Shark Feeding Habits', 4);      -- Linked to the Shark (ID 4)
 
+INSERT INTO event (eventtitle, eventtext, cityname, eventdate, event_appuser_id_fk)
+VALUES
+    ('Clownfish Breeding Workshop', 'Fun thing to do as a couple', 'New York', '2023-10-15 10:00:00', 1),  -- John Doe
+    ('Goldfish Care Seminar', 'You think you know enough but you are wrong','Los Angeles', '2023-11-20 14:00:00', 2),  -- Jane Smith
+    ('Aquarium Setup Class', 'This will change your perspective of glass and water', 'Chicago', '2023-12-05 09:30:00', 3);  -- Alice Johnson
+
+
+
+

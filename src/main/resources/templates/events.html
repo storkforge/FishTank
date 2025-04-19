@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>FishTank Events</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #4a7c59;
+            background-image: url("https://www.transparenttextures.com/patterns/silver-scales.png");
+            padding: 50px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .list-group-item {
+            font-size: 1.1rem;
+            text-align: left;
+            padding: 15px;
+        }
+
+        .event-title {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: #2e7d32;
+        }
+
+        .event-text {
+            font-size: 1.2rem;
+            display: block;
+        }
+
+        .event-details {
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+        .btn-custom {
+            display: inline-block;
+            width: 250px;
+            margin: 8px 0;
+            padding: 12px;
+            font-size: 16px;
+            color: white;
+            background: linear-gradient(45deg, #43a047, #2e7d32);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s ease-in-out, transform 0.2s;
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(45deg, #388e3c, #1b5e20);
+            transform: scale(1.05);
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+<h1 class="mb-4">Upcoming Events</h1>
+
+<div class="card p-4 shadow-lg">
+    <div style="max-height: 400px; overflow-y: auto;">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item" th:each="event : ${eventList}">
+                <a th:href="@{/event/{id}(id=${event.id})}" class="fw-bold text-decoration-none text-primary">
+                <span class="event-title" th:text="${event.title}">Event Title</span>
+                <span class="event-text" th:text="${event.text}">Event Description</span>
+                <div class="event-details mt-1">
+                    <p th:if="${eventCreators[event.id] != null}"
+                       th:text="${eventCreators[event.id].name}">Creator Name</p>
+                    <p th:unless="${eventCreators[event.id] != null}">Unknown Creator</p>
+                    <span th:if="${event.cityName}">📍 <span th:text="${event.cityName}"></span></span><br/>
+                    <span>📅 <span th:text="${event.eventDate.toString()}"></span></span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="btn-container mt-4">
+        <a href="/home" class="btn-custom">Home</a>
+        <a href="/add_event" class="btn-custom">Add new event</a>
+        <a href="/my_events" class="btn-custom">My events</a>
+    </div>
+</div>
+</body>
+</html>
