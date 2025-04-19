@@ -3,12 +3,7 @@ package org.example.fishtank.model.mapper;
 import org.example.fishtank.model.dto.fishDto.CreateFish;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.fishDto.UpdateFish;
-import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.entity.*;
-import org.geolatte.geom.G2D;
-import org.geolatte.geom.Point;
-import org.geolatte.geom.builder.DSL;
-import org.geolatte.geom.crs.CoordinateReferenceSystems;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,7 +57,7 @@ class FishMapperTest {
 
     @Test
     @DisplayName("Map Null Fish to ResponseFish")
-    void mapNullFishToResponseFish(){
+    void mapNullFishToResponseFish() {
         ResponseFish responseFish = FishMapper.map(null);
         assertNull(responseFish);
     }
@@ -80,7 +75,7 @@ class FishMapperTest {
                 "testImage.png"
         );
 
-        Fish fish = FishMapper.map(createFish, waterTypeTest ,sexTest, appUserTest);
+        Fish fish = FishMapper.map(createFish, waterTypeTest, sexTest, appUserTest);
         assertNotNull(fish);
         assertEquals("fishTestName", fish.getName());
         assertEquals("fishTestSpecies", fish.getSpecies());
@@ -93,50 +88,51 @@ class FishMapperTest {
 
     @Test
     @DisplayName("Map Null CreateFish to Fish")
-    void mapNullCreateFishToFish(){
-        Fish fish = FishMapper.map(null,waterTypeTest,sexTest,appUserTest);
+    void mapNullCreateFishToFish() {
+        Fish fish = FishMapper.map(null, waterTypeTest, sexTest, appUserTest);
         assertNull(fish);
-
     }
 
     @Test
     @DisplayName("Map UpdateFish to Fish should update fish")
-    void mapUpdateFishToFishShouldUpdateFish(){
+    void mapUpdateFishToFishShouldUpdateFish() {
         Fish oldFish = new Fish();
         oldFish.setId(1);
         oldFish.setName("fishTestName");
         oldFish.setDescription("fishTestDescription");
 
         UpdateFish updateFish = new UpdateFish("Updated name", "Updated description");
-        FishMapper.map(updateFish,oldFish);
+        FishMapper.map(updateFish, oldFish);
 
         assertEquals("Updated name", oldFish.getName());
         assertEquals("Updated description", oldFish.getDescription());
 
     }
+
     @Test
     @DisplayName("Map UpdateFish to fish should update only name")
-    void mapUpdateFishToFishShouldUpdateOnlyName(){
+    void mapUpdateFishToFishShouldUpdateOnlyName() {
         Fish oldFish = new Fish();
         oldFish.setId(1);
         oldFish.setName("fishTestName");
         oldFish.setDescription("fishTestDescription");
 
         UpdateFish updateFish = new UpdateFish("Updated name", null);
-        FishMapper.map(updateFish,oldFish);
+        FishMapper.map(updateFish, oldFish);
         assertEquals("Updated name", oldFish.getName());
         assertEquals("fishTestDescription", oldFish.getDescription());
     }
+
     @Test
     @DisplayName("Map UpdateFish to fish should update only description")
-    void mapUpdateFishToFishShouldUpdateOnlyDescription(){
+    void mapUpdateFishToFishShouldUpdateOnlyDescription() {
         Fish oldFish = new Fish();
         oldFish.setId(1);
         oldFish.setName("fishTestName");
         oldFish.setDescription("fishTestDescription");
 
         UpdateFish updateFish = new UpdateFish(null, "Updated description");
-        FishMapper.map(updateFish,oldFish);
+        FishMapper.map(updateFish, oldFish);
         assertEquals("fishTestName", oldFish.getName());
         assertEquals("Updated description", oldFish.getDescription());
     }

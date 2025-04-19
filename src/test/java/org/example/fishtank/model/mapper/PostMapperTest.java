@@ -1,6 +1,5 @@
 package org.example.fishtank.model.mapper;
 
-import org.example.fishtank.model.dto.fishDto.UpdateFish;
 import org.example.fishtank.model.dto.postDto.CreatePost;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
 import org.example.fishtank.model.dto.postDto.UpdatePost;
