@@ -1,5 +1,6 @@
 package org.example.fishtank.service.security;
 
+import org.example.fishtank.exception.custom.ResourceNotFoundException;
 import org.example.fishtank.model.dto.appUserDto.CreateAppUser;
 import org.example.fishtank.model.dto.appUserDto.security.LoginAppUser;
 import org.example.fishtank.model.dto.appUserDto.security.OAuth2AppUserPrinciple;
@@ -11,13 +12,15 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 /**
  * Service class for login with OAuth2.
  */
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private AppUserService appUserService;
+    private final AppUserService appUserService;
 
     public CustomOAuth2UserService(AppUserService appUserService){
         this.appUserService = appUserService;
@@ -35,16 +38,21 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             String authenticationCode = "git_" + githubId;
 
             // add git user to DB if not already present.
-            if(!appUserService.isAuthenticationCodePresentInDB(authenticationCode)) {
+            if(!appUserService.isAppUserAuthenticationCodePresentInDB(authenticationCode)) {
 
                 String githubUsername = oauth2User.getAttributes().get("login").toString();
-                CreateAppUser createAppUser = new CreateAppUser(githubUsername, "password", "No email available", authenticationCode,"Standard");
-                appUserService.saveToDB(createAppUser);
+                CreateAppUser createAppUser = new CreateAppUser(githubUsername, UUID.randomUUID().toString(), "No email available", authenticationCode,"Standard");
+                appUserService.save(createAppUser);
             }
 
-            LoginAppUser loginAppUser = appUserService.findByAuthenticationCode(authenticationCode);
+            try {
 
-            return new OAuth2AppUserPrinciple(loginAppUser);
+                LoginAppUser loginAppUser = appUserService.getLoginAppUserByAuthenticationCode(authenticationCode);
+                return new OAuth2AppUserPrinciple(loginAppUser);
+
+            } catch (ResourceNotFoundException e) {
+                throw new OAuth2AuthenticationException(new OAuth2Error(e.getMessage()));
+            }
         }
 
         throw new OAuth2AuthenticationException(new OAuth2Error("Unauthorized authorizer. Can not authorize users from this site."));
