@@ -30,7 +30,7 @@ public class FishService {
     private SexRepository sexRepository;
     private AppUserRepository appUserRepository;
 
-    String fishNotFoundMessage = "fish not Found";
+    String fishNotFoundMessage = "Fish not found";
 
     public FishService(FishRepository fishRepository, WaterTypeRepository waterTypeRepository, SexRepository sexRepository, AppUserRepository appUserRepository) {
         this.fishRepository = fishRepository;
