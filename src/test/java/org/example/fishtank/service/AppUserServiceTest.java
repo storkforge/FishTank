@@ -235,20 +235,20 @@ class AppUserServiceTest {
         assertThat(expectedAppUser.getAccess().getName()).isEqualTo(AppUserService.ACCESS_PREMIUM);
     }
 
-    /**
-     * Sets the SecurityContextHolder when called.
-     * Used for "mocking" CurrentUser like:
-     * Authentication authentication = setSecurityContextHolderAndGetAuthentication();
-     * when(authentication.getName()).thenReturn("1");
-     * where "1" represents the id of the CurrentUser.
-     * @return Authentication
-     */
-    private Authentication setSecurityContextHolderAndGetAuthentication() {
-
-        Authentication authentication = mock(Authentication.class);
-        SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return authentication;
-    }
+//    /**
+//     * Sets the SecurityContextHolder when called.
+//     * Used for "mocking" CurrentUser like:
+//     * Authentication authentication = setSecurityContextHolderAndGetAuthentication();
+//     * when(authentication.getName()).thenReturn("1");
+//     * where "1" represents the id of the CurrentUser.
+//     * @return Authentication
+//     */
+//    private Authentication setSecurityContextHolderAndGetAuthentication() {
+//
+//        Authentication authentication = mock(Authentication.class);
+//        SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext());
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        return authentication;
+//    }
 }
