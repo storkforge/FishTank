@@ -51,7 +51,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 return new OAuth2AppUserPrinciple(loginAppUser);
 
             } catch (ResourceNotFoundException e) {
-                throw new OAuth2AuthenticationException(new OAuth2Error("user_not_found", e.getMessage(), null));
+                throw new OAuth2AuthenticationException(new OAuth2Error(e.getMessage()));
             }
         }
 
