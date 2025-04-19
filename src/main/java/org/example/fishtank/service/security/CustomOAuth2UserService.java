@@ -20,7 +20,7 @@ import java.util.UUID;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private AppUserService appUserService;
+    private final AppUserService appUserService;
 
     public CustomOAuth2UserService(AppUserService appUserService){
         this.appUserService = appUserService;
