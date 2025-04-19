@@ -59,7 +59,7 @@ public class FishResolver {
     }
 
     @SchemaMapping(typeName = "ResponsePost", field = "fish")
-    public ResponseFish getPostsForFish(ResponsePost post) {
+    public ResponseFish getFishFromPost(ResponsePost post) {
         return fishService.findById(post.fishId());
     }
 

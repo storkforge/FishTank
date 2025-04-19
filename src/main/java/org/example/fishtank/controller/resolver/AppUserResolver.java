@@ -1,6 +1,5 @@
 package org.example.fishtank.controller.resolver;
 
-import org.example.fishtank.model.entity.Access;
 import org.example.fishtank.model.entity.AppUser;
 import org.example.fishtank.repository.AppUserRepository;
 import org.springframework.graphql.data.method.annotation.Argument;

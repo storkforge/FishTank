@@ -1,16 +1,16 @@
 package org.example.fishtank.repository;
 
-import io.lettuce.core.dynamic.annotation.Param;
 import org.example.fishtank.model.entity.Post;
-import org.geolatte.geom.G2D;
-import org.geolatte.geom.Point;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Repository
 public interface PostRepository extends ListCrudRepository<Post, Integer> {
     @Modifying
     @Transactional
@@ -19,4 +19,9 @@ public interface PostRepository extends ListCrudRepository<Post, Integer> {
 
     @Query("SELECT p FROM Post p WHERE p.fishid.id = :fishId")
     List<Post> findByFishId(Integer fishId);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Post p WHERE p = :post")
+    void delete(@Param("post") Post post);
 }
