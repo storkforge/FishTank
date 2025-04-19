@@ -1,6 +1,8 @@
 package org.example.fishtank.service;
 
 import jakarta.transaction.Transactional;
+import org.example.fishtank.exception.message.Message;
+import org.example.fishtank.exception.custom.ResourceNotFoundException;
 import org.example.fishtank.model.dto.appUserDto.CreateAppUser;
 import org.example.fishtank.model.dto.appUserDto.ResponseAppUser;
 import org.example.fishtank.model.dto.appUserDto.UpdateAppUser;
@@ -16,15 +18,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional
 public class AppUserService {
-    
-    private AppUserRepository appUserRepository;
-    private AccessRepository accessRepository;
-    private PasswordEncoder passwordEncoder;
+
+    public final static String ACCESS_PREMIUM = "Premium";
+    public final static String ACCESS_STANDARD = "Standard";
+
+    private final AppUserRepository appUserRepository;
+    private final AccessRepository accessRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public AppUserService(AppUserRepository appUserRepository, AccessRepository accessRepository, PasswordEncoder passwordEncoder) {
         this.appUserRepository = appUserRepository;
@@ -32,12 +36,30 @@ public class AppUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void saveToDB(CreateAppUser createAppUser) {
+    public LoginAppUser getLoginAppUserByAuthenticationCode(String authenticationCode) {
+        return appUserRepository.findByAuthenticationCode(authenticationCode)
+                .map(AppUserMapper::mapToLoginAppUser)
+                .orElseThrow(() -> new ResourceNotFoundException(Message.APP_USER.notFound()));
+    }
 
-        if(!isAuthenticationCodePresentInDB(createAppUser.authenticationCode())) {
+    public ResponseAppUser getResponseAppUserById(Integer id) {
+        return appUserRepository.findById(id)
+                .map(AppUserMapper::mapToResponseAppUser)
+                .orElseThrow(() -> new ResourceNotFoundException(Message.APP_USER.notFound()));
+    }
 
-            Access access = accessRepository.findByName(createAppUser.access())
-                    .orElseThrow(() -> new RuntimeException("Access not found"));
+    public List<ResponseAppUser> getAllAppUsersAsResponseList() {
+        return appUserRepository.findAll()
+                .stream()
+                .map(AppUserMapper::mapToResponseAppUser)
+                .toList();
+    }
+
+    public void save(CreateAppUser createAppUser) {
+
+        if(!isAppUserAuthenticationCodePresentInDB(createAppUser.authenticationCode())) {
+
+            Access access = getAccessByName(createAppUser.access());
 
             String passwordHash = passwordEncoder.encode(createAppUser.password());
 
@@ -52,77 +74,53 @@ public class AppUserService {
         }
     }
 
-    public LoginAppUser findByAuthenticationCode(String authenticationCode) {
-        return appUserRepository.findByAuthenticationCode(authenticationCode)
-                .map(AppUserMapper::mapToLoginAppUser)
-                .orElseThrow(() -> new UsernameNotFoundException("findByAuthenticationCode: User with authentication code: " + authenticationCode + " not found"));
-    }
+    public void updateAppUser(Integer appUserId, UpdateAppUser updateAppUser) {
 
-    public LoginAppUser findByNameForLogin(String name) {
-
-        return appUserRepository.findByName(name)
-                .map(AppUserMapper::mapToLoginAppUser)
-                .orElseThrow(() -> new UsernameNotFoundException("findByNameForLogin: User not found in the database."));
-    }
-
-    public ResponseAppUser findByName(String name) {
-        return appUserRepository.findByName(name)
-                .map(AppUserMapper::mapToResponseAppUser)
-                .orElseThrow(() -> new RuntimeException("User not found in the database."));
-    }
-
-    public ResponseAppUser findById(Integer id) {
-        return appUserRepository.findById(id)
-                .map(AppUserMapper::mapToResponseAppUser)
-                .orElseThrow(() -> new RuntimeException("User not found in the database."));
-    }
-
-    public List<ResponseAppUser> findAllAppUsers() {
-        return appUserRepository.findAll()
-                .stream()
-                .map(AppUserMapper::mapToResponseAppUser)
-                .filter(Objects::nonNull)
-                .toList();
-    }
-
-    public Access getAccess(Integer id) {
-        return appUserRepository.findById(id)
-                .map(AppUser::getAccess)
-                .orElse(null);
-    }
-
-    public void update(int id, UpdateAppUser updateAppUser) {
-
-        AppUser appUser = appUserRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found in the database."));
+        AppUser appUserToUpdate = getAppUserById(appUserId);
 
         if(updateAppUser.name() != null) {
-            appUser.setName(updateAppUser.name());
-        }
-
-        if(updateAppUser.access() != null) {
-            Access updateAccess = accessRepository.findByName(updateAppUser.access())
-                    .orElseThrow(() -> new RuntimeException("Access not found"));
-
-            appUser.setAccess(updateAccess);
-        }
-
-        if(updateAppUser.passwordHash() != null) {
-            String passwordHash = passwordEncoder.encode(updateAppUser.passwordHash());
-            appUser.setPasswordHash(passwordHash);
+            appUserToUpdate.setName(updateAppUser.name());
         }
 
         if(updateAppUser.email() != null) {
-            appUser.setEmail(updateAppUser.email());
+            appUserToUpdate.setEmail(updateAppUser.email());
+        }
+
+        if(updateAppUser.password() != null) {
+            appUserToUpdate.setPasswordHash(passwordEncoder.encode(updateAppUser.password()));
         }
     }
 
-    public boolean isNamePresentInDB(String name) {
-        return appUserRepository.findByName(name).isPresent();
+    public void updateAppUserToAccessStandard(Integer appUserId) {
+
+        AppUser appUserToUpdate = getAppUserById(appUserId);
+        Access accessNew = getAccessByName(ACCESS_STANDARD);
+
+        appUserToUpdate.setAccess(accessNew);
     }
 
-    public boolean isAuthenticationCodePresentInDB(String authenticationCode) {
+    public void updateAppUserToAccessPremium(Integer appUserId) {
+
+        AppUser appUserToUpdate = getAppUserById(appUserId);
+        Access accessNew = getAccessByName(ACCESS_PREMIUM);
+
+        appUserToUpdate.setAccess(accessNew);
+    }
+
+    public boolean isAppUserAuthenticationCodePresentInDB(String authenticationCode) {
         return appUserRepository.findByAuthenticationCode(authenticationCode).isPresent();
+    }
+
+    // PRIVATE METHODS TO KEEP ENTITIES WITHIN SERVICE CLASS
+
+    private AppUser getAppUserById(int id){
+        return appUserRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(Message.APP_USER.notFound()));
+    }
+
+    private Access getAccessByName(String name) {
+        return accessRepository.findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException(Message.ACCESS.notFound()));
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -135,7 +133,6 @@ public class AppUserService {
                 .authorities("ROLE_" + appUser.getAccess().getName()) // e.g., ROLE_Premium
                 .build();
     }
-
 }
 
 

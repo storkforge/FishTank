@@ -6,7 +6,12 @@
 </head>
 <body class="d-flex align-items-center justify-content-center vh-100">
 <div class="card p-4 shadow-lg" style="width: 300px;">
+
     <h2 class="text-center">Sign up</h2>
+
+    <div th:if="${error}" class="alert alert-danger text-center">
+        <p th:text="${error}"></p>
+    </div>
 
     <form th:action="@{/signup}" method="post">
 
