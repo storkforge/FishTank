@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.argThat;
@@ -48,7 +49,7 @@ class PostControllerTest {
     @Test
     @WithMockUser
     @DisplayName("getPostByIdRough returns the post in Json format")
-    void getPostByIdRoughReturnsThePostInJsonFormat() throws  Exception{
+    void getPostByIdRoughReturnsThePostInJsonFormat() throws Exception {
         int postId = 1;
 
         ResponsePost mockPost = new ResponsePost(
@@ -75,8 +76,8 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("getForumRouge returns all post in Json format")
-    void getForumRougeReturnsAllPostInJsonFormat() throws  Exception{
+    @DisplayName("getForumRough returns all post in Json format")
+    void getForumRoughReturnsAllPostInJsonFormat() throws Exception {
         List<ResponsePost> postList = List.of(new ResponsePost(
                 1,
                 "test text1",
@@ -92,7 +93,6 @@ class PostControllerTest {
                 1));
 
         when(postService.getAllPost()).thenReturn(postList);
-
 
         mockMvc.perform(get("/forum_rough"))
                 .andExpect(status().isOk())
@@ -363,12 +363,12 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("getForum with null coordinates returns filtered posts")
+    @DisplayName("getForum with null coordinates returns empty list")
     void getForumWithNullCoordinatesReturnsFilteredPosts() throws Exception {
         String location = "Göteborg";
         double radius = 25.0;
 
-        //no posts within radius
+        //no posts within radius or valid coordinates
         List<ResponsePost> allPosts = List.of(
                 new ResponsePost(1, "testText1", "Göteborg", null, null, 1),
                 new ResponsePost(2, "testText2", "Stockholm", 59.3293, 18.0686, 2),
