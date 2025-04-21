@@ -108,8 +108,17 @@ public class EventController {
                     .ifPresent(user -> eventCreators.put(event.id(), user));
         }
 
+        LocalDateTime from = LocalDateTime.now().plusDays(1).withHour(0).withMinute(0);
+        LocalDateTime to = from.withHour(23).withMinute(59);
+
+        List<ResponseEvent> upcomingReminders = eventService.getAllEvents().stream()
+                .filter(event -> event.eventDate().isAfter(from) && event.eventDate().isBefore(to))
+                .toList();
+
         model.addAttribute("eventCreators", eventCreators);
         model.addAttribute("eventList", eventList);
+        model.addAttribute("reminders", upcomingReminders);
+
 
         return "events";
     }
@@ -146,8 +155,10 @@ public class EventController {
     }
 
     @PostMapping("/join_event/{eventId}")
-    public String joinEvent(@PathVariable Integer eventId, @RequestParam Integer userId) {
+    public String joinEvent(@PathVariable Integer eventId) {
         try {
+            Integer userId = CurrentUser.getId();
+
             boolean hasJoined = eventJoiningService.hasAppUserJoinedEvent(eventId, userId);
 
             if (!hasJoined) {

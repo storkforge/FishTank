@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -111,5 +112,12 @@ public class EventService {
         return eventRepository.findById(id)
                 .map(EventMapper::map)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+    }
+
+    public List<Event> findEventsByDate(LocalDate date) {
+        return eventRepository.findEventByDateBetween(
+                date.atStartOfDay(),
+                date.plusDays(1).atStartOfDay()
+        );
     }
 }
