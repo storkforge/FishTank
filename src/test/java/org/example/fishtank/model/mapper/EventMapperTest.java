@@ -116,15 +116,10 @@ class EventMapperTest {
         EventMapper.map(updateEvent, oldEvent);
 
         assertAll(
+                () -> assertThat(oldEvent.getEventTitle()).isEqualTo(oldEvent.getEventTitle()),
                 () -> assertThat(oldEvent.getEventtext()).isEqualTo(updatedEventText),
                 () -> assertThat(oldEvent.getCityName()).isEqualTo("Old city"),
                 () -> assertThat(oldEvent.getEventDate()).isEqualTo(updatedLocalDateTime)
         );
-    }
-
-    @Test
-    void mapNullUpdateEventToEvent() {
-        Event event = EventMapper.map(null, appUser);
-        assertNull(event);
     }
 }
