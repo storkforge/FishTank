@@ -1,6 +1,7 @@
 package org.example.fishtank.exception;
 
 import org.example.fishtank.exception.custom.CurrentUserException;
+import org.example.fishtank.exception.custom.ImageProcessingException;
 import org.example.fishtank.exception.custom.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CurrentUserException.class)
     public ResponseEntity<String> currentUserException(CurrentUserException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ImageProcessingException.class)
+    public ResponseEntity<String> handleImageProcessingException(ImageProcessingException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error: " + ex.getMessage());
     }
 
 }
