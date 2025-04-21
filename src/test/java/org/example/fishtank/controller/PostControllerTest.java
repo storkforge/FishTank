@@ -3,7 +3,6 @@ package org.example.fishtank.controller;
 
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
-import org.example.fishtank.model.entity.Fish;
 import org.example.fishtank.service.FishService;
 import org.example.fishtank.service.GeoService;
 import org.example.fishtank.service.PostService;
@@ -19,8 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.argThat;
