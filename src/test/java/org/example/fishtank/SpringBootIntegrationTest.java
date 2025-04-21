@@ -17,13 +17,13 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -71,6 +71,8 @@ public class SpringBootIntegrationTest {
     WaterTypeRepository waterTypeRepository;
     @Autowired
     PostRepository postRepository;
+    @Autowired
+    EventRepository eventRepository;
 
     @Autowired
     private Environment env;
@@ -138,6 +140,16 @@ public class SpringBootIntegrationTest {
         post.setFishid(fish);
         testPost = postRepository.save(post);
 
+        var event = new Event();
+        event.setEventTitle("Event title");
+        event.setEventtext("Event text");
+        event.setCityName("City");
+        event.setEventDate(LocalDateTime.parse("2023-10-01T10:00:00"));
+        event.setAppUserId(user);
+        eventRepository.save(event);
+
+
+
 
         mockedStatic = mockStatic(CurrentUser.class);
         mockedStatic.when(CurrentUser::getId).thenReturn(user.getId());
@@ -201,6 +213,25 @@ public class SpringBootIntegrationTest {
                         .with(user("username")))
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.text").value("Test post"))
+                .andReturn();
+    }
+
+    @Test
+    void eventRoughShouldReturnReturnRightEvent() throws Exception {
+        mockMvc.perform(get("/event_rough")
+                        .with(user("username")))
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.eventList.length()").value(1))
+                .andExpect(jsonPath("$.eventList[0].text").value("Event text"))
+                .andReturn();
+    }
+
+    @Test
+    void eventRoughWithIdShouldReturnReturnRightEvent() throws Exception {
+        mockMvc.perform(get("/event_rough/" + testPost.getId())
+                        .with(user("username")))
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.text").value("Event text"))
                 .andReturn();
     }
 
