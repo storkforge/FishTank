@@ -86,15 +86,15 @@
     <form th:action="@{/forum}" method="get" class="filter-form">
         <div class="row mb-3">
             <div class="col">
-                <input type="text" name="location" class="form-control" placeholder="Enter a location..."
-                       th:value="${location}"/>
+                <input type="text" name="location" class="form-control"
+                       th:placeholder="#{forum.locationPlaceholder}" th:value="${location}"/>
             </div>
             <div class="col">
                 <input type="number" name="radius" class="form-control" placeholder="Radius (km)"
                        min="1" max="500" th:value="${radius}"/>
             </div>
             <div class="col-auto">
-                <button type="submit" class="btn btn-primary">Search</button>
+                <button type="submit" class="btn btn-primary" th:text="#{forum.search}">Search</button>
             </div>
         </div>
     </form>
@@ -107,7 +107,7 @@
                     <span class="fish-name" th:text="${fish.name}"></span>
                     <span th:text="${post.text}"></span>
                     <div class="location mt-1" th:if="${post.cityName}">
-                        Location: <span th:text="${post.cityName}"></span>
+                        <span th:text="#{forum.location} + ' ' + ${post.cityName}"></span>
                     </div>
                 </span>
             </li>
@@ -121,7 +121,7 @@
 
     <div class="btn-container mt-3">
         <a href="/my_posts" class="btn-custom" th:text="#{forum.myposts}">My Posts</a>
-        <a href="/forum/map" class="btn-custom">View All on Map</a>
+        <a href="/forum/map" class="btn-custom" th:text="#{forum.map}">View All on Map</a>
     </div>
 </div>
 </div>

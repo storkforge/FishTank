@@ -65,13 +65,13 @@
             </select>
         </div>
         <div class="mb-3">
-            <label for="text" class="form-label"th:text="#{addPost.postText}">Post Text:</label>
+            <label for="text" class="form-label" th:text="#{addPost.postText}">Post Text:</label>
             <textarea id="text" name="text" class="form-control" required></textarea>
         </div>
         <div class="form-group">
-            <label for="cityName">City (optional)</label>
-            <input type="text" class="form-control" id="cityName" name="cityName" placeholder="Enter city name">
+            <label for="cityName" th:text="#{addPost.city}">City (optional)</label>
         </div>
+        <input type="text" class="form-control" id="cityName" name="cityName" th:placeholder="#{addPost.cityPlaceholder}" placeholder="Enter city name">
         <button type="submit" class="btn-custom" th:text="#{addPost.createPost}">Create Post</button>
     </form>
 </div>

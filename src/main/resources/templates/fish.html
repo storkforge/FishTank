@@ -53,22 +53,22 @@
          style="width: 200px; height: auto; object-fit: cover; border-radius: 10px;">
 
     <ul class="list-group list-group-flush flex-fill">
-        <li class="list-group-item" th:text="'Species: ' + ${fish.species}"></li>
-        <li class="list-group-item" th:text="'Description: ' + ${fish.description}"></li>
-        <li class="list-group-item" th:text="'Water Type: ' + ${fish.waterType}"></li>
-        <li class="list-group-item" th:text="'Sex: ' + ${fish.sex}"></li>
+        <li class="list-group-item" th:text="#{fish.species} + ' ' + ${fish.species}"></li>
+        <li class="list-group-item" th:text="#{fish.description} + ' ' + ${fish.description}"></li>
+        <li class="list-group-item" th:text="#{fish.waterType} + ' ' + (${fish.waterType} == 'Freshwater' ? #{addfish.freshwater} : #{addfish.saltwater})"></li>
+        <li class="list-group-item" th:text="#{fish.sex} + ' ' + (${fish.sex} == 'Male' ? #{addfish.male} : (${fish.sex} == 'Female' ? #{addfish.female} : #{addfish.hermaphrodite}))"></li>
     </ul>
 </div>
 <div class="d-flex flex-column align-items-center">
-    <a th:href="@{/update_fish/{id}(id=${fish.id})}" class="btn-custom mt-3">Update</a>
+    <a th:href="@{/update_fish/{id}(id=${fish.id})}" class="btn-custom mt-3" th:text="#{fish.update}">Update</a>
     <form th:action="@{/delete_fish/{id}(id=${fish.id})}" method="post">
         <input type="hidden" name="_method" value="delete">
-        <button type="submit" class="btn-custom mt-3">Delete</button>
+        <button type="submit" class="btn-custom mt-3" th:text="#{fish.delete}">Delete</button>
     </form>
-    <a th:href="@{/recommendations/{id}(id=${fish.id})}" class="btn-custom mt-3">Recommend accessories</a>
-    <a th:href="@{/healthcare/{id}(id=${fish.id})}" class="btn-custom mt-3">Recommend healthcare</a>
-    <a href="/my_fishes" class="btn-custom mt-3">Back to My Fishes</a>
-    <a href="/home" class="btn-custom mt-3">Home</a>
+    <a th:href="@{/recommendations/{id}(id=${fish.id})}" class="btn-custom mt-3" th:text="#{fish.accessories}">Recommend accessories</a>
+    <a th:href="@{/healthcare/{id}(id=${fish.id})}" class="btn-custom mt-3" th:text="#{fish.health}">Recommend healthcare</a>
+    <a href="/my_fishes" class="btn-custom mt-3" th:text="#{fish.back}">Back to My Fishes</a>
+    <a href="/home" class="btn-custom mt-3" th:text="#{fish.home}">Home</a>
 </div>
 </body>
 </html>
