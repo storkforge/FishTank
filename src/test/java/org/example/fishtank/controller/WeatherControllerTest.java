@@ -1,4 +1,4 @@
-package org.example.fishtank.Controller;
+package org.example.fishtank.controller;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
