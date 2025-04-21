@@ -175,6 +175,7 @@ class FishControllerTest {
     }
 
     @Test
+    @DisplayName("POST /add_fish upgrades user to premium when fish count > 5")
     @WithMockUser(username = "testuser", roles = "USER")
     void addFishShouldUpgradeToPremiumWhenFishCountIsGreaterThanFive() throws Exception {
         int userId = 1;
@@ -208,5 +209,30 @@ class FishControllerTest {
         }
     }
 
+    @Test
+    @DisplayName("GET /my_fishes/{id} returns fish view with fish in model")
+    @WithMockUser
+    void getFishByIdShouldReturnSelectedFishViewWithFishInModel() throws Exception {
+        int fishId = 1;
 
+        ResponseFish mockFish = new ResponseFish(
+                fishId,
+                "Ville",
+                "Betta splendens",
+                "Fin fisk med fint hjärta",
+                "Freshwater",
+                "Male",
+                "villeken",
+                "betta.jpg"
+        );
+
+        when(fishService.findMyFishById(fishId)).thenReturn((mockFish));
+
+        mockMvc.perform(get("/my_fishes/{id}", fishId))
+                .andExpect(status().isOk())
+                .andExpect(view().name("fish"))
+                .andExpect(model().attributeExists("fish"))
+                .andExpect(model().attribute("fish", mockFish));
+
+    }
 }
