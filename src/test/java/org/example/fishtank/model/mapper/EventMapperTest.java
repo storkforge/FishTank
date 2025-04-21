@@ -94,12 +94,11 @@ class EventMapperTest {
 
     @Test
     void mapUpdateEventToEventShouldOnlyUpdateChangedField() {
-        String updatedEventTitle = "Updated title";
         String updatedEventText = "This is a updated event";
         LocalDateTime updatedLocalDateTime = LocalDateTime.of(2010, 10, 10, 10, 10);
 
         UpdateEvent updateEvent = new UpdateEvent(
-                updatedEventTitle,
+                null,
                 updatedEventText,
                 null,
                 updatedLocalDateTime
@@ -116,7 +115,7 @@ class EventMapperTest {
         EventMapper.map(updateEvent, oldEvent);
 
         assertAll(
-                () -> assertThat(oldEvent.getEventTitle()).isEqualTo(oldEvent.getEventTitle()),
+                () -> assertThat(oldEvent.getEventTitle()).isEqualTo("Old title"),
                 () -> assertThat(oldEvent.getEventtext()).isEqualTo(updatedEventText),
                 () -> assertThat(oldEvent.getCityName()).isEqualTo("Old city"),
                 () -> assertThat(oldEvent.getEventDate()).isEqualTo(updatedLocalDateTime)
