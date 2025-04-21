@@ -3,7 +3,6 @@ package org.example.fishtank.controller;
 
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.model.dto.postDto.ResponsePost;
-import org.example.fishtank.model.entity.Fish;
 import org.example.fishtank.service.FishService;
 import org.example.fishtank.service.GeoService;
 import org.example.fishtank.service.PostService;
@@ -11,6 +10,7 @@ import org.geolatte.geom.G2D;
 import org.geolatte.geom.Point;
 import org.geolatte.geom.builder.DSL;
 import org.geolatte.geom.crs.CoordinateReferenceSystems;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,7 +20,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.argThat;
@@ -49,7 +48,8 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
-    void testGetPostRoughById() throws Exception {
+    @DisplayName("getPostByIdRough returns the post in Json format")
+    void getPostByIdRoughReturnsThePostInJsonFormat() throws  Exception{
         int postId = 1;
 
         ResponsePost mockPost = new ResponsePost(
@@ -76,7 +76,8 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
-    void forumRough() throws Exception {
+    @DisplayName("getForumRouge returns all post in Json format")
+    void getForumRougeReturnsAllPostInJsonFormat() throws  Exception{
         List<ResponsePost> postList = List.of(new ResponsePost(
                 1,
                 "test text1",
@@ -115,7 +116,8 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
-    void getAddPostShouldReturnViewWithFishes() throws Exception {
+    @DisplayName("get addPost should return view with my fishes")
+    void getAddPostShouldReturnViewWithMyFishes() throws Exception {
         List<ResponseFish> fishList = List.of(new ResponseFish(1, "fishTest", "speciesTest", "descriptionTest", "waterTest", "sexTest", "userTest", "imageTest.png"));
         when(fishService.getMyFish()).thenReturn(fishList);
 
@@ -128,7 +130,8 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
-    void postAddPostShouldCreateNewPost() throws Exception {
+    @DisplayName("post addPost should create new post and redirect")
+    void postAddPostShouldCreateNewPostAndRedirect() throws Exception {
 
         List<ResponseFish> fishList = List.of(new ResponseFish(1, "fishTest", "speciesTest", "descriptionTest", "waterTest", "sexTest", "userTest", "imageTest.png"));
         when(fishService.getMyFish()).thenReturn(fishList);
@@ -140,11 +143,17 @@ class PostControllerTest {
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/forum"));
+
+        verify(postService).save(argThat(post ->
+                post.fishId() == 1 &&
+                        post.text().equals("testText") &&
+                        post.cityName().equals("testCity")));
     }
 
     @Test
     @WithMockUser
-    void getUpdatePostShouldReturnViewWithPosts() throws Exception {
+    @DisplayName("get updatePost should return view with my posts")
+    void getUpdatePostShouldReturnViewWithMyPosts() throws Exception {
         int postId = 1;
 
         ResponsePost responsePost = new ResponsePost(postId, "testText", "Göteborg", 25.0, 25.0, 1);
@@ -158,6 +167,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("post updatePost should update post and redirect")
     void postUpdatePostShouldUpdatePostAndRedirect() throws Exception {
         int postId = 1;
 
@@ -175,6 +185,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("post deletePost should delete and redirect")
     void postDeletePostShouldDeleteAndRedirect() throws Exception {
         int postId = 1;
         mockMvc.perform(post("/delete_post/{id}", postId)
@@ -186,6 +197,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("getMyPostsById should return my post")
     void getMyPostsByIdShouldReturnMyPost() throws Exception {
         ResponseFish responseFish1 = new ResponseFish(1,
                 "Ogge",
@@ -212,6 +224,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("getMyPosts should return my posts")
     void getMyPostsShouldReturnMyPosts() throws Exception {
 
         List<ResponsePost> postList = List.of(new ResponsePost(
@@ -246,7 +259,8 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
-    void getForumReturnsForum() throws Exception {
+    @DisplayName("getForum should return forum")
+    void getForumShouldReturnForum() throws Exception {
         String location = "Göteborg";
         double radius = 25.0;
 
@@ -286,6 +300,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("getForum with location and invalid geocode returns all posts")
     void getForumWithLocationAndInvalidGeocodeReturnsAllPosts() throws Exception {
         String location = "InvalidCity";
         double radius = 25.0;
@@ -319,6 +334,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("getForum without location returns all posts")
     void getForumWithoutLocationReturnsAllPosts() throws Exception {
         double radius = 25.0;
 
@@ -349,10 +365,12 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("getForum with null coordinates returns filtered posts")
     void getForumWithNullCoordinatesReturnsFilteredPosts() throws Exception {
         String location = "Göteborg";
         double radius = 25.0;
 
+        //no posts within radius
         List<ResponsePost> allPosts = List.of(
                 new ResponsePost(1, "testText1", "Göteborg", null, null, 1),
                 new ResponsePost(2, "testText2", "Stockholm", 59.3293, 18.0686, 2),
@@ -374,17 +392,16 @@ class PostControllerTest {
                 .andExpect(view().name("forum"))
                 .andExpect(model().attributeExists("postList"))
                 .andExpect(model().attributeExists("fishList"))
-                .andExpect(model().attribute("postList", List.of())) // No posts within the radius
+                .andExpect(model().attribute("postList", List.of()))
                 .andExpect(model().attribute("fishList", List.of()))
                 .andExpect(model().attribute("location", location))
                 .andExpect(model().attribute("radius", radius));
     }
 
 
-
-
     @Test
     @WithMockUser
+    @DisplayName("getForumMap should return forum map")
     void getForumMapShouldReturnForumMap() throws Exception {
         List<ResponsePost> allPosts = List.of(
                 new ResponsePost(1, "testText1", "Göteborg", 57.7089, 11.9746, 1),
