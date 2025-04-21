@@ -155,8 +155,10 @@ public class EventController {
     }
 
     @PostMapping("/join_event/{eventId}")
-    public String joinEvent(@PathVariable Integer eventId, @RequestParam Integer userId) {
+    public String joinEvent(@PathVariable Integer eventId) {
         try {
+            Integer userId = CurrentUser.getId();
+
             boolean hasJoined = eventJoiningService.hasAppUserJoinedEvent(eventId, userId);
 
             if (!hasJoined) {

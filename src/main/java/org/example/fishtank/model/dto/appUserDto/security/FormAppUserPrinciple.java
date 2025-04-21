@@ -49,4 +49,8 @@ public class FormAppUserPrinciple implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public String getName() {
+        return formLoginAppUser.name();
+    }
 }

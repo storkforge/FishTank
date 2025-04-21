@@ -49,6 +49,9 @@ VALUES
 INSERT INTO event (eventtitle, eventtext, cityname, eventdate, event_appuser_id_fk)
 VALUES
     ('Clownfish Breeding Workshop', 'Fun thing to do as a couple', 'New York', '2023-10-15 10:00:00', 1),  -- John Doe
+    ('Octupus massage', 'A slimey massage', 'Miami', '2023-11-01 11:00:00', 1),  -- John Doe
+    ('Ocean releasing', 'Let them go', 'San Francisco', '2023-11-10 13:00:00', 4),  -- Bob Brown
+    ('Aquarium Maintenance Workshop', 'Learn how to maintain your aquarium like a pro', 'Seattle', '2023-11-15 09:00:00', 5),  -- Charlie White
     ('Goldfish Care Seminar', 'Fun thing to do with the kids','Los Angeles', '2023-11-20 14:00:00', 2),  -- Jane Smith
     ('Aquarium Setup Class', 'This will change your perspective of aquarium', 'Chicago', '2023-12-05 09:30:00', 3);  -- Alice Johnson
 
