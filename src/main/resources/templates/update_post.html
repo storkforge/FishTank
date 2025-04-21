@@ -44,7 +44,7 @@
     </style>
 </head>
 <body>
-<h1 th:text="#{updatePost.updatePostHeader}">Update post</h1>
+<h1 th:text="#{updatePost.post}">Update post</h1>
 <div class="card p-4 shadow-lg">
     <form th:action="@{/update_post/{id}(id=${post.id})}" method="post">
         <div class="mb-3">
