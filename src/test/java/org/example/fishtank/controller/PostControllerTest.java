@@ -19,7 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.argThat;
@@ -254,7 +253,6 @@ class PostControllerTest {
                 .andExpect(model().attributeExists("fishList"))
                 .andExpect(model().attribute("postList", postList))
                 .andExpect(model().attribute("fishList", fishList));
-
     }
 
     @Test
@@ -398,7 +396,6 @@ class PostControllerTest {
                 .andExpect(model().attribute("radius", radius));
     }
 
-
     @Test
     @WithMockUser
     @DisplayName("getForumMap should return forum map")
@@ -413,7 +410,5 @@ class PostControllerTest {
                 .andExpect(view().name("forum_map"))
                 .andExpect(model().attributeExists("postList"))
                 .andExpect(model().attribute("postList", allPosts));
-
     }
-
 }
