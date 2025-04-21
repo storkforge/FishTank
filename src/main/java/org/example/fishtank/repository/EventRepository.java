@@ -1,12 +1,12 @@
 package org.example.fishtank.repository;
 
 import org.example.fishtank.model.entity.Event;
-import org.example.fishtank.model.entity.Post;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventRepository extends ListCrudRepository<Event, Integer> {
@@ -18,5 +18,12 @@ public interface EventRepository extends ListCrudRepository<Event, Integer> {
 
     @Query("SELECT e FROM Event e WHERE e.appUserId.id = :appUserId")
     List<Event> findByAppUserId(Integer appUserId);
+
+    @Query("SELECT e FROM Event e WHERE e.eventDate BETWEEN :start AND :end")
+    List<Event> findEventByDateBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query("SELECT e FROM Event e WHERE e.eventDate < :now")
+    void deletePassedEvents(LocalDateTime now);
+
 
 }

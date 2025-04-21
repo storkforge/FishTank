@@ -38,6 +38,8 @@
         .event-text {
             font-size: 1.2rem;
             display: block;
+            color: #555;
+            font-weight: 300;
         }
 
         .event-details {
@@ -71,25 +73,71 @@
             gap: 10px;
             flex-wrap: wrap;
         }
+
+        .custom-reminder {
+            background: white;
+            color: #4c4c4c;
+            border-radius: 10px;
+            position: static;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            text-align: left;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+        }
+
+        .custom-reminder ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .custom-reminder li {
+            list-style: disc;
+        }
+
+        .custom-reminder a {
+            color: #4c4c4c;
+            text-decoration: none;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .custom-reminder a:hover {
+            color: #2e7d32;
+            text-decoration: underline;
+        }
+
     </style>
 </head>
 <body>
 <h1 class="mb-4">Upcoming Events</h1>
+
+<div th:if="${#lists.size(reminders) > 0}" class="custom-reminder" role="alert">
+    <strong>Reminder:</strong>
+    <ul>
+        <li th:each="event : ${reminders}">
+            <a th:href="@{/event/{id}(id=${event.id})}"
+               th:text="${event.title} + ' on ' + ${#temporals.format(event.eventDate, 'dd MMM yyyy HH:mm')}"></a>
+        </li>
+    </ul>
+</div>
 
 <div class="card p-4 shadow-lg">
     <div style="max-height: 400px; overflow-y: auto;">
         <ul class="list-group list-group-flush">
             <li class="list-group-item" th:each="event : ${eventList}">
                 <a th:href="@{/event/{id}(id=${event.id})}" class="fw-bold text-decoration-none text-primary">
-                <span class="event-title" th:text="${event.title}">Event Title</span>
-                <span class="event-text" th:text="${event.text}">Event Description</span>
-                <div class="event-details mt-1">
-                    <p th:if="${eventCreators[event.id] != null}"
-                       th:text="${eventCreators[event.id].name}">Creator Name</p>
-                    <p th:unless="${eventCreators[event.id] != null}">Unknown Creator</p>
-                    <span th:if="${event.cityName}">📍 <span th:text="${event.cityName}"></span></span><br/>
-                    <span>📅 <span th:text="${event.eventDate.toString()}"></span></span>
-                </div>
+                    <span class="event-title" th:text="${event.title}">Event Title</span>
+                    <span class="event-text" th:text="${event.text}">Event Description</span>
+                    <div class="event-details mt-1">
+                        <p th:if="${eventCreators[event.id] != null}"
+                           th:text="${eventCreators[event.id].name}">Creator Name</p>
+                        <p th:unless="${eventCreators[event.id] != null}">Unknown Creator</p>
+                        <span th:if="${event.cityName}">📍 <span th:text="${event.cityName}"></span></span><br/>
+                        <span>📅 <span th:text="${event.eventDate.toString()}"></span></span>
+                    </div>
             </li>
         </ul>
     </div>

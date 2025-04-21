@@ -59,6 +59,15 @@
             gap: 10px;
         }
 
+        .custom-event {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
     </style>
 </head>
 <body>
@@ -67,10 +76,10 @@
     <div style="max-height: 230px; overflow-y: auto;">
         <ul class="list-group list-group-flush">
             <li class="list-group-item" th:each="event : ${eventList}">
-                <a th:href="@{/event/{id}(id=${event.id})}" class="fw-bold text-decoration-none text-primary">
+                <a th:href="@{/event/{id}(id=${event.id})}" class="custom-event">
+                    <span class="event-title" th:text="${event.title}">Event Title</span>
                     <span th:text="${event.text}">Event text</span>
                 </a>
-                <span class="event-title" th:text="${event.title}">Event Title</span>
             </li>
         </ul>
     </div>
