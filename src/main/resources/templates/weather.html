@@ -32,9 +32,6 @@
     <form action="/weather" method="get">
     <input type="text" name="location" class="btn" placeholder="Enter location">
     <button type="submit">Check Weather</button>
-        <div th:if="${error}" class="alert alert-danger">
-            <span th:text="${error}"></span>
-        </div>
     <div class="d-flex flex-column align-items-center mt-3">
     <li class="list-group-item" th:text="'Temperature: ' + ${temperature}"></li>
     <div class="d-flex flex-column align-items-center mt-3">
