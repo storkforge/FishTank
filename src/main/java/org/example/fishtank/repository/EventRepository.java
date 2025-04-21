@@ -19,7 +19,7 @@ public interface EventRepository extends ListCrudRepository<Event, Integer> {
     @Query("SELECT e FROM Event e WHERE e.appUserId.id = :appUserId")
     List<Event> findByAppUserId(Integer appUserId);
 
-    @Query("SELECT e FROM Event e WHERE e.eventDate BETWEEN :start AND :end")
+    @Query("SELECT e FROM Event e WHERE e.eventDate BETWEEN :startDate AND :endDate")
     List<Event> findEventByDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 
     @Query("SELECT e FROM Event e WHERE e.eventDate < :now")
