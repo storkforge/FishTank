@@ -286,6 +286,105 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
+    void getForumWithLocationAndInvalidGeocodeReturnsAllPosts() throws Exception {
+        String location = "InvalidCity";
+        double radius = 25.0;
+
+        List<ResponsePost> allPosts = List.of(
+                new ResponsePost(1, "testText1", "Göteborg", 57.7089, 11.9746, 1),
+                new ResponsePost(2, "testText2", "Stockholm", 59.3293, 18.0686, 2)
+        );
+        List<ResponseFish> fishList = List.of(
+                new ResponseFish(1, "Ogge", "Guppy", "Fin fisk med fint hjärta", "Freshwater", "Male", "Oggeboi", "betta.jpg"),
+                new ResponseFish(2, "Trout", "Trout", "Freshwater fish", "Freshwater", "Female", "Trouty", "trout.jpg")
+        );
+
+        when(postService.getAllPost()).thenReturn(allPosts);
+        when(geoService.geocodeCity(location)).thenReturn(null); // Invalid geocode
+        when(fishService.findById(1)).thenReturn(fishList.get(0));
+        when(fishService.findById(2)).thenReturn(fishList.get(1));
+
+        mockMvc.perform(get("/forum")
+                        .param("location", location)
+                        .param("radius", String.valueOf(radius)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("forum"))
+                .andExpect(model().attributeExists("postList"))
+                .andExpect(model().attributeExists("fishList"))
+                .andExpect(model().attribute("postList", allPosts))
+                .andExpect(model().attribute("fishList", fishList))
+                .andExpect(model().attribute("location", location))
+                .andExpect(model().attribute("radius", radius));
+    }
+
+    @Test
+    @WithMockUser
+    void getForumWithoutLocationReturnsAllPosts() throws Exception {
+        double radius = 25.0;
+
+        List<ResponsePost> allPosts = List.of(
+                new ResponsePost(1, "testText1", "Göteborg", 57.7089, 11.9746, 1),
+                new ResponsePost(2, "testText2", "Stockholm", 59.3293, 18.0686, 2)
+        );
+        List<ResponseFish> fishList = List.of(
+                new ResponseFish(1, "Ogge", "Guppy", "Fin fisk med fint hjärta", "Freshwater", "Male", "Oggeboi", "betta.jpg"),
+                new ResponseFish(2, "Trout", "Trout", "Freshwater fish", "Freshwater", "Female", "Trouty", "trout.jpg")
+        );
+
+        when(postService.getAllPost()).thenReturn(allPosts);
+        when(fishService.findById(1)).thenReturn(fishList.get(0));
+        when(fishService.findById(2)).thenReturn(fishList.get(1));
+
+        mockMvc.perform(get("/forum")
+                        .param("radius", String.valueOf(radius)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("forum"))
+                .andExpect(model().attributeExists("postList"))
+                .andExpect(model().attributeExists("fishList"))
+                .andExpect(model().attribute("postList", allPosts))
+                .andExpect(model().attribute("fishList", fishList))
+                .andExpect(model().attribute("location", (Object) null)) // Ensure null is explicitly cast
+                .andExpect(model().attribute("radius", radius));
+    }
+
+    @Test
+    @WithMockUser
+    void getForumWithNullCoordinatesReturnsFilteredPosts() throws Exception {
+        String location = "Göteborg";
+        double radius = 25.0;
+
+        List<ResponsePost> allPosts = List.of(
+                new ResponsePost(1, "testText1", "Göteborg", null, null, 1),
+                new ResponsePost(2, "testText2", "Stockholm", 59.3293, 18.0686, 2),
+                new ResponsePost(3, "testText3", "Malmö", 55.6050, 13.0038, 3)
+        );
+        Point<G2D> coordinate = DSL.point(
+                CoordinateReferenceSystems.WGS84, DSL.g(57.7089, 11.9746));
+
+        when(postService.getAllPost()).thenReturn(allPosts);
+        when(geoService.geocodeCity(location)).thenReturn(coordinate);
+        when(fishService.findById(1)).thenReturn(new ResponseFish(1, "Ogge", "Guppy", "Fin fisk med fint hjärta", "Freshwater", "Male", "Oggeboi", "betta.jpg"));
+        when(fishService.findById(2)).thenReturn(new ResponseFish(2, "Trout", "Trout", "Freshwater fish", "Freshwater", "Female", "Trouty", "trout.jpg"));
+        when(fishService.findById(3)).thenReturn(new ResponseFish(3, "Salmon", "Salmon", "Freshwater fish", "Freshwater", "Male", "Salmony", "salmon.jpg"));
+
+        mockMvc.perform(get("/forum")
+                        .param("location", location)
+                        .param("radius", String.valueOf(radius)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("forum"))
+                .andExpect(model().attributeExists("postList"))
+                .andExpect(model().attributeExists("fishList"))
+                .andExpect(model().attribute("postList", List.of())) // No posts within the radius
+                .andExpect(model().attribute("fishList", List.of()))
+                .andExpect(model().attribute("location", location))
+                .andExpect(model().attribute("radius", radius));
+    }
+
+
+
+
+    @Test
+    @WithMockUser
     void getForumMapShouldReturnForumMap() throws Exception {
         List<ResponsePost> allPosts = List.of(
                 new ResponsePost(1, "testText1", "Göteborg", 57.7089, 11.9746, 1),
