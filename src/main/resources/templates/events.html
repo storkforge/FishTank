@@ -112,14 +112,14 @@
     </style>
 </head>
 <body>
-<h1 class="mb-4">Upcoming Events</h1>
+<h1 class="mb-4" th:text="#{events.upcoming}" >Upcoming Events</h1>
 
 <div th:if="${#lists.size(reminders) > 0}" class="custom-reminder" role="alert">
-    <strong>Reminder:</strong>
+    <strong th:text="#{events.reminder}">Reminder:</strong>
     <ul>
         <li th:each="event : ${reminders}">
             <a th:href="@{/event/{id}(id=${event.id})}"
-               th:text="${event.title} + ' on ' + ${#temporals.format(event.eventDate, 'dd MMM yyyy HH:mm')}"></a>
+               th:text="${event.title} + ' ' + ${#temporals.format(event.eventDate, 'dd MMM yyyy HH:mm')}"></a>
         </li>
     </ul>
 </div>
@@ -131,21 +131,23 @@
                 <a th:href="@{/event/{id}(id=${event.id})}" class="fw-bold text-decoration-none text-primary">
                     <span class="event-title" th:text="${event.title}">Event Title</span>
                     <span class="event-text" th:text="${event.text}">Event Description</span>
-                    <div class="event-details mt-1">
-                        <p th:if="${eventCreators[event.id] != null}"
-                           th:text="${eventCreators[event.id].name}">Creator Name</p>
-                        <p th:unless="${eventCreators[event.id] != null}">Unknown Creator</p>
-                        <span th:if="${event.cityName}">📍 <span th:text="${event.cityName}"></span></span><br/>
-                        <span>📅 <span th:text="${event.eventDate.toString()}"></span></span>
-                    </div>
+                </a>
+                <div class="event-details mt-1">
+                    <p th:if="${eventCreators[event.id] != null}"
+                       th:text="${eventCreators[event.id].name}">Creator Name</p>
+                    <p th:unless="${eventCreators[event.id] != null}">Unknown Creator</p>
+                    <span th:if="${event.cityName}">📍 <span th:text="${event.cityName}"></span></span><br/>
+                    <span>📅 <span th:text="${event.eventDate.toString()}"></span></span>
+                </div>
             </li>
         </ul>
     </div>
+</div>
 
     <div class="btn-container mt-4">
-        <a href="/home" class="btn-custom">Home</a>
-        <a href="/add_event" class="btn-custom">Add new event</a>
-        <a href="/my_events" class="btn-custom">My events</a>
+        <a href="/home" class="btn-custom" th:text="#{events.home}">Home</a>
+        <a href="/add_event" class="btn-custom" th:text="#{events.newEvent}">Add new event</a>
+        <a href="/my_events" class="btn-custom" th:text="#{events.myEvents}">My events</a>
     </div>
 </div>
 </body>

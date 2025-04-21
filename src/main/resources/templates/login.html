@@ -60,21 +60,27 @@
 <body class="d-flex align-items-center justify-content-center vh-100">
 <div class="card p-4 shadow-lg" style="width: 300px;">
 
-    <h2 class="container">Login</h2>
+    <h2 class="container" th:text="#{login.title}">Login</h2>
 
     <form th:action="@{/login}" method="post">
 
-        <input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
+        <input type="text" id="username" name="username" class="form-control"
+               th:placeholder="#{login.usernamePlaceholder}" required>
 
-        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+        <input type="password" id="password" name="password" class="form-control"
+               th:placeholder="#{login.passwordPlaceholder}" required>
 
-        <button type="submit" class="btn btn-primary w-100">Login</button>
+        <button type="submit" class="btn btn-primary w-100" th:text="#{login.button}">Login</button>
 
+        <p class="text-center mt-3">
+            <span th:text="#{login.noAccount}">Don't have an account?</span>
+            <br>
+            <a th:href="@{/signup}" th:text="#{login.register}">Register</a>
+        </p>
     </form>
-
-    <p class="text-center mt-3">Don't have an account? <a th:href="@{/signup}">Register</a></p>
-
-    <p class="text-center mt-3"> <a th:href="@{/oauth2/authorization/github}">Login with GitHub</a>
+    <p class="text-center mt-3">
+        <a th:href="@{/oauth2/authorization/github}" th:text="#{login.github}">Login with GitHub</a>
+    </p>
 
 </div>
 </body>

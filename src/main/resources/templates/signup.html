@@ -61,21 +61,27 @@
 <body class="d-flex align-items-center justify-content-center vh-100">
 <div class="card p-4 shadow-lg" style="width: 300px;">
 
-    <h2 class="text-center">Sign up</h2>
-
+    <h2 class="text-center" th:text="#{signup.signup}">Sign up</h2>
 
     <form th:action="@{/signup}" method="post">
 
-        <input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
+        <input type="text" id="username" name="username" class="form-control"
+               th:placeholder="#{signup.usernamePlaceholder}" required>
 
-        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+        <input type="password" id="password" name="password" class="form-control"
+               th:placeholder="#{signup.passwordPlaceholder}" required>
 
-        <input type="email" id="email" name="email" class="form-control" placeholder="Email" required>
+        <input type="email" id="email" name="email" class="form-control"
+               th:placeholder="#{signup.emailPlaceholder}" required>
 
-        <button type="submit" class="btn btn-success w-100">Register</button>
+        <button type="submit" class="btn btn-success w-100" th:text="#{signup.signup}">Register</button>
     </form>
 
-    <p class="text-center mt-3">Already have an account? <a th:href="@{/login}">Log in</a></p>
+    <p class="text-center mt-3">
+        <span th:text="#{signup.alreadyHaveAccount}">Already have an account?</span>
+        <br>
+        <a th:href="@{/login}" th:text="#{signup.login}">Log in</a>
+    </p>
 
 </div>
 </body>

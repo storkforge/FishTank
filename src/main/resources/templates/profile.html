@@ -82,7 +82,7 @@
     </style>
 </head>
 <body>
-<h1 class="mb-4">User Profile</h1>
+<h1 class="mb-4" th:text="#{profile.title}">User Profile</h1>
 
 <div class="card p-4 shadow-lg">
     <div style="display: flex; justify-content: center; align-items: center;">
@@ -98,29 +98,29 @@
         <h4>
             <span class="badge"
                   th:classappend="${authentication == 'Premium'} ? ' bg-warning text-dark' : ' bg-secondary'"
-                  th:title="${authentication == 'Premium'} ? 'We in the FishTank team loves you and gives you limitless access to magical fish wisdoms!' : 'Create more fishes to achieve Premium status and unlock magical fish wisdom!'"
+                  th:title="${authentication == 'Premium'} ? #{profile.premiumTooltip} : #{profile.standardTooltip}"
                   style="margin-left: 10px;"
                   th:text="${authentication}">
             Role
         </span>
         </h4>
     </div>
-
 </div>
+
 <div class="d-flex flex-column align-items-center" th:if="${authentication == 'Premium'}">
-    <a href="wisdom" class="btn-custom-premium mt-3">Get a fish wisdom</a>
+    <a href="wisdom" class="btn-custom-premium mt-3" th:text="#{profile.getWisdom}">Get a fish wisdom</a>
 </div>
 
 <div class="d-flex flex-column align-items-center" th:if="${authentication == 'Standard'}">
-    <a class="btn-custom-standard mt-3">Get a fish wisdom</a>
+    <a class="btn-custom-standard mt-3" th:text="#{profile.getWisdom}">Get a fish wisdom</a>
 </div>
 
 <div class="d-flex flex-column align-items-center">
-    <a href="my_fishes" class="btn-custom mt-3">My Fishes</a>
+    <a href="my_fishes" class="btn-custom mt-3" th:text="#{profile.myFishes}">My Fishes</a>
 </div>
 
 <div class="d-flex flex-column align-items-center">
-    <a href="/home" class="btn-custom mt-3">Back to Home</a>
+    <a href="/home" class="btn-custom mt-3" th:text="#{profile.backToHome}">Back to Home</a>
 </div>
 </body>
 </html>
