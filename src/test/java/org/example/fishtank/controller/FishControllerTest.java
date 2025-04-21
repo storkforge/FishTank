@@ -1,5 +1,7 @@
 package org.example.fishtank.controller;
 
+import jakarta.servlet.ServletException;
+import org.example.fishtank.exception.custom.ImageProcessingException;
 import org.example.fishtank.model.dto.appUserDto.ResponseAppUser;
 import org.example.fishtank.model.dto.fishDto.ResponseFish;
 import org.example.fishtank.service.AppUserService;
@@ -20,15 +22,20 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -235,4 +242,177 @@ class FishControllerTest {
                 .andExpect(model().attribute("fish", mockFish));
 
     }
+
+    @Test
+    @DisplayName("POST /update_fish/{id} should update fish and redirect to fish page")
+    @WithMockUser
+    void updateFishShouldUpdateFishAndRedirect() throws Exception {
+        int fishId = 1;
+
+        String newName = "Updated Fish";
+        String newDescription = "Updated description";
+
+        mockMvc.perform(post("/update_fish/{id}", fishId)
+                        .param("name", newName)
+                        .param("description", newDescription)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/my_fishes/" + fishId));
+
+        verify(fishService).update(eq(fishId), argThat(updateFish ->
+                updateFish.name().equals(newName) &&
+                        updateFish.description().equals(newDescription)
+        ));
+
+    }
+
+    @Test
+    @DisplayName("GET /update_fish/{id} should return view with fish in model")
+    @WithMockUser
+    void showUpdateFishFormShouldReturnViewWithFish() throws Exception {
+        int fishId = 1;
+
+        ResponseFish mockFish = new ResponseFish(
+                fishId,
+                "Ville",
+                "Betta splendens",
+                "Så snabb",
+                "Freshwater",
+                "Female",
+                "villeken",
+                "betta.jpg"
+        );
+
+        when(fishService.findMyFishById(fishId)).thenReturn(mockFish);
+
+        mockMvc.perform(get("/update_fish/{id}", fishId))
+                .andExpect(status().isOk())
+                .andExpect(view().name("update_fish"))
+                .andExpect(model().attributeExists("fish"))
+                .andExpect(model().attribute("fish", mockFish));
+
+    }
+
+    @Test
+    @DisplayName("POST /delete_fish/{id} should delete the fish and redirect to my_fishes")
+    @WithMockUser
+    void deleteFishShouldCallServiceAndRedirect() throws Exception {
+        int fishId = 1;
+
+        mockMvc.perform(post("/delete_fish/{id}", fishId)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/my_fishes"));
+
+        verify(fishService).delete(fishId);
+    }
+
+    @Test
+    @DisplayName("GET /my_fishes/images/{filename} should return image with correct media type")
+    void serveImageShouldReturnImageIfExists() throws Exception {
+
+        Path tempFile = Files.createTempFile("test", ".jpg");
+        Files.write(tempFile, new byte[]{1, 2, 3});
+        String filename = tempFile.getFileName().toString();
+
+        when(imageService.getImagePath(filename)).thenReturn(tempFile);
+
+        mockMvc.perform(get("/my_fishes/images/{filename}", filename)
+                        .with(user("testuser").roles("USER"))
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.IMAGE_JPEG));
+
+        Files.deleteIfExists(tempFile);
+    }
+
+    @Test
+    @DisplayName("GET /my_fishes/images/{filename} should return 400 if filename is invalid")
+    void serveImageShouldReturnBadRequestForInvalidFilename() throws Exception {
+        mockMvc.perform(get("/my_fishes/images/{filename}", "../secrets.jpg"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("GET /my_fishes/images/{filename} should return 404 if file doesn't exist")
+    @WithMockUser
+    void serveImageShouldReturnNotFoundIfFileDoesNotExist() throws Exception {
+        String filename = "nonexistent.jpg";
+        Path mockPath = Path.of("images/" + filename);
+
+        when(imageService.getImagePath(filename)).thenReturn(mockPath);
+
+        mockMvc.perform(get("/my_fishes/images/{filename}", filename))
+                .andExpect(status().isNotFound());
+    }
+
+
+    @Test
+    @DisplayName("GET /my_fishes/images/{filename} should return 500 on IOException")
+    @WithMockUser
+    void serveImageShouldReturnInternalServerErrorOnIOException() throws Exception {
+        String filename = "error.jpg";
+
+        when(imageService.getImagePath(filename)).thenThrow(new ImageProcessingException("Pang"));
+
+        mockMvc.perform(get("/my_fishes/images/{filename}", filename)
+                        .with(user("testuser").roles("USER"))
+                        .with(csrf()))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    @DisplayName("GET /my_fishes/images/{filename} should return PNG image")
+    void serveImageShouldReturnPngImage() throws Exception {
+        Path tempFile = Files.createTempFile("test", ".png");
+        Files.write(tempFile, new byte[]{1, 2, 3});
+        String filename = tempFile.getFileName().toString();
+
+        when(imageService.getImagePath(filename)).thenReturn(tempFile);
+
+        mockMvc.perform(get("/my_fishes/images/{filename}", filename)
+                        .with(user("testuser").roles("USER"))
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.IMAGE_PNG));
+
+        Files.deleteIfExists(tempFile);
+    }
+
+    @Test
+    @DisplayName("GET /my_fishes/images/{filename} should return GIF image")
+    void serveImageShouldReturnGifImage() throws Exception {
+        Path tempFile = Files.createTempFile("test", ".gif");
+        Files.write(tempFile, new byte[]{1, 2, 3});
+        String filename = tempFile.getFileName().toString();
+
+        when(imageService.getImagePath(filename)).thenReturn(tempFile);
+
+        mockMvc.perform(get("/my_fishes/images/{filename}", filename)
+                        .with(user("testuser").roles("USER"))
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.IMAGE_GIF));
+
+        Files.deleteIfExists(tempFile);
+    }
+
+    @Test
+    @DisplayName("GET /my_fishes/images/{filename} should throw IllegalArgumentException for invalid filename")
+    @WithMockUser
+    void serveImageShouldThrowExceptionForInvalidFilenames() {
+        String invalidFilename = "something..evil.jpg";
+
+        Exception exception = assertThrows(ServletException.class, () ->
+                mockMvc.perform(get("/my_fishes/images/{filename}", invalidFilename)
+                                .with(user("testuser").roles("USER")))
+                        .andReturn()
+        );
+
+        Throwable rootCause = exception.getCause();
+        assertTrue(rootCause instanceof IllegalArgumentException);
+        assertEquals("Invalid filename", rootCause.getMessage());
+    }
+
+
 }
