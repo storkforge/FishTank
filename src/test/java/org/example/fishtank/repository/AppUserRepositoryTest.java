@@ -1,4 +1,4 @@
-/*package org.example.fishtank.repository;
+package org.example.fishtank.repository;
 
 import org.example.fishtank.model.entity.Access;
 import org.example.fishtank.model.entity.AppUser;
@@ -16,16 +16,11 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Testcontainers
 class AppUserRepositoryTest {
-
-//    @Container
-//    @ServiceConnection
-//    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest");
 
     @Container
     @ServiceConnection
@@ -131,6 +126,4 @@ class AppUserRepositoryTest {
 
         assertThat(actualAppUser).isEmpty();
     }
-
 }
- */
